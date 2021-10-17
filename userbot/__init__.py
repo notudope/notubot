@@ -52,7 +52,7 @@ if CONFIG_CHECK:
     quit(1)
 
 # Telegram App KEY and HASH
-API_KEY = os.environ.get("API_KEY", None)
+API_ID = os.environ.get("API_ID", None)
 API_HASH = os.environ.get("API_HASH", None)
 
 
@@ -217,10 +217,10 @@ def migration_workaround():
 # 'bot' variable
 if STRING_SESSION:
     # pylint: disable=invalid-name
-    bot = TelegramClient(StringSession(STRING_SESSION), API_KEY, API_HASH)
+    bot = TelegramClient(StringSession(STRING_SESSION), API_ID, API_HASH)
 else:
     # pylint: disable=invalid-name
-    bot = TelegramClient("userbot", API_KEY, API_HASH)
+    bot = TelegramClient("userbot", API_ID, API_HASH)
 
 
 async def check_botlog_chatid():

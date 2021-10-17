@@ -21,7 +21,7 @@
       "description": "Show Image/Logo in .alive message. Fill value of image your link image, use telegra.ph or any direct link image",
       "required": false
     },
-    "API_KEY": {
+    "API_ID": {
       "description": "Get this value from my.telegram.org.",
       "required": true
     },
