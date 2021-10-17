@@ -20,7 +20,7 @@ def user_list(ls, n):
 
 
 @register(outgoing=True, groups_only=True, pattern=r"^\.stopvc$")
-async def _(e):
+async def stopvc(e):
     try:
         await e.client(stopvc(await get_call(e)))
         await e.edit("`Obrolan Video dimatikan...`")
@@ -29,7 +29,7 @@ async def _(e):
 
 
 @register(outgoing=True, groups_only=True, pattern=r"^\.vcinvite$")
-async def _(e):
+async def vcinvite(e):
     ok = await e.edit("`Mengundang semua anggota grup ke Obrolan Video...`")
 
     users = []
@@ -51,7 +51,7 @@ async def _(e):
 
 
 @register(outgoing=True, groups_only=True, pattern=r"^\.startvc$")
-async def _(e):
+async def startvc(e):
     try:
         await e.client(startvc(e.chat_id))
         await e.edit("`Memulai Obrolan Video...`")
