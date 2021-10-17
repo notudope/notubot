@@ -10,8 +10,8 @@ async def json(event):
 
     text = reply.stringify()
     if event.reply_to_msg_id:
-        await event.delete()
         await event.reply(text, parse_mode=parse_pre)
+        await event.delete()
     else:
         await event.edit(text, parse_mode=parse_pre)
 
