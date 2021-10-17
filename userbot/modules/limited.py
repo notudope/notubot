@@ -8,7 +8,7 @@ from userbot.events import register
 @register(outgoing=True, pattern=r"^\.limit(?: |$)(.*)")
 async def _(event):
     await event.edit("`Mengecek apakah akun kena limit...`")
-    
+
     async with bot.conversation("@SpamBot") as conv:
         try:
             response = conv.wait_event(events.NewMessage(incoming=True, from_users=178220800))

@@ -191,7 +191,7 @@ async def upstream(event):
     if conf == "" and force_update is False:
         await print_changelogs(event, ac_br, changelog)
         await event.delete()
-        return await event.respond('`do ".update now or .update deploy" to update.`')
+        return await event.respond("do `.update now` or `.update deploy` to update.")
 
     if force_update:
         await event.edit("`Force-Syncing to latest stable userbot code, please wait...`")
