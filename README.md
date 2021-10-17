@@ -59,7 +59,8 @@ Click this button below to Deploy to Heroku
 ##### ※ Those steps are probably possible to pull off on Windows but it's pretty much unknown (different file tree paradigm, directory conventions, PowerShell instead of BASH or ZSH) -- If you're on Windows, you'd be better off running this on WSL (or WSL2)
 ---
 ## Credits
-* [BianSepang](https://github.com/BianSepang/WeebProject) (Original Source)
+* [BianSepang](https://github.com/BianSepang/WeebProject) - WeebProject (Original Source)
+* [vckyou](https://github.com/vckyou/Geez-UserBot) - Geez-UserBot
 
 and [everyone](https://github.com/notudope/notubot/graphs/contributors) that makes this userbot awesome!
 
