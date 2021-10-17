@@ -541,19 +541,6 @@ async def gspider(gspdr):
             )
 
 
-@register(outgoing=True, pattern=r"^\.all$")
-async def tagaso(event):
-    """For .all command, mention all of the member in the group chat"""
-    if event.fwd_from:
-        return
-    await event.delete()
-    mentions = "@all"
-    chat = await event.get_input_chat()
-    async for user in bot.iter_participants(chat, 500):
-        mentions += f"[\u2063](tg://user?id={user.id})"
-    await bot.send_message(chat, mentions, reply_to=event.message.reply_to_msg_id)
-
-
 @register(outgoing=True, groups_only=True, pattern=r"^\.all($| (.*))")
 async def all(event):
     text = (event.pattern_match.group(1)).strip()
@@ -579,9 +566,9 @@ async def all(event):
             if text:
                 mention = f"{text}\n{mention}"
             if event.reply_to_msg_id:
-                await event.client.send_message(event.chat_id, mention, reply_to=event.reply_to_msg_id)
+                await bot.send_message(event.chat_id, mention, reply_to=event.message.reply_to_msg_id)
             else:
-                await event.client.send_message(event.chat_id, mention)
+                await bot.send_message(event.chat_id, mention)
 
             limit += 6
             await sleep(2)
