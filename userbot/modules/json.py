@@ -8,12 +8,7 @@ async def json(event):
     "To get details of that message in json format."
     reply = await event.get_reply_message() if event.reply_to_msg_id else event
 
-    text = reply.stringify()
-    if event.reply_to_msg_id:
-        await event.reply(text, parse_mode=parse_pre)
-        await event.delete()
-    else:
-        await event.edit(text, parse_mode=parse_pre)
+    await event.edit(reply.stringify(), parse_mode=parse_pre)
 
 
 CMD_HELP.update(
