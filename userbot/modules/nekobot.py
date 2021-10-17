@@ -72,19 +72,6 @@ async def changemymind(text):
     return "gpx.webp"
 
 
-async def kannagen(text):
-    r = requests.get(f"https://nekobot.xyz/api/imagegen?type=kannagen&text={text}").json()
-    geng = r.get("message")
-    kapak = url(geng)
-    if not kapak:
-        return "check syntax once more"
-    with open("gpx.png", "wb") as f:
-        f.write(requests.get(geng).content)
-    img = Image.open("gpx.png").convert("RGB")
-    img.save("gpx.webp", "webp")
-    return "gpx.webp"
-
-
 async def qorygore(text):
     r = requests.get(f"https://nekobot.xyz/api/imagegen?type=tweet&text={text}&username=QoryGore").json()
     geng = r.get("message")
@@ -239,27 +226,6 @@ async def cmm(event):
     await purge()
 
 
-@register(outgoing=True, pattern=r"^\.kanna(?: |$)(.*)")
-async def kanna(event):
-    text = event.pattern_match.group(1)
-    text = re.sub("&", "", text)
-    reply_to_id = event.message
-    if event.reply_to_msg_id:
-        reply_to_id = await event.get_reply_message()
-    if not text:
-        if event.is_reply and not reply_to_id.media:
-            text = reply_to_id.message
-        else:
-            await event.edit("`What should kanna write give text!`")
-            return
-    await event.edit("`Kanna is writing your text...`")
-    text = deEmojify(text)
-    img = await kannagen(text)
-    await event.client.send_file(event.chat_id, img, reply_to=reply_to_id)
-    await event.delete()
-    await purge()
-
-
 @register(outgoing=True, pattern=r"\.tweet(?: |$)(.*)")
 async def tweet(event):
     text = event.pattern_match.group(1)
@@ -299,8 +265,6 @@ CMD_HELP.update(
         "\nUsage: Create tweet for `@QoryGore`.\n\n"
         ">`.cmm` <text>"
         "\nUsage: Create banner for Change My Mind.\n\n"
-        ">`.kanna` <text>"
-        "\nUsage: Kanna is writing your text.\n\n"
         ">`.ph` <text/reply with or w/o text>"
         "\nUsage: writing comment on p*rnhub XD"
     }
