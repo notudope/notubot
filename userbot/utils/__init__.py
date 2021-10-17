@@ -14,10 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from .chrome import chrome, options
-from .google_images_download import googleimagesdownload
-from .progress import progress
-from .tools import (
+from .chrome import chrome, options  # noqa: F401
+from .google_images_download import googleimagesdownload  # noqa: F401
+from .progress import progress  # noqa: F401
+from .tools import (  # noqa: F401
     human_to_bytes,
     humanbytes,
     md5,

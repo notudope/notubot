@@ -71,7 +71,7 @@ async def aexec(code, smessatatus):
     exec(
         f"async def __aexec(message, reply, client): "
         + "\n event = smessatatus = message"
-        + "".join(f"\n {l}" for l in code.split("\n"))
+        + "".join(f"\n {ln}" for ln in code.split("\n"))
     )
     return await locals()["__aexec"](message, reply, message.client)
 
@@ -96,7 +96,7 @@ async def run(run_q):
         clines = code.splitlines()
         codepre = clines[0] + "\n" + clines[1] + "\n" + clines[2] + "\n" + clines[3] + "..."
 
-    command = "".join(f"\n {l}" for l in code.split("\n.strip()"))
+    command = "".join(f"\n {ln}" for ln in code.split("\n.strip()"))
     process = await asyncio.create_subprocess_exec(
         executable,
         "-c",

@@ -81,9 +81,9 @@ UNMUTE_RIGHTS = ChatBannedRights(until_date=None, send_messages=False)
 # ================================================
 
 
-def user_list(l, n):
-    for i in range(0, len(l), n):
-        yield l[i : i + n]
+def user_list(ls, n):
+    for i in range(0, len(ls), n):
+        yield ls[i : i + n]
 
 
 @register(outgoing=True, disable_errors=True, pattern=r"^\.setgpic$")

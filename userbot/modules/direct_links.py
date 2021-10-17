@@ -49,6 +49,7 @@ async def direct_link_generator(request):
     await request.edit("`Processing...`")
     textx = await request.get_reply_message()
     message = request.pattern_match.group(1)
+
     if message:
         pass
     elif textx:
@@ -56,6 +57,7 @@ async def direct_link_generator(request):
     else:
         await request.edit("`Usage: .direct <url>`")
         return
+
     reply = ""
     links = re.findall(r"\bhttps?://.*\.\S+", message)
     if not links:
@@ -89,14 +91,14 @@ async def direct_link_generator(request):
 async def zippy_share(url: str) -> str:
     link = re.findall("https:/.(.*?).zippyshare", url)[0]
     response_content = (requests.get(url)).content
-    bs_obj = BeautifulSoup(response_content, "lxml")
+    bso = BeautifulSoup(response_content, "lxml")
 
     try:
-        js_script = bs_obj.find("div", {"class": "center",}).find_all(
+        js_script = bso.find("div", {"class": "center",}).find_all(  # noqa: E231
             "script"
         )[1]
     except BaseException:
-        js_script = bs_obj.find("div", {"class": "right",}).find_all(
+        js_script = bso.find("div", {"class": "right",}).find_all(  # noqa: E231
             "script"
         )[0]
 

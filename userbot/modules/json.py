@@ -1,4 +1,4 @@
-from userbot import CMD_HELP, bot
+from userbot import CMD_HELP
 from userbot.events import register
 from userbot.utils.format import parse_pre
 

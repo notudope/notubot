@@ -115,14 +115,14 @@ async def _(event):
         await event.edit("`What I am Supposed to find?`")
         return
     await getmusicvideo(query)
-    l = glob.glob("*.mp4") + glob.glob("*.mkv") + glob.glob("*.webm")
-    if l:
+    ls = glob.glob("*.mp4") + glob.glob("*.mkv") + glob.glob("*.webm")
+    if ls:
         await event.edit("`Yeah..! i found something..`")
     else:
         await event.edit(f"`Sorry..! i can't find anything with` **{query}**")
         return
     try:
-        loa = l[0]
+        loa = ls[0]
         metadata = extractMetadata(createParser(loa))
         duration = 0
         width = 0
