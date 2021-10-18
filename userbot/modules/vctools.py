@@ -12,12 +12,6 @@ from userbot import CMD_HELP
 from userbot.events import register
 
 
-async def get_call(event):
-    mm = await event.client(GetFullChannelRequest(event.chat_id))
-    xx = await event.client(GetGroupCallRequest(mm.full_chat.call))
-    return xx.call
-
-
 def user_list(ls, n):
     for i in range(0, len(ls), n):
         yield ls[i : i + n]
@@ -39,7 +33,6 @@ async def vcstart(event):
 @register(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.stopvc$")
 async def vcstop(event):
     call = (await event.client(GetFullChannelRequest(event.chat.id))).full_chat.call
-
     if call:
         await event.client(DiscardGroupCallRequest(call))
 
@@ -59,12 +52,14 @@ async def vcinvite(event):
             users.append(x.id)
     hmm = list(user_list(users, 6))
 
-    for p in hmm:
-        try:
-            await event.client(InviteToGroupCallRequest(call=await get_call(event), users=p))
-            z += 6
-        except BaseException:
-            pass
+    call = (await event.client(GetFullChannelRequest(event.chat.id))).full_chat.call
+    if call:
+        for p in hmm:
+            try:
+                await event.client(InviteToGroupCallRequest(call=call, users=p))
+                z += 6
+            except BaseException:
+                pass
 
     await ok.edit(f"`Diundang {z} anggota`")
     await asyncio.sleep(20)
