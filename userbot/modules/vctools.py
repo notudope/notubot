@@ -32,15 +32,15 @@ async def vcstart(event):
         )
     )
     await event.edit("`Memulai Obrolan Video...`")
-    await asyncio.sleep(20)
+    await asyncio.sleep(15)
     await event.delete()
 
 
 @register(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.stopvc$")
 async def vcstop(event):
-    await event.client(DiscardGroupCallRequest(await get_call(event)))
+    await event.client(DiscardGroupCallRequest(event.chat_id))
     await event.edit("`Obrolan Video dimatikan...`")
-    await asyncio.sleep(20)
+    await asyncio.sleep(5)
     await event.delete()
 
 
