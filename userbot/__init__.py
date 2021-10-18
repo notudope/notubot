@@ -15,7 +15,7 @@ from logging import (
     basicConfig,
     getLogger,
 )
-from platform import python_version
+from platform import python_version, uname
 from time import sleep
 
 from dotenv import load_dotenv
@@ -279,7 +279,7 @@ with bot:
 
 
 async def update_restart_msg(chat_id, msg_id):
-    DEFAULTUSER = ALIVE_NAME or "Set `ALIVE_NAME` ConfigVar!"
+    DEFAULTUSER = str(ALIVE_NAME) if ALIVE_NAME else uname().node
     message = (
         f"**[REPO](https://github.com/notudope/notubot)** `⚡NOTUBOT UserBot⚡ v{BOT_VER}` [RUNNING!]\n\n"
         f"🐍 **Python :** `v{python_version()}`\n"
