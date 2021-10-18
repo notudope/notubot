@@ -15,7 +15,7 @@ async def help_handler(event):
         if args in CMD_HELP:
             await event.edit(str(CMD_HELP[args]))
         else:
-            await event.edit(f"Perintah [`{args}`] tidak benar, harap ketikan dengan benar.")
+            await event.edit(f"😖 Perintah [`{args}`] tidak benar, harap ketikan dengan benar.")
             await asyncio.sleep(200)
             await event.delete()
     else:
@@ -24,12 +24,14 @@ async def help_handler(event):
         head3 = f"📦 **Module :** `{len(CMD_HELP)}`"
         head4 = "👨‍💻 **Usage :** `.help` `<nama module>`"
         head5 = "Daftar semua perintah tersedia di bawah ini: "
+        head6 = "📌 **Gunakan perintah diatas dengan bijak dan seperlunya, resiko ditanggung pengguna!**"
+
         string = ""
 
-        for i in CMD_HELP:
+        for i in sorted(CMD_HELP):
             string += "`" + str(i)
-            string += "`\t ●  "
-        string = string.rstrip(" ●")
+            string += "`  |  "
+        string = string.rstrip(" |")
 
         await event.edit(
             f"{head}\
@@ -37,7 +39,8 @@ async def help_handler(event):
               \n{head3}\
               \n{head4}\
               \n\n{head5}\
-              \n\n{string}"
+              \n\n{string}\
+              \n\n{head6}"
         )
         await event.reply(f"\n**Contoh** : Ketik <`.help limit`> Untuk informasi pengunaan.")
         await asyncio.sleep(2000)
