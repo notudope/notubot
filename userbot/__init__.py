@@ -281,10 +281,10 @@ with bot:
 async def update_restart_msg(chat_id, msg_id):
     DEFAULTUSER = ALIVE_NAME or "Set `ALIVE_NAME` ConfigVar!"
     message = (
-        f"**NOTUBOT is back up and running!**\n\n"
-        f"**Telethon :** __{version.__version__}__\n"
-        f"**Python :** __{python_version()}__\n"
-        f"**User :** __{DEFAULTUSER}__"
+        f"**`⚡NOTUBOT UserBot⚡ v{BOT_VER}`** [RUNNING!]\n\n"
+        f"📦 **Telethon :** `{version.__version__}`\n"
+        f"🐍 **Python :** `{python_version()}`\n"
+        f"😎 **User :** __{DEFAULTUSER}__"
     )
     await bot.edit_message(chat_id, msg_id, message)
     return True

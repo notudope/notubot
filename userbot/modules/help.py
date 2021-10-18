@@ -19,17 +19,17 @@ async def help_handler(event):
             await asyncio.sleep(200)
             await event.delete()
     else:
-        head = f"**⚡NOTUBOT UserBot⚡ V{BOT_VER}**"
-        head2 = f"😎 Pengguna UserBot : **{DEFAULTUSER}**"
-        head3 = f"📦 Loaded Modules : {len(CMD_HELP)}"
-        head4 = "👨‍💻 Usage : `.help` `<nama module>`"
+        head = f"**`⚡NOTUBOT UserBot⚡ v{BOT_VER}`**"
+        head2 = f"😎 **User :** __{DEFAULTUSER}__"
+        head3 = f"📦 **Module :** `{len(CMD_HELP)}`"
+        head4 = "👨‍💻 **Usage :** `.help` `<nama module>`"
         head5 = "Daftar semua perintah tersedia di bawah ini: "
         string = ""
 
         for i in sorted(CMD_HELP):
             string += "`" + str(i)
             string += "`  |  "
-        string = string.strip().rstrip(" |")
+        string = string.rstrip(" |")
 
         await event.edit(
             f"{head}\
