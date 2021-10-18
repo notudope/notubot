@@ -29,7 +29,7 @@ async def help_handler(event):
         for i in sorted(CMD_HELP):
             string += "`" + str(i)
             string += "`  |  "
-        string = string[:-1]
+        string = string.strip().rstrip(" |")
 
         await event.edit(
             f"{head}\
