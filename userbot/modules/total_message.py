@@ -3,7 +3,7 @@ from userbot.events import register
 
 
 @register(outgoing=True, pattern=r"^\.tmsg (.*)")
-async def _(event):
+async def tmsg(event):
     k = await event.get_reply_message()
 
     if k:
@@ -19,8 +19,5 @@ async def _(event):
 
 
 CMD_HELP.update(
-    {
-        "totalmsg": ">`.tmsg` | `.tmsg` <username>"
-        "\nUsage: Mengambil jumlah pesan total pengguna dalam obrolan saat ini."
-    }
+    {"totalmsg": ">`.tmsg` | `.tmsg` <username>" "\nUsage: Mengambil total pesan pengguna dalam obrolan saat ini."}
 )

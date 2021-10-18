@@ -20,6 +20,7 @@ from userbot import (
     ALIVE_NAME,
     CMD_HELP,
     bot,
+    BOT_VER,
 )
 from userbot.events import register
 
@@ -126,12 +127,10 @@ async def amireallyalive(alive):
     """For .alive command, check if the bot is running."""
     logo = ALIVE_LOGO
     output = (
-        f"`notubot` is running on `{repo.active_branch.name}`\n"
-        "`====================================`\n"
-        f"🐍 `Python         :` v{python_version()}\n"
-        f"⚙️ `Telethon       :` v{version.__version__}\n"
-        f"👤 `User           :` {DEFAULTUSER}\n"
-        "`====================================`\n"
+        f"**[REPO](https://github.com/notudope/notubot)** `⚡NOTUBOT UserBot⚡ v{BOT_VER}` [RUNNING!] [`{repo.active_branch.name.upper()}`]\n\n"
+        f"🐍 **Python :** `v{python_version()}`\n"
+        f"📦 **Telethon :** `v{version.__version__}`\n"
+        f"😎 **User :** __{DEFAULTUSER}__"
     )
     if ALIVE_LOGO:
         try:
@@ -140,10 +139,10 @@ async def amireallyalive(alive):
             await alive.delete()
         except MediaEmptyError:
             await alive.edit(
-                output + "\n\n *`The provided logo is invalid." "\nMake sure the link is directed to the logo picture`"
+                output + "\n\n *`The provided logo is invalid." "\nMake sure the link is directed to the logo picture`",
             )
     else:
-        await alive.edit(output)
+        await alive.edit(output, link_preview=False)
 
 
 @register(outgoing=True, pattern=r"^\.aliveu")

@@ -107,7 +107,7 @@ async def repeat(rep):
 async def repo_is_here(event):
     """For .repo command, just returns the repo URL."""
     await event.edit(
-        "📦 **[Disini REPO](https://github.com/notudope/notubot)** __UserBot keren yang gw pake__.", link_preview=False
+        "📦 **[Disini REPO](https://github.com/notudope/notubot)** UserBot keren yang gw pake.", link_preview=False
     )
 
 
