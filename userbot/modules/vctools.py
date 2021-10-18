@@ -1,12 +1,7 @@
 import asyncio
 
-from telethon.tl.functions.channels import GetFullChannelRequest
-from telethon.tl.functions.phone import (
-    CreateGroupCallRequest,
-    DiscardGroupCallRequest,
-    GetGroupCallRequest,
-    InviteToGroupCallRequest,
-)
+from telethon.tl.functions.channels import GetFullChannelRequest, DeleteMessagesRequest
+from telethon.tl.functions.phone import CreateGroupCallRequest, DiscardGroupCallRequest, InviteToGroupCallRequest
 
 from userbot import CMD_HELP
 from userbot.events import register
@@ -17,28 +12,49 @@ def user_list(ls, n):
         yield ls[i : i + n]
 
 
-@register(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.startvc$")
+@register(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.startvc(?: |$)(.*)")
 async def vcstart(event):
-    await event.client(
+    opts = event.pattern_match.group(1).strip()
+    title = event.pattern_match.group(2).strip()
+    silent = ["s", "silent"]
+    stfu = True if opts in silent else False
+
+    _group = await event.client(
         CreateGroupCallRequest(
             event.chat_id,
-            title="",
+            title=title if title else "",
         )
     )
-    await event.edit("`Memulai Obrolan Video...`")
-    await asyncio.sleep(15)
-    await event.delete()
+
+    if stfu is not True:
+        await event.edit("`Memulai Obrolan Video...`")
+        await asyncio.sleep(15)
+        await event.delete()
+    else:
+        if _group is not None:
+            if _group.updates[0].id is not None:
+                await event.client(DeleteMessagesRequest(event.chat_id, [_group.updates[0].id]))
 
 
-@register(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.stopvc$")
+@register(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.stopvc(?: |$)(.*)")
 async def vcstop(event):
-    call = (await event.client(GetFullChannelRequest(event.chat.id))).full_chat.call
-    if call:
-        await event.client(DiscardGroupCallRequest(call))
+    opts = event.pattern_match.group(1).strip()
+    silent = ["s", "silent"]
+    stfu = True if opts in silent else False
 
-    await event.edit("`Obrolan Video dimatikan...`")
-    await asyncio.sleep(5)
-    await event.delete()
+    call = (await event.client(GetFullChannelRequest(event.chat.id))).full_chat.call
+    _group = None
+    if call:
+        _group = await event.client(DiscardGroupCallRequest(call))
+
+    if stfu is not True:
+        await event.edit("`Obrolan Video dimatikan...`")
+        await asyncio.sleep(5)
+        await event.delete()
+    else:
+        if _group is not None:
+            if _group.updates[0].id is not None:
+                await event.client(DeleteMessagesRequest(event.chat_id, [_group.updates[0].id]))
 
 
 @register(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.vcinvite$")
