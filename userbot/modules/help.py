@@ -28,8 +28,8 @@ async def help_handler(event):
 
         for i in sorted(CMD_HELP):
             string += "`" + str(i)
-            string += "`  |  "
-        # string = string.rstrip(" |")
+            string += "`\t ◈  "
+        string = string.rstrip(" ◈")
 
         await event.edit(
             f"{head}\
