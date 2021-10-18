@@ -1,7 +1,5 @@
 import asyncio
 
-from telethon.errors import rpcbaseerrors
-
 from userbot import CMD_HELP
 from userbot.events import register
 
@@ -23,11 +21,11 @@ async def fastpurger(event):
                 await event.client.delete_messages(chat, msgs)
                 msgs = []
     else:
-        return await event.edit("`I need a mesasge to start purging from.`")
+        return await event.edit("`Balas pesan itu untuk memulai menghapus!`")
 
     if msgs:
         await event.client.delete_messages(chat, msgs)
-    done = await event.client.send_message(event.chat_id, "`Fast purge complete!`" f"\nPurged {str(count)} messages")
+    done = await event.client.send_message(event.chat_id, f"`Purged {str(count)} pesan.`")
 
     await asyncio.sleep(2)
     await done.delete()
@@ -48,10 +46,10 @@ async def purgeme(event):
 
     smsg = await event.client.send_message(
         event.chat_id,
-        "`Purge complete!` Purged " + str(count) + " messages.",
+        f"`Purged {str(count)} pesan.`",
     )
 
-    await asyncio.sleep(2)
+    await asyncio.sleep(1)
     i = 1
     await smsg.delete()
 
@@ -59,13 +57,15 @@ async def purgeme(event):
 @register(outgoing=True, disable_errors=True, pattern=r"^\.del$")
 async def delit(event):
     """For .del command, delete the replied message."""
-    msg_src = await event.get_reply_message()
     if event.reply_to_msg_id:
+        reply = await event.get_reply_message()
         try:
-            await msg_src.delete()
+            await reply.delete()
             await event.delete()
-        except rpcbaseerrors.BadRequestError:
-            await event.edit("Well, I can't delete a message")
+        except BaseException:
+            await event.delete()
+    else:
+        await event.delete()
 
 
 @register(outgoing=True, pattern=r"^\.edit")
@@ -76,6 +76,7 @@ async def editer(event):
     self_id = await event.client.get_peer_id("me")
     string = str(message[6:])
     i = 1
+
     async for message in event.client.iter_messages(chat, self_id):
         if i == 2:
             await message.edit(string)
@@ -91,6 +92,7 @@ async def selfdestruct(event):
     counter = int(message[4:6])
     text = str(event.text[6:])
     await event.delete()
+
     smsg = await event.client.send_message(event.chat_id, text)
     await asyncio.sleep(counter)
     await smsg.delete()
@@ -98,12 +100,16 @@ async def selfdestruct(event):
 
 CMD_HELP.update(
     {
-        "purge": ">`.purge`" "\nUsage: Purges all messages starting from the reply.",
-        "purgeme": ">`.purgeme <x>`" "\nUsage: Deletes x amount of your latest messages.",
-        "del": ">`.del`" "\nUsage: Deletes the message you replied to.",
-        "edit": ">`.edit <newmessage>`" "\nUsage: Replace your last message with <newmessage>.",
-        "sd": ">`.sd <x> <message>`"
-        "\nUsage: Creates a message that selfdestructs in x seconds."
-        "\nKeep the seconds under 100 since it puts your bot to sleep.",
+        "purge": ">`.del`"
+        "\nUsage: Menghapus pesan yang dibalas."
+        "\n\n>`.purge`"
+        "\nUsage: Menghapus semua pesan dari balasan."
+        "\n\n>`.purgeme <x>`"
+        "\nUsage: Menghapus <x> pesan dari yang terbaru."
+        "\n\n>`.edit <newmessage>`"
+        "\nUsage: Mengubah pesan terbaru dengan <newmessage>."
+        "\n\n>`.sd <x> <message>`"
+        "\nUsage: Membuat pesan menjadi selfdestructs dalam <x> detik."
+        "\nUsahakan tetap dibawah 100 detik, untuk mengatasi bot tertidur."
     }
 )
