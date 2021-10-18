@@ -5,6 +5,7 @@ from userbot.events import register
 @register(outgoing=True, pattern=r"^\.tmsg (.*)")
 async def tmsg(event):
     k = await event.get_reply_message()
+    await event.edit("`...`")
 
     if k:
         a = await bot.get_messages(event.chat_id, 0, from_user=k.sender_id)
