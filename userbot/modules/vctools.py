@@ -40,8 +40,8 @@ async def vcstart(event):
     else:
         await event.reply(_group.stringify())
         if _group is not None:
-            if _group.updates[0].id is not None:
-                await event.client(DeleteMessagesRequest(event.chat_id, [_group.updates[0].id]))
+            if _group.updates[1].id is not None:
+                await event.client(DeleteMessagesRequest(event.chat_id, [_group.updates[1].id]))
 
 
 @register(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.stopvc(?: |$)(.*)")
