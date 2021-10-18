@@ -57,8 +57,8 @@ async def purgeme(event):
 @register(outgoing=True, disable_errors=True, pattern=r"^\.del$")
 async def delit(event):
     """For .del command, delete the replied message."""
+    reply = await event.get_reply_message()
     if event.reply_to_msg_id:
-        reply = await event.get_reply_message()
         try:
             await reply.delete()
             await event.delete()

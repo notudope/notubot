@@ -9,16 +9,16 @@ async def total(event):
 
     if user:
         t = await bot.get_messages(event.chat_id, 0, from_user=user.sender_id)
-        return await event.edit(f"Total pesan `{t.total}`")
+        return await event.edit(f"Total pesan [`{t.total}`]")
 
     name = event.pattern_match.group(1)
     if not name:
         name = "me"
 
     t = await bot.get_messages(event.chat_id, 0, from_user=name)
-    await event.edit(f"Total pesan dari {name} yaitu `{t.total}`")
+    await event.edit(f"Total pesan dari {name} [`{t.total}`]")
 
 
 CMD_HELP.update(
-    {"totalmsg": ">`.total` | `.total` <username>" "\nUsage: Mengambil total pesan pengguna dalam obrolan saat ini."}
+    {"totalmsg": ">`.total` | `.total` <username>" "\nUsage: Melihat total pesan pengguna dalam obrolan saat ini."}
 )
