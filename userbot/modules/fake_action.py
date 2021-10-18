@@ -4,11 +4,19 @@ from userbot import CMD_HELP
 from userbot.events import register
 
 
-@register(outgoing=True, disable_errors=True, pattern="^.ftyping(?: |$)(.*)")
-async def ftyping(event):
-    seconds = event.pattern_match.group(1)
+@register(
+    outgoing=True,
+    disable_errors=True,
+    pattern="^.f(typing|audio|contact|document|game|location|photo|round|video)(?: |$)(.*)",
+)
+async def fakeaction(event):
+    act = event.pattern_match.group(1)
+    if act in ["audio", "round", "video"]:
+        act = "record-" + act
+
+    seconds = event.pattern_match.group(2)
     if not (seconds or seconds.isdigit()):
-        seconds = 100
+        seconds = 60
     else:
         try:
             seconds = int(seconds)
@@ -18,73 +26,10 @@ async def ftyping(event):
             except BaseException:
                 return await event.edit("`Format salah.`")
 
-    await event.edit(f'`Memulai "Fake Typing" selama {seconds} detik.`')
-    await asyncio.sleep(10)
+    await event.edit(f'`Memulai "Fake Action" selama {seconds} detik.`')
+    await asyncio.sleep(5)
     await event.delete()
-    async with event.client.action(event.chat_id, "typing"):
-        await asyncio.sleep(seconds)
-
-
-@register(outgoing=True, disable_errors=True, pattern="^.faudio(?: |$)(.*)")
-async def faudio(event):
-    seconds = event.pattern_match.group(1)
-    if not (seconds or seconds.isdigit()):
-        seconds = 100
-    else:
-        try:
-            seconds = int(seconds)
-        except BaseException:
-            try:
-                seconds = await event.ban_time(seconds)
-            except BaseException:
-                return await event.edit("`Format salah.`")
-
-    await event.edit(f'`Memulai "Fake Audio Recording" selama {seconds} detik.`')
-    await asyncio.sleep(10)
-    await event.delete()
-    async with event.client.action(event.chat_id, "record-audio"):
-        await asyncio.sleep(seconds)
-
-
-@register(outgoing=True, disable_errors=True, pattern="^.fvideo(?: |$)(.*)")
-async def fvideo(event):
-    seconds = event.pattern_match.group(1)
-    if not (seconds or seconds.isdigit()):
-        seconds = 100
-    else:
-        try:
-            seconds = int(seconds)
-        except BaseException:
-            try:
-                seconds = await event.ban_time(seconds)
-            except BaseException:
-                return await event.edit("`Format salah.`")
-
-    await event.edit(f'`Memulai "Fake Video Recording" selama {seconds} detik.`')
-    await asyncio.sleep(10)
-    await event.delete()
-    async with event.client.action(event.chat_id, "record-video"):
-        await asyncio.sleep(seconds)
-
-
-@register(outgoing=True, disable_errors=True, pattern="^.fgame(?: |$)(.*)")
-async def fgame(event):
-    seconds = event.pattern_match.group(1)
-    if not (seconds or seconds.isdigit()):
-        seconds = 100
-    else:
-        try:
-            seconds = int(seconds)
-        except BaseException:
-            try:
-                seconds = await event.ban_time(seconds)
-            except BaseException:
-                return await event.edit("`Format salah.`")
-
-    await event.edit(f'`Memulai "Fake Game Playing" selama {seconds} detik.`')
-    await asyncio.sleep(10)
-    await event.delete()
-    async with event.client.action(event.chat_id, "game"):
+    async with event.client.action(event.chat_id, act):
         await asyncio.sleep(seconds)
 
 

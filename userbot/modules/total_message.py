@@ -1,24 +1,26 @@
-from userbot import CMD_HELP, bot
+from telethon.utils import get_display_name
+
+from userbot import CMD_HELP
 from userbot.events import register
 
 
 @register(outgoing=True, pattern=r"^\.total(?: |$)(.*)")
 async def total(event):
-    user = await event.get_reply_message()
+    match = event.pattern_match.group(1)
     await event.edit("`...`")
 
-    if user:
-        t = await bot.get_messages(event.chat_id, 0, from_user=user.sender_id)
-        return await event.edit(f"Total pesan [`{t.total}`]")
+    if match:
+        user = match
+    elif event.is_reply:
+        user = (await event.get_reply_message()).sender_id
+    else:
+        user = "me"
 
-    name = event.pattern_match.group(1)
-    if not name:
-        name = "me"
-
-    t = await bot.get_messages(event.chat_id, 0, from_user=name)
-    await event.edit(f"Total pesan dari {name} [`{t.total}`]")
+    a = await event.client.get_messages(event.chat_id, 0, from_user=user)
+    user = await event.client.get_entity(user)
+    await event.edit(f"Total pesan dari `{get_display_name(user)}` [`{a.total}`]")
 
 
 CMD_HELP.update(
-    {"totalmsg": ">`.total` | `.total` <username>" "\nUsage: Melihat total pesan pengguna dalam obrolan saat ini."}
+    {"totalmsg": ">`.total [username]/<reply>`" "\nUsage: Melihat total pesan pengguna dalam obrolan saat ini."}
 )

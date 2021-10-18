@@ -55,12 +55,26 @@ async def purgeme(event):
 
 
 @register(outgoing=True, disable_errors=True, pattern=r"^\.del$")
-async def delit(event):
+async def delete(event):
     """For .del command, delete the replied message."""
     reply = await event.get_reply_message()
-    if event.reply_to_msg_id:
+    if reply:
         try:
             await reply.delete()
+            await event.delete()
+        except BaseException:
+            await event.delete()
+    else:
+        await event.delete()
+
+
+@register(outgoing=True, disable_errors=True, pattern=r"^\.copy$")
+async def copy(event):
+    """For .copy command, copy replied message."""
+    reply = await event.get_reply_message()
+    if reply:
+        try:
+            await reply.reply(reply)
             await event.delete()
         except BaseException:
             await event.delete()
@@ -106,6 +120,8 @@ CMD_HELP.update(
         "\nUsage: Menghapus semua pesan dari balasan."
         "\n\n>`.purgeme <x>`"
         "\nUsage: Menghapus <x> pesan dari yang terbaru."
+        "\n\n>`.copy`"
+        "\nUsage: Copy pesan yang dibalas."
         "\n\n>`.edit <newmessage>`"
         "\nUsage: Mengubah pesan terbaru dengan <newmessage>."
         "\n\n>`.sd <x> <message>`"
