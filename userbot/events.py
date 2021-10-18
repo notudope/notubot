@@ -154,7 +154,7 @@ def register(**args):
                         file.write(ftext)
 
                     if LOGSPAMMER:
-                        await chat.respond("`UserBot ERROR!" "\nCatatan ERROR disimpan pada BOTLOG.`")
+                        await chat.respond("`UserBot ERROR! Catatan disimpan pada BOTLOG.`")
 
                         """
                         async with PasteBin(ftext) as client:
