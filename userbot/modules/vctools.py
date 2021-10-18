@@ -38,6 +38,7 @@ async def vcstart(event):
         await asyncio.sleep(15)
         await event.delete()
     else:
+        await event.reply(_group.stringify())
         if _group is not None:
             if _group.updates[0].id is not None:
                 await event.client(DeleteMessagesRequest(event.chat_id, [_group.updates[0].id]))
