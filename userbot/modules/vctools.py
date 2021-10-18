@@ -7,7 +7,7 @@ from telethon.tl.functions.phone import (
     GetGroupCallRequest,
     InviteToGroupCallRequest,
 )
-from telethon.types import InputGroupCall
+from telethon.tl.types import InputGroupCall
 
 from userbot import CMD_HELP
 from userbot.events import register
