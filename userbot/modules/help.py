@@ -19,7 +19,7 @@ async def help_handler(event):
             await asyncio.sleep(200)
             await event.delete()
     else:
-        head = f"**`⚡NOTUBOT UserBot⚡ v{BOT_VER}`**"
+        head = f"`⚡NOTUBOT UserBot⚡ v{BOT_VER}`"
         head2 = f"😎 **User :** __{DEFAULTUSER}__"
         head3 = f"📦 **Module :** `{len(CMD_HELP)}`"
         head4 = "👨‍💻 **Usage :** `.help` `<nama module>`"
@@ -29,7 +29,7 @@ async def help_handler(event):
         for i in sorted(CMD_HELP):
             string += "`" + str(i)
             string += "`  |  "
-        string = string.rstrip(" |")
+        # string = string.rstrip(" |")
 
         await event.edit(
             f"{head}\
@@ -39,6 +39,6 @@ async def help_handler(event):
               \n\n{head5}\
               \n\n{string}"
         )
-        await event.reply(f"\n**Contoh** : Ketik <`.help gban`> Untuk informasi pengunaan.")
+        await event.reply(f"\n**Contoh** : Ketik <`.help limit`> Untuk informasi pengunaan.")
         await asyncio.sleep(2000)
         await event.delete()

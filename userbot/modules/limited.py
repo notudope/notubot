@@ -18,7 +18,7 @@ async def _(event):
         except YouBlockedUserError:
             await event.edit("`Unblock dulu @SpamBot`")
             return
-        await event.edit(f"🎉 {response.message.message}")
+        await event.edit(f"~ {response.message.message}")
 
 
 CMD_HELP.update({"limit": ">`.limit`" "\nUsage: Untuk cek akun kena limit."})
