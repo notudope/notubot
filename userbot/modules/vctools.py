@@ -15,14 +15,21 @@ def user_list(ls, n):
 @register(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.startvc(?: |$)(.*)")
 async def vcstart(event):
     opts = event.pattern_match.group(1).strip()
-    title = event.pattern_match.group(2).strip()
+    args = opts.split(" ")
+
     silent = ["s", "silent"]
-    stfu = True if opts in silent else False
+    stfu = True if args[0] in silent else False
+
+    title = ""
+    for i in args[1:]:
+        title += i + " "
+    if title == "":
+        title = ""
 
     _group = await event.client(
         CreateGroupCallRequest(
             event.chat_id,
-            title=title if title else "",
+            title=title,
         )
     )
 
