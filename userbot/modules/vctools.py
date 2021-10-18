@@ -36,8 +36,8 @@ async def vcstart(event):
     if stfu is not True:
         await event.edit("`Memulai Obrolan Video...`")
         await asyncio.sleep(15)
-        await event.delete()
     else:
+        await event.delete()
         if _group is not None:
             if _group.updates[1].id is not None:
                 await event.client(DeleteMessagesRequest(event.chat_id, [_group.updates[1].id]))
@@ -59,6 +59,7 @@ async def vcstop(event):
         await asyncio.sleep(5)
         await event.delete()
     else:
+        await event.delete()
         if _group is not None:
             if _group.updates[1].id is not None:
                 await event.client(DeleteMessagesRequest(event.chat_id, [_group.updates[1].id]))
