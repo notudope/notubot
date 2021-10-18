@@ -106,7 +106,9 @@ async def repeat(rep):
 @register(outgoing=True, pattern=r"^\.repo$")
 async def repo_is_here(event):
     """For .repo command, just returns the repo URL."""
-    await event.edit("📦 [Disini Repo](https://github.com/notudope/notubot) __UserBot keren yang gw pake__.")
+    await event.edit(
+        "📦 **[Disini REPO](https://github.com/notudope/notubot)** __UserBot keren yang gw pake__.", link_preview=False
+    )
 
 
 @register(outgoing=True, pattern=r"^\.raw$")

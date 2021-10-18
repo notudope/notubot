@@ -19,7 +19,7 @@ async def help_handler(event):
             await asyncio.sleep(200)
             await event.delete()
     else:
-        head = f"[Repo](https://github.com/notudope/notubot) `⚡NOTUBOT UserBot⚡ v{BOT_VER}`"
+        head = f"**[REPO](https://github.com/notudope/notubot)** `⚡NOTUBOT UserBot⚡ v{BOT_VER}`"
         head2 = f"😎 **User :** __{DEFAULTUSER}__"
         head3 = f"📦 **Module :** `{len(CMD_HELP)}`"
         head4 = "👨‍💻 **Usage :** `.help` `<nama module>`"
@@ -40,7 +40,8 @@ async def help_handler(event):
               \n{head4}\
               \n\n{head5}\
               \n\n{string}\
-              \n\n{head6}"
+              \n\n{head6}",
+            link_preview=False,
         )
         await event.reply(f"\n**Contoh** : Ketik <`.help limit`> Untuk informasi pengunaan.")
         await asyncio.sleep(2000)
