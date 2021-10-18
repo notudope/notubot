@@ -27,8 +27,9 @@ async def help_handler(event):
         string = ""
 
         for i in sorted(CMD_HELP):
-            string += "`" + str(i)
-            string += "`  |  "
+            string += "`" + str(i) + "`"
+
+        string = "| ".join(string)
 
         await event.edit(
             f"{head}\
@@ -36,7 +37,7 @@ async def help_handler(event):
               \n{head3}\
               \n{head4}\
               \n\n{head5}\
-              \n\n{string[:-1]}"
+              \n\n{string}"
         )
         await event.reply(f"\n**Contoh** : Ketik <`.help gban`> Untuk informasi pengunaan.")
         await asyncio.sleep(2000)
