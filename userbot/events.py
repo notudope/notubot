@@ -77,7 +77,8 @@ def register(**args):
             if admins_only:
                 if not chat.is_group:
                     return await chat.respond("`Gunakan perintah itu di grup.`")
-                if not (chat.admin_rights or chat.creator):
+                gchat = await chat.get_chat()
+                if not (gchat.admin_rights or gchat.creator):
                     return await chat.respond("`Lo bukan admin di grup ini!`")
 
             if groups_only and not chat.is_group:

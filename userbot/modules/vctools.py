@@ -24,7 +24,7 @@ async def vcstart(e):
     try:
         await e.client(
             startvc(
-                peer=e.chat_id,
+                e.chat_id,
                 title="",
             )
         )
