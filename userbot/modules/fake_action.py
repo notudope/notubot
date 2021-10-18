@@ -90,13 +90,13 @@ async def fgame(event):
 
 CMD_HELP.update(
     {
-        "fakeaction": ">`.ftyping` <jumlah teks>\
-   \nUsage : Seakan akan sedang mengetik padahal tidak.\
-   \n\n>`.faudio` <jumlah teks>\
-   \nUsage : Berfungsi sama seperti ftyping tapi ini fake audio.\
-   \n\n>`.fgame` <jumlah teks>\
-   \nUsage : Berfungsi sama seperti ftyping tapi ini fake game.\
-   \n\n>`.fvideo` <jumlah teks>\
-   \nUsage : Berfungsi sama seperti ftyping tapi ini fake video."
+        "fakeaction": ">`.ftyping <detik>`"
+        "\nUsage : Seakan akan sedang mengetik padahal tidak."
+        "\n\n>`.faudio <detik>`"
+        "\nUsage : Berfungsi sama seperti ftyping tapi ini fake audio."
+        "\n\n>`.fgame <detik>`"
+        "\nUsage : Berfungsi sama seperti ftyping tapi ini fake game."
+        "\n\n>`.fvideo <detik>`"
+        "\nUsage : Berfungsi sama seperti ftyping tapi ini fake video."
     }
 )
