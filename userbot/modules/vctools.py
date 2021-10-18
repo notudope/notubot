@@ -7,6 +7,7 @@ from telethon.tl.functions.phone import (
     GetGroupCallRequest,
     InviteToGroupCallRequest,
 )
+from telethon.types import InputGroupCall
 
 from userbot import CMD_HELP
 from userbot.events import register
@@ -38,7 +39,7 @@ async def vcstart(event):
 
 @register(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.stopvc$")
 async def vcstop(event):
-    await event.client(DiscardGroupCallRequest(event.chat_id))
+    await event.client(DiscardGroupCallRequest(call=InputGroupCall(id=event.chat_id)))
     await event.edit("`Obrolan Video dimatikan...`")
     await asyncio.sleep(5)
     await event.delete()
