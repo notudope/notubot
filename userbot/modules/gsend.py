@@ -17,7 +17,7 @@ async def remoteaccess(event):
     mssg = await event.get_reply_message()
     if event.reply_to_msg_id:
         await event.client.send_message(chat_id, mssg)
-        await event.edit("`Pesan diteruskan ke grup tujuan`")
+        await event.edit("`Pesan diteruskan ke grup tujuan, coba cek!`")
 
     for i in m[1:]:
         msg += i + " "
@@ -25,7 +25,7 @@ async def remoteaccess(event):
         return
     try:
         await event.client.send_message(chat_id, msg)
-        await event.edit("`Pesan diteruskan ke grup tujuan`")
+        await event.edit("`Pesan diteruskan ke grup tujuan, coba cek!`")
     except BaseException:
         pass
 

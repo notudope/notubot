@@ -92,9 +92,9 @@ async def vcinvite(event):
 
 CMD_HELP.update(
     {
-        "vctools": ">`.startvc`"
+        "vctools": ">`.startvc <silent/s> <judul obrolan>`"
         "\nUsage: Memulai Obrolan Video (admin)."
-        "\n\n>`.stopvc`"
+        "\n\n>`.stopvc <silent/s>`"
         "\nUsage: Mematikan Obrolan Video (admin)."
         "\n\n>`.vcinvite`"
         "\nUsage: Mengundang semua anggota grup ke Obrolan Video (admin)."
