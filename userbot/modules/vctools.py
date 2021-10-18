@@ -20,42 +20,36 @@ def user_list(ls, n):
 
 
 @register(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.startvc$")
-async def vcstart(e):
-    try:
-        await e.client(
-            startvc(
-                e.chat_id,
-                title="",
-            )
+async def vcstart(event):
+    await event.client(
+        startvc(
+            event.chat_id,
+            title="",
         )
-        await e.edit("`Memulai Obrolan Video...`")
-    except BaseException:
-        pass
+    )
+    await event.edit("`Memulai Obrolan Video...`")
 
 
 @register(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.stopvc$")
-async def vcstop(e):
-    try:
-        await e.client(stopvc(await get_call(e)))
-        await e.edit("`Obrolan Video dimatikan...`")
-    except BaseException:
-        pass
+async def vcstop(event):
+    await event.client(stopvc(await get_call(event)))
+    await event.edit("`Obrolan Video dimatikan...`")
 
 
 @register(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.vcinvite$")
-async def vcinvite(e):
-    ok = await e.edit("`Mengundang semua anggota grup ke Obrolan Video...`")
+async def vcinvite(event):
+    ok = await event.edit("`Mengundang semua anggota grup ke Obrolan Video...`")
     users = []
     z = 0
 
-    async for x in e.client.iter_participants(e.chat_id):
+    async for x in event.client.iter_participants(event.chat_id):
         if not x.bot:
             users.append(x.id)
     hmm = list(user_list(users, 6))
 
     for p in hmm:
         try:
-            await e.client(invitetovc(call=await get_call(e), users=p))
+            await event.client(invitetovc(call=await get_call(event), users=p))
             z += 6
         except BaseException:
             pass
