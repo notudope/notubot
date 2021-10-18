@@ -1,5 +1,3 @@
-# Copyright (C) 2020 KenHV
-
 from sqlalchemy.exc import IntegrityError
 
 from userbot import CMD_HELP, bot

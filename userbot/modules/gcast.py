@@ -27,7 +27,7 @@ async def gcast(event):
                 await bot.send_message(chat, msg)
             except BaseException:
                 er += 1
-        await asyncio.sleep(0.5)
+        await asyncio.sleep(0.3)
 
     await wait.edit(f"Berhasil mengirim Pesan Grup ke `{done}` obrolan, gagal mengirim ke `{er}` obrolan.")
 
@@ -54,7 +54,7 @@ async def gucast(event):
                 await bot.send_message(chat, msg)
             except BaseException:
                 er += 1
-        await asyncio.sleep(0.5)
+        await asyncio.sleep(0.3)
 
     await wait.edit(f"Berhasil mengirim Pesan Pribadi ke `{done}` obrolan, gagal mengirim ke `{er}` obrolan.")
 

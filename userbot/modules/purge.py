@@ -1,11 +1,4 @@
-# Copyright (C) 2019 The Raphielscape Company LLC.
-#
-# Licensed under the Raphielscape Public License, Version 1.c (the "License");
-# you may not use this file except in compliance with the License.
-#
-""" Userbot module for purging unneeded messages(usually spam or ot). """
-
-from asyncio import sleep
+import asyncio
 
 from telethon.errors import rpcbaseerrors
 
@@ -14,123 +7,93 @@ from userbot.events import register
 
 
 @register(outgoing=True, pattern=r"^\.purge$")
-async def fastpurger(purg):
+async def fastpurger(event):
     """For .purge command, purge all messages starting from the reply."""
-    chat = await purg.get_input_chat()
+    chat = await event.get_input_chat()
     msgs = []
-    itermsg = purg.client.iter_messages(chat, min_id=purg.reply_to_msg_id)
+    itermsg = event.client.iter_messages(chat, min_id=event.reply_to_msg_id)
     count = 0
 
-    if purg.reply_to_msg_id is not None:
+    if event.reply_to_msg_id is not None:
         async for msg in itermsg:
             msgs.append(msg)
             count = count + 1
-            msgs.append(purg.reply_to_msg_id)
+            msgs.append(event.reply_to_msg_id)
             if len(msgs) == 100:
-                await purg.client.delete_messages(chat, msgs)
+                await event.client.delete_messages(chat, msgs)
                 msgs = []
     else:
-        return await purg.edit("`I need a mesasge to start purging from.`")
+        return await event.edit("`I need a mesasge to start purging from.`")
 
     if msgs:
-        await purg.client.delete_messages(chat, msgs)
-    done = await purg.client.send_message(purg.chat_id, "`Fast purge complete!`" f"\nPurged {str(count)} messages")
-    """
-    if BOTLOG:
-        await purg.client.send_message(
-            BOTLOG_CHATID,
-            "Purge of " + str(count) + " messages done successfully.")
-    """
-    await sleep(2)
+        await event.client.delete_messages(chat, msgs)
+    done = await event.client.send_message(event.chat_id, "`Fast purge complete!`" f"\nPurged {str(count)} messages")
+
+    await asyncio.sleep(2)
     await done.delete()
 
 
 @register(outgoing=True, pattern=r"^\.purgeme")
-async def purgeme(delme):
+async def purgeme(event):
     """For .purgeme, delete x count of your latest message."""
-    message = delme.text
+    message = event.text
     count = int(message[9:])
     i = 1
 
-    async for message in delme.client.iter_messages(delme.chat_id, from_user="me"):
+    async for message in event.client.iter_messages(event.chat_id, from_user="me"):
         if i > count + 1:
             break
         i = i + 1
         await message.delete()
 
-    smsg = await delme.client.send_message(
-        delme.chat_id,
+    smsg = await event.client.send_message(
+        event.chat_id,
         "`Purge complete!` Purged " + str(count) + " messages.",
     )
-    """
-    if BOTLOG:
-        await delme.client.send_message(
-            BOTLOG_CHATID,
-            "Purge of " + str(count) + " messages done successfully.")
-    """
-    await sleep(2)
+
+    await asyncio.sleep(2)
     i = 1
     await smsg.delete()
 
 
-@register(outgoing=True, pattern=r"^\.del$")
-async def delete_it(delme):
+@register(outgoing=True, disable_errors=True, pattern=r"^\.del$")
+async def delit(event):
     """For .del command, delete the replied message."""
-    msg_src = await delme.get_reply_message()
-    if delme.reply_to_msg_id:
+    msg_src = await event.get_reply_message()
+    if event.reply_to_msg_id:
         try:
             await msg_src.delete()
-            await delme.delete()
-            """
-            if BOTLOG:
-                await delme.client.send_message(
-                    BOTLOG_CHATID, "Deletion of message was successful")
-            """
+            await event.delete()
         except rpcbaseerrors.BadRequestError:
-            await delme.edit("Well, I can't delete a message")
-            """
-            if BOTLOG:
-                await delme.client.send_message(
-                    BOTLOG_CHATID, "Well, I can't delete a message")
-            """
+            await event.edit("Well, I can't delete a message")
 
 
 @register(outgoing=True, pattern=r"^\.edit")
-async def editer(edit):
-    """For .editme command, edit your last message."""
-    message = edit.text
-    chat = await edit.get_input_chat()
-    self_id = await edit.client.get_peer_id("me")
+async def editer(event):
+    """For .edit command, edit your last message."""
+    message = event.text
+    chat = await event.get_input_chat()
+    self_id = await event.client.get_peer_id("me")
     string = str(message[6:])
     i = 1
-    async for message in edit.client.iter_messages(chat, self_id):
+    async for message in event.client.iter_messages(chat, self_id):
         if i == 2:
             await message.edit(string)
-            await edit.delete()
+            await event.delete()
             break
         i = i + 1
-    """
-    if BOTLOG:
-        await edit.client.send_message(BOTLOG_CHATID,
-                                       "Edit query was executed successfully")
-   """
 
 
 @register(outgoing=True, pattern=r"^\.sd")
-async def selfdestruct(destroy):
+async def selfdestruct(event):
     """For .sd command, make seflf-destructable messages."""
-    message = destroy.text
+    message = event.text
     counter = int(message[4:6])
-    text = str(destroy.text[6:])
-    await destroy.delete()
-    smsg = await destroy.client.send_message(destroy.chat_id, text)
-    await sleep(counter)
+    text = str(event.text[6:])
+    await event.delete()
+    smsg = await event.client.send_message(event.chat_id, text)
+    await asyncio.sleep(counter)
     await smsg.delete()
-    """
-    if BOTLOG:
-        await destroy.client.send_message(BOTLOG_CHATID,
-                                          "sd query done successfully")
-    """
 
 
 CMD_HELP.update(

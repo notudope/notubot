@@ -19,8 +19,22 @@ def user_list(ls, n):
         yield ls[i : i + n]
 
 
-@register(outgoing=True, groups_only=True, pattern=r"^\.stopvc$")
-async def stopvc(e):
+@register(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.startvc$")
+async def vcstart(e):
+    try:
+        await e.client(
+            startvc(
+                peer=e.chat_id,
+                title="",
+            )
+        )
+        await e.edit("`Memulai Obrolan Video...`")
+    except BaseException:
+        pass
+
+
+@register(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.stopvc$")
+async def vcstop(e):
     try:
         await e.client(stopvc(await get_call(e)))
         await e.edit("`Obrolan Video dimatikan...`")
@@ -28,10 +42,9 @@ async def stopvc(e):
         pass
 
 
-@register(outgoing=True, groups_only=True, pattern=r"^\.vcinvite$")
+@register(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.vcinvite$")
 async def vcinvite(e):
     ok = await e.edit("`Mengundang semua anggota grup ke Obrolan Video...`")
-
     users = []
     z = 0
 
@@ -48,15 +61,6 @@ async def vcinvite(e):
             pass
 
     await ok.edit(f"`Diundang {z} anggota`")
-
-
-@register(outgoing=True, groups_only=True, pattern=r"^\.startvc$")
-async def startvc(e):
-    try:
-        await e.client(startvc(e.chat_id))
-        await e.edit("`Memulai Obrolan Video...`")
-    except BaseException:
-        pass
 
 
 CMD_HELP.update(
