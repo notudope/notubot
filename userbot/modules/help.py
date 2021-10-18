@@ -26,10 +26,10 @@ async def help_handler(event):
         head5 = "Daftar semua perintah tersedia di bawah ini: "
         string = ""
 
-        for i in sorted(CMD_HELP):
+        for i in CMD_HELP:
             string += "`" + str(i)
-            string += "`\t ◈  "
-        string = string.rstrip(" ◈")
+            string += "`\t ●  "
+        string = string.rstrip(" ●")
 
         await event.edit(
             f"{head}\
