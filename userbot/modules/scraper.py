@@ -156,7 +156,7 @@ async def addmemb(event):
 
 CMD_HELP.update(
     {
-        "inviteall": ">`.inviteall <id/username>`"
+        "scraper": ">`.inviteall <id/username>`"
         "\nUsage: Menculik pengguna dari obrolan dan ditambahkan ke grup."
         "\n\n>`.getmemb`"
         "\nUsage: Mendapatkan semua member dalam grup."
