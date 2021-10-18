@@ -25,9 +25,9 @@ async def remoteaccess(event):
         return
     try:
         await event.client.send_message(chat_id, msg)
-        await event.edit("Pesan diteruskan ke grup tujuan`")
+        await event.edit("`Pesan diteruskan ke grup tujuan`")
     except BaseException:
         pass
 
 
-CMD_HELP.update({"gsend": ">`.gsend`" "\nUsage: Mengirim pesan jarak jauh ke grup lain .gsend <link grup> <pesan>."})
+CMD_HELP.update({"gsend": ">`.gsend <link grup> <pesan>`" "\nUsage: Mengirim pesan jarak jauh ke grup lain."})

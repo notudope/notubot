@@ -65,7 +65,7 @@ async def vcinvite(e):
 
 CMD_HELP.update(
     {
-        "startvc": ">`.startvc`"
+        "vctools": ">`.startvc`"
         "\nUsage: Memulai Obrolan Video (admin)."
         "\n\n>`.stopvc`"
         "\nUsage: Mematikan Obrolan Video (admin)."
