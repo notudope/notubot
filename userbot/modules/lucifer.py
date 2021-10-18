@@ -22,7 +22,6 @@ BANNED_RIGHTS = ChatBannedRights(
 
 @register(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.rocker(?: |$)(.*)")
 async def rocker(event):
-    user = await event.get_chat()
     me = await event.client.get_me()
 
     opts = event.pattern_match.group(1).strip()
@@ -33,18 +32,17 @@ async def rocker(event):
         await event.delete()
     else:
         await event.edit("`Sedang memproses...`")
-    async for user in event.client.iter_participants(event.chat_id):
-        if user.id == me.id:
+
+    async for x in event.client.iter_participants(event.chat_id):
+        if x.id == me.id:
             pass
         try:
             if not (
-                isinstance(user.participant, ChannelParticipantAdmin)
-                or isinstance(user.participant, ChannelParticipantCreator)
+                isinstance(x.participant, ChannelParticipantAdmin)
+                or isinstance(x.participant, ChannelParticipantCreator)
             ):
                 crying = await event.client(
-                    EditBannedRequest(
-                        event.chat_id, int(user.id), ChatBannedRights(until_date=None, view_messages=True)
-                    )
+                    EditBannedRequest(event.chat_id, int(x.id), ChatBannedRights(until_date=None, view_messages=True))
                 )
                 if rockers is True and crying:
                     if crying.updates[0].id is not None:
@@ -53,16 +51,14 @@ async def rocker(event):
             pass
         except FloodWaitError as e:
             time.sleep(e.seconds)
-        except Exception as e:
-            await event.edit(str(e))
         await asyncio.sleep(1)
+
     if rockers is False:
         await event.edit(f"👏 Congratulations\nFrom now, you have no friends!")
 
 
 @register(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.gohell(?: |$)(.*)")
 async def gohell(event):
-    user = await event.get_chat()
     me = await event.client.get_me()
 
     opts = event.pattern_match.group(1).strip()
@@ -73,15 +69,16 @@ async def gohell(event):
         await event.delete()
     else:
         await event.edit("`Sedang memproses...`")
-    async for user in event.client.iter_participants(event.chat_id):
-        if user.id == me.id:
+
+    async for x in event.client.iter_participants(event.chat_id):
+        if x.id == me.id:
             pass
         try:
             if not (
-                isinstance(user.participant, ChannelParticipantAdmin)
-                or isinstance(user.participant, ChannelParticipantCreator)
+                isinstance(x.participant, ChannelParticipantAdmin)
+                or isinstance(x.participant, ChannelParticipantCreator)
             ):
-                crying = await event.client(EditBannedRequest(event.chat_id, int(user.id), BANNED_RIGHTS))
+                crying = await event.client(EditBannedRequest(event.chat_id, int(x.id), BANNED_RIGHTS))
                 if lucifer is True and crying:
                     if crying.updates[0].id is not None:
                         await event.client(DeleteMessagesRequest(event.chat_id, [crying.updates[0].id]))
@@ -89,8 +86,7 @@ async def gohell(event):
             pass
         except FloodWaitError as e:
             time.sleep(e.seconds)
-        except Exception as e:
-            await event.edit(str(e))
         await asyncio.sleep(1)
+
     if lucifer is False:
         await event.edit(f"You're Lucifer 👁️")

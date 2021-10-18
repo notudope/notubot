@@ -1,17 +1,6 @@
-# Coded By Abdul <https://github.com/DoellBarr>
-# Ported By VckyAuliaZulfikar @VckyouuBitch
-#
-# Geez Projects UserBot
-# Copyright (C) 2021 GeezProjects
-#
-# This file is a part of <https://github.com/vckyou/GeezProjects/>
-# PLease read the GNU Affero General Public License in
-# <https://github.com/vckyou/GeezProjects/blob/master/LICENSE>.
-
 import asyncio
 import csv
 import random
-from asyncio import sleep
 
 from telethon.errors import ChannelInvalidError, ChannelPrivateError, ChannelPublicGroupNaError
 from telethon.errors.rpcerrorlist import (
@@ -19,124 +8,138 @@ from telethon.errors.rpcerrorlist import (
     UserPrivacyRestrictedError,
     UserNotMutualContactError,
 )
-from telethon.tl import functions
-from telethon.tl.functions.channels import InviteToChannelRequest, EditBannedRequest, GetFullChannelRequest
+from telethon.tl.functions.channels import InviteToChannelRequest, GetFullChannelRequest
 from telethon.tl.functions.messages import GetFullChatRequest
-from telethon.tl.types import InputPeerUser, ChatBannedRights
+from telethon.tl.types import InputPeerUser
 
 from userbot import CMD_HELP
 from userbot.events import register
 
 
-async def get_chatinfo(event):
-    chat = event.pattern_match.group(1)
-    chat_info = None
+async def get_chat_id(event):
+    chat = event.pattern_match.group(1).strip()
+    chat_id = None
+
     if chat:
         try:
             chat = int(chat)
         except ValueError:
             pass
+
     if not chat:
         if event.reply_to_msg_id:
-            replied_msg = await event.get_reply_message()
-            if replied_msg.fwd_from and replied_msg.fwd_from.channel_id is not None:
-                chat = replied_msg.fwd_from.channel_id
+            reply = await event.get_reply_message()
+            if reply.fwd_from and reply.fwd_from.channel_id is not None:
+                chat = reply.fwd_from.channel_id
         else:
             chat = event.chat_id
+
     try:
-        chat_info = await event.client(GetFullChatRequest(chat))
+        chat_id = await event.client(GetFullChatRequest(chat))
     except BaseException:
         try:
-            chat_info = await event.client(GetFullChannelRequest(chat))
+            chat_id = await event.client(GetFullChannelRequest(chat))
         except ChannelInvalidError:
-            await event.reply("`Invalid channel/group`")
+            await event.reply("`Group tidak valid!`")
             return None
         except ChannelPrivateError:
-            await event.reply("`This is a private channel/group or I am banned from there`")
+            await event.reply("`Ini adalah grup private atau dibanned dari sana.`")
             return None
         except ChannelPublicGroupNaError:
-            await event.reply("`Channel or supergroup doesn't exist`")
+            await event.reply("`Grup tidak ada!`")
             return None
         except (TypeError, ValueError):
-            await event.reply("`Invalid channel/group`")
+            await event.reply("`Group tidak valid!`")
             return None
-    return chat_info
+    return chat_id
 
 
-@register(outgoing=True, pattern=r"^\.inviteall(?: |$)(.*)")
+@register(outgoing=True, groups_only=True, pattern=r"^\.inviteall(?: |$)(.*)")
 async def get_users(event):
     sender = await event.get_sender()
     me = await event.client.get_me()
+
     if not sender.id == me.id:
-        notubot = await event.reply("`processing...`")
+        proc = await event.reply("`...`")
     else:
-        notubot = await event.edit("`processing...`")
-    notubotteam = await get_chatinfo(event)
+        proc = await event.edit("`...`")
+
+    chat_id = await get_chat_id(event)
     chat = await event.get_chat()
-    if event.is_private:
-        return await notubot.edit("`Sorry, Can add users here`")
+
     s = 0
     f = 0
     error = "None"
 
-    await notubot.edit("**TerminalStatus**\n\n`Collecting Users.......`")
-    async for user in event.client.iter_participants(notubotteam.full_chat.id):
+    await proc.edit("`Mengumpulkan member...`")
+
+    async for user in event.client.iter_participants(chat_id.full_chat.id):
         try:
             if error.startswith("Too"):
-                return await notubot.edit(
-                    f"**Terminal Finished With Error**\n(`May Got Limit Error from telethon Please try agin Later`)\n**Error** : \n`{error}`\n\n• Invited `{s}` people \n• Failed to Invite `{f}` people"
+                return await proc.edit(
+                    f"""Berhasil menculik orang [`Limit dari telethon, coba lagi nanti!`].
+**ERROR :**
+`{error}`
+
+• Diculik `{s}` orang.
+• Gagal menculik `{f}` orang."""
                 )
-            await event.client(functions.channels.InviteToChannelRequest(channel=chat, users=[user.id]))
+
+            await event.client(InviteToChannelRequest(channel=chat, users=[user.id]))
             s = s + 1
-            await notubot.edit(
-                f"**Terminal Running...**\n\n• Invited `{s}` people \n• Failed to Invite `{f}` people\n\n**× LastError:** `{error}`"
+
+            await proc.edit(
+                f"""• Diculik `{s}` orang.
+• Gagal menculik `{f}` orang.
+
+**ERROR :** `{error}`"""
             )
         except Exception as e:
             error = str(e)
             f = f + 1
-    return await notubot.edit(
-        f"**Terminal Finished** \n\n• Successfully Invited `{s}` people \n• failed to invite `{f}` people"
-    )
+    return await proc.edit(f"Berhasil menculik `{s}` orang. Gagal menculik `{f}` orang.")
 
 
-@register(outgoing=True, pattern=r"^\.getmemb$")
+@register(outgoing=True, groups_only=True, pattern=r"^\.getmemb$")
 async def scrapmem(event):
     chat = event.chat_id
-    await event.edit("`Mohon tunggu...`")
-    event.client
-    members = await event.client.get_participants(chat, aggressive=True)
+    await event.edit("`...`")
 
+    members = await event.client.get_participants(chat, aggressive=True)
     with open("members.csv", "w", encoding="UTF-8") as f:
         writer = csv.writer(f, delimiter=",", lineterminator="\n")
         writer.writerow(["user_id", "hash"])
         for member in members:
             writer.writerow([member.id, member.access_hash])
-    await event.edit("`Berhasil Mengumpulkan Member..`")
+
+    await event.edit("`Berhasil mengumpulkan member..`")
+    await event.delete()
 
 
-@register(outgoing=True, pattern=r"^\.addmemb$")
-async def admem(event):
-    await event.edit("`Proses Menambahkan 0 Member...`")
+@register(outgoing=True, groups_only=True, pattern=r"^\.addmemb$")
+async def addmemb(event):
+    await event.edit("`Proses menambahkan 0 member...`")
     chat = await event.get_chat()
-    event.client
     users = []
+
     with open("members.csv", encoding="UTF-8") as f:
         rows = csv.reader(f, delimiter=",", lineterminator="\n")
         next(rows, None)
         for row in rows:
             user = {"id": int(row[0]), "hash": int(row[1])}
             users.append(user)
+
     n = 0
     for user in users:
         n += 1
         if n % 30 == 0:
-            await event.edit(f"`Mencapai 30 anggota, tunggu selama {900/60} menit`")
+            await event.edit(f"`Mencapai 30 member, tunggu selama {900/60} menit.`")
             await asyncio.sleep(900)
         try:
             userin = InputPeerUser(user["id"], user["hash"])
             await event.client(InviteToChannelRequest(chat, [userin]))
             await asyncio.sleep(random.randrange(5, 7))
-            await event.edit(f"`Prosess Menambahkan {n} Member...`")
+            await event.edit(f"`Prosess menambahkan {n} member...`")
         except TypeError:
             n -= 1
             continue
@@ -151,43 +154,14 @@ async def admem(event):
             continue
 
 
-# Port By @VckyouuBitch From GeezProject
-# Perkontolan Dengan Hapus Credits
-@register(outgoing=True, pattern="^.allban(?: |$)(.*)")
-async def testing(event):
-    nikal = await event.get_chat()
-    chutiya = await event.client.get_me()
-    admin = nikal.admin_rights
-    creator = nikal.creator
-    if not admin and not creator:
-        await event.edit("Anda Tidak Mempunyai Hak")
-        return
-    await event.edit("Tidak Melakukan Apa-apa")
-    # Thank for Dark_Cobra
-    everyone = await event.client.get_participants(event.chat_id)
-    for user in everyone:
-        if user.id == chutiya.id:
-            pass
-        try:
-            await event.client(
-                EditBannedRequest(event.chat_id, int(user.id), ChatBannedRights(until_date=None, view_messages=True))
-            )
-        except Exception as e:
-            await event.edit(str(e))
-        await sleep(0.5)
-    await event.edit("Tidak Ada yang Terjadi di sini🙃🙂")
-
-
 CMD_HELP.update(
     {
         "inviteall": ">`.inviteall <id/username>`"
-        "\nUsage: Scrapes users from the given chat to your group."
+        "\nUsage: Menculik pengguna dari obrolan dan ditambahkan ke grup."
         "\n\n>`.getmemb`"
-        "\nUsage: Get all members thought group."
+        "\nUsage: Mendapatkan semua member dalam grup."
         "\n\n>`.addmemb`"
-        "\nUsage: Add member to the target group, "
-        "First, run `.getmemb` then use this command to the target group."
-        "\n\n>`.allban`"
-        "\nUsage: Banned all members in 1 cmnd!"
+        "\nUsage: Menambahkan member ke target grup, "
+        "Pertama, jalankan `.getmemb` lalu gunakan perintah ini ke target grup."
     }
 )
