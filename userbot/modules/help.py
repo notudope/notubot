@@ -15,14 +15,14 @@ async def help_handler(event):
         if args in CMD_HELP:
             await event.edit(str(CMD_HELP[args]))
         else:
-            await event.edit(f"Perintah `{args}` tidak benar, harap ketikan dengan benar.")
-            await asyncio.sleep(20)
+            await event.edit(f"Perintah [`{args}`] tidak benar, harap ketikan dengan benar.")
+            await asyncio.sleep(200)
             await event.delete()
     else:
         head = f"**⚡NOTUBOT UserBot⚡ V{BOT_VER}**"
-        head2 = f"UserBot untuk **{DEFAULTUSER}**"
+        head2 = f"😎 Pengguna UserBot : **{DEFAULTUSER}**"
         head3 = f"📦 Loaded Modules : {len(CMD_HELP)}"
-        head4 = "👨‍💻 Usage: `.help` `<nama module>`"
+        head4 = "👨‍💻 Usage : `.help` `<nama module>`"
         head5 = "Daftar semua perintah tersedia di bawah ini: "
         string = ""
 
@@ -35,9 +35,9 @@ async def help_handler(event):
               \n\n{head2}\
               \n{head3}\
               \n{head4}\
-              \n{head5}\
-              \n\n{string.rstrip('|')}"
+              \n\n{head5}\
+              \n\n{string[:-1]}"
         )
         await event.reply(f"\n**Contoh** : Ketik <`.help gban`> Untuk informasi pengunaan.")
-        await asyncio.sleep(100)
+        await asyncio.sleep(2000)
         await event.delete()
