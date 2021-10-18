@@ -75,13 +75,13 @@ def register(**args):
                 return
 
             if admins_only:
-                if chat.is_group:
-                    return await chat.respond("`Gunakan perintah ini di grup.`")
+                if not chat.is_group:
+                    return await chat.respond("`Gunakan perintah itu di grup.`")
                 if not (chat.admin_rights or chat.creator):
                     return await chat.respond("`Lo bukan admin di grup ini!`")
 
             if groups_only and not chat.is_group:
-                return await chat.respond("`Gunakan perintah ini di grup.`")
+                return await chat.respond("`Gunakan perintah itu di grup.`")
 
             try:
                 from userbot.modules.sql_helper.blacklist_sql import get_blacklist
