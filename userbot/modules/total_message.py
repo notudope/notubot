@@ -2,23 +2,23 @@ from userbot import CMD_HELP, bot
 from userbot.events import register
 
 
-@register(outgoing=True, pattern=r"^\.tmsg (.*)")
-async def tmsg(event):
-    k = await event.get_reply_message()
+@register(outgoing=True, pattern=r"^\.total(?: |$)(.*)")
+async def total(event):
+    user = await event.get_reply_message()
     await event.edit("`...`")
 
-    if k:
-        a = await bot.get_messages(event.chat_id, 0, from_user=k.sender_id)
-        return await event.edit(f"Total pesan `{a.total}`")
+    if user:
+        t = await bot.get_messages(event.chat_id, 0, from_user=user.sender_id)
+        return await event.edit(f"Total pesan `{t.total}`")
 
-    u = event.pattern_match.group(1)
-    if not u:
-        u = "me"
+    name = event.pattern_match.group(1)
+    if not name:
+        name = "me"
 
-    a = await bot.get_messages(event.chat_id, 0, from_user=u)
-    await event.edit(f"Total pesan dari {u} yaitu `{a.total}`")
+    t = await bot.get_messages(event.chat_id, 0, from_user=name)
+    await event.edit(f"Total pesan dari {name} yaitu `{t.total}`")
 
 
 CMD_HELP.update(
-    {"totalmsg": ">`.tmsg` | `.tmsg` <username>" "\nUsage: Mengambil total pesan pengguna dalam obrolan saat ini."}
+    {"totalmsg": ">`.total` | `.total` <username>" "\nUsage: Mengambil total pesan pengguna dalam obrolan saat ini."}
 )
