@@ -1,10 +1,3 @@
-# Copyright (C) 2019 The Raphielscape Company LLC.
-#
-# Licensed under the Raphielscape Public License, Version 1.c (the "License");
-# you may not use this file except in compliance with the License.
-#
-"""Userbot module for managing events. One of the main components of the userbot."""
-
 import os
 import sys
 from asyncio import create_subprocess_shell, subprocess
@@ -63,8 +56,6 @@ def register(**args):
     def decorator(func):
         async def wrapper(chat):
             if chat.edit_date and chat.is_channel and not chat.is_group:
-                # Messages sent in channels can be edited by other users.
-                # Ignore edits that take place in channels.
                 return
             if not LOGSPAMMER:
                 send_to = chat.chat_id
@@ -76,7 +67,7 @@ def register(**args):
 
             if admins_only:
                 if not chat.is_group:
-                    return await chat.respond("`Gunakan perintah itu di grup.`")
+                    return await chat.respond("`Gunakan perintah itu dalam grup!`")
                 gchat = await chat.get_chat()
                 if not (gchat.admin_rights or gchat.creator):
                     return await chat.respond("`Lo bukan admin disini!`")

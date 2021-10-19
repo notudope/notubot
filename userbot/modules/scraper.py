@@ -77,7 +77,7 @@ async def get_users(event):
         try:
             if error.startswith("Too"):
                 return await proc.edit(
-                    f"""Berhasil menculik orang (`mungkin akun kena limit atau dari telethon, coba lagi nanti!`)
+                    f"""Berhasil menjalankan (`mungkin akun kena limit atau dari telethon, coba lagi nanti`)
 
 **ERROR :**
 `{error}`

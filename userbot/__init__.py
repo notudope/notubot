@@ -1,10 +1,3 @@
-# Copyright (C) 2019 The Raphielscape Company LLC.
-#
-# Licensed under the Raphielscape Public License, Version 1.c (the "License");
-# you may not use this file except in compliance with the License.
-#
-""" Userbot initialization. """
-
 import os
 import signal
 import sys
@@ -52,8 +45,8 @@ if CONFIG_CHECK:
     quit(1)
 
 # Telegram App KEY and HASH
-API_ID = os.environ.get("API_ID", None)
-API_HASH = os.environ.get("API_HASH", None)
+API_ID = os.environ.get("API_ID", "")
+API_HASH = os.environ.get("API_HASH", "")
 
 
 # Userbot Session String
@@ -280,11 +273,12 @@ with bot:
 async def update_restart_msg(chat_id, msg_id):
     DEFAULTUSER = str(ALIVE_NAME) if ALIVE_NAME else uname().node
     message = (
-        f"`⚡NOTUBOT UserBot⚡ v{BOT_VER}` [RUNNING]\n"
+        f"`⚡NOTUBOT UserBot⚡`\n"
         f"[REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Grup](https://t.me/NOTUBOTS)\n\n"
+        f"😎 **Owner :** __{DEFAULTUSER}__\n"
+        f"🤖 **Version :** `v{BOT_VER}`\n"
         f"🐍 **Python :** `v{python_version()}`\n"
-        f"📦 **Telethon :** `v{version.__version__}`\n"
-        f"😎 **User :** __{DEFAULTUSER}__"
+        f"📦 **Telethon :** `v{version.__version__}`"
     )
     await bot.edit_message(chat_id, msg_id, message, link_preview=False)
     return True

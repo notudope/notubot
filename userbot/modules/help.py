@@ -19,14 +19,15 @@ async def help_handler(event):
             await asyncio.sleep(200)
             await event.delete()
     else:
-        head = f"`⚡NOTUBOT UserBot⚡ v{BOT_VER}`"
+        head = f"`⚡NOTUBOT UserBot⚡`"
         head1 = f"[REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Grup](https://t.me/NOTUBOTS)"
 
-        head2 = f"😎 **User :** __{DEFAULTUSER}__"
-        head3 = f"📦 **Module :** `{len(CMD_HELP)}`"
-        head4 = "👨‍💻 **Usage :** `.help` `<nama module>`"
-        head5 = "Daftar semua perintah tersedia di bawah ini: "
-        head6 = "📌 **Gunakan perintah diatas dengan bijak dan seperlunya, resiko ditanggung pengguna!**"
+        head2 = f"😎 **Owner :** __{DEFAULTUSER}__"
+        head3 = f"🤖 **Version :** `v{BOT_VER}`"
+        head4 = f"📦 **Module :** `{len(CMD_HELP)}`"
+        head5 = "👨‍💻 **Usage :** `.help` `<nama module>`"
+        head6 = "Daftar semua perintah tersedia di bawah ini: "
+        head7 = "📌 **Gunakan perintah diatas dengan bijak dan seperlunya, resiko ditanggung pengguna!**"
 
         string = ""
 
@@ -46,9 +47,10 @@ async def help_handler(event):
               \n\n{head2}\
               \n{head3}\
               \n{head4}\
-              \n\n{head5}\
+              \n{head5}\
+              \n\n{head6}\
               \n\n{string}\
-              \n\n{head6}",
+              \n\n{head7}",
             link_preview=False,
         )
 

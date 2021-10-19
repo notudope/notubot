@@ -12,7 +12,7 @@ from platform import python_version, uname
 from shutil import which
 
 from git import Repo
-from telethon import version
+from telethon import version, Button
 from telethon.errors.rpcerrorlist import MediaEmptyError
 
 from userbot import (
@@ -123,27 +123,39 @@ async def pipcheck(pip):
 
 
 @register(outgoing=True, pattern=r"^\.(alive|on)$")
-async def amireallyalive(alive):
+async def amireallyalive(event):
     """For .alive command, check if the bot is running."""
     logo = ALIVE_LOGO
-    output = (
-        f"`⚡NOTUBOT UserBot⚡ v{BOT_VER}` `{repo.active_branch.name}`\n"
+    text = (
+        f"`⚡NOTUBOT UserBot⚡`\n"
         f"[REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Grup](https://t.me/NOTUBOTS)\n\n"
+        f"😎 **Owner :** __{DEFAULTUSER}__\n"
+        f"🤖 **Version :** `v{BOT_VER}`\n"
         f"🐍 **Python :** `v{python_version()}`\n"
-        f"📦 **Telethon :** `v{version.__version__}`\n"
-        f"😎 **User :** __{DEFAULTUSER}__"
+        f"📦 **Telethon :** `v{version.__version__}\n`"
+        f"⚙️ **Branch :** `{repo.active_branch.name}`"
     )
+
+    buttons = [
+        [
+            Button.url("REPO", "https://github.com/notudope/notubot"),
+            Button.url("Channel", "https://t.me/notudope"),
+            Button.url("Grup", "https://t.me/NOTUBOTS"),
+        ],
+    ]
+
     if ALIVE_LOGO:
         try:
             logo = ALIVE_LOGO
-            await bot.send_file(alive.chat_id, logo, caption=output)
-            await alive.delete()
+            await bot.send_file(event.chat_id, logo, caption=text)
+            await event.delete()
         except MediaEmptyError:
-            await alive.edit(
-                output + "\n\n *`The provided logo is invalid." "\nMake sure the link is directed to the logo picture`",
+            await event.edit(
+                text + "\n\n *`The provided logo is invalid." "\nMake sure the link is directed to the logo picture`",
             )
     else:
-        await alive.edit(output, link_preview=False)
+        await event.delete()
+        await event.client.send_message(event.chat_id, text, link_preview=False, buttons=buttons)
 
 
 @register(outgoing=True, pattern=r"^\.aliveu")
