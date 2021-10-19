@@ -168,11 +168,11 @@ async def update(event, repo, ups_rem, ac_br):
 @register(outgoing=True, pattern=r"^.update(?: |$)(now|deploy|pull|push|one|all)?")
 async def upstream(event):
     "For .update command, check if the bot is up to date, update if specified"
-    conf = event.pattern_match.group(1)
+    await event.edit("`...`")
+    conf = event.pattern_match.group(1).strip()
     off_repo = UPSTREAM_REPO_URL
     force_update = False
 
-    await event.edit("`...`")
     try:
         txt = "`Oops.. Pembaruan tidak dapat dilanjutkan karena "
         txt += "Beberapa masalah terjadi`\n\n**LOGTRACE:**\n"
