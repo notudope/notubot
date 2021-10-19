@@ -20,15 +20,13 @@ async def help_handler(event):
             await event.delete()
     else:
         head = f"`⚡NOTUBOT UserBot⚡ v{BOT_VER}`"
-        head1 = f"🤖 **Repo :** [notudope/notubot](https://github.com/notudope/notubot)"
-        head2 = f"📢 **Channel :** [@notudope](https://t.me/notudope)"
-        head3 = f"👥 **Grup :** [@NOTUBOTS](https://t.me/NOTUBOTS)"
+        head1 = f"[REPO](https://github.com/notudope/notubot) / [Channel](https://t.me/notudope) / [Grup](https://t.me/NOTUBOTS)"
 
-        head4 = f"😎 **User :** __{DEFAULTUSER}__"
-        head5 = f"📦 **Module :** `{len(CMD_HELP)}`"
-        head6 = "👨‍💻 **Usage :** `.help` `<nama module>`"
-        head7 = "Daftar semua perintah tersedia di bawah ini: "
-        head8 = "📌 **Gunakan perintah diatas dengan bijak dan seperlunya, resiko ditanggung pengguna!**"
+        head2 = f"😎 **User :** __{DEFAULTUSER}__"
+        head3 = f"📦 **Module :** `{len(CMD_HELP)}`"
+        head4 = "👨‍💻 **Usage :** `.help` `<nama module>`"
+        head5 = "Daftar semua perintah tersedia di bawah ini: "
+        head6 = "📌 **Gunakan perintah diatas dengan bijak dan seperlunya, resiko ditanggung pengguna!**"
 
         string = ""
 
@@ -45,14 +43,12 @@ async def help_handler(event):
             event.chat_id,
             f"{head}\
               \n{head1}\
-              \n{head2}\
+              \n\n{head2}\
               \n{head3}\
-              \n\n{head4}\
-              \n{head5}\
-              \n{head6}\
-              \n\n{head7}\
+              \n{head4}\
+              \n\n{head5}\
               \n\n{string}\
-              \n\n{head8}",
+              \n\n{head6}",
             link_preview=False,
         )
 
