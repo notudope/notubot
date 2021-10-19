@@ -1,8 +1,6 @@
 import asyncio
 from platform import uname
 
-from telethon import Button
-
 from userbot import CMD_HELP, BOT_VER, ALIVE_NAME
 from userbot.events import register
 
@@ -22,11 +20,15 @@ async def help_handler(event):
             await event.delete()
     else:
         head = f"`⚡NOTUBOT UserBot⚡ v{BOT_VER}`"
-        head2 = f"😎 **User :** __{DEFAULTUSER}__"
-        head3 = f"📦 **Module :** `{len(CMD_HELP)}`"
-        head4 = "👨‍💻 **Usage :** `.help` `<nama module>`"
-        head5 = "Daftar semua perintah tersedia di bawah ini: "
-        head6 = "📌 **Gunakan perintah diatas dengan bijak dan seperlunya, resiko ditanggung pengguna!**"
+        head1 = f"🤖 **Repo :** [notudope/notubot](https://github.com/notudope/notubot)"
+        head2 = f"📢 **Channel :** [@notudope](https://t.me/notudope)"
+        head3 = f"👥 **Grup :** [@NOTUBOTS](https://t.me/NOTUBOTS)"
+
+        head4 = f"😎 **User :** __{DEFAULTUSER}__"
+        head5 = f"📦 **Module :** `{len(CMD_HELP)}`"
+        head6 = "👨‍💻 **Usage :** `.help` `<nama module>`"
+        head7 = "Daftar semua perintah tersedia di bawah ini: "
+        head8 = "📌 **Gunakan perintah diatas dengan bijak dan seperlunya, resiko ditanggung pengguna!**"
 
         string = ""
 
@@ -39,18 +41,19 @@ async def help_handler(event):
         await asyncio.sleep(1)
         await event.delete()
 
-        markup = event.client.build_reply_markup(Button.url("🤖 UserBot REPO", "https://github.com/notudope/notubot"))
         helper = await event.client.send_message(
             event.chat_id,
             f"{head}\
-              \n\n{head2}\
+              \n{head1}\
+              \n{head2}\
               \n{head3}\
-              \n{head4}\
-              \n\n{head5}\
+              \n\n{head4}\
+              \n{head5}\
+              \n{head6}\
+              \n\n{head7}\
               \n\n{string}\
-              \n\n{head6}",
+              \n\n{head8}",
             link_preview=False,
-            buttons=markup,
         )
 
         await helper.reply(f"\n**Contoh** : Ketik <`.help limit`> Untuk informasi pengunaan.")
