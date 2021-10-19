@@ -47,8 +47,10 @@ async def help_handler(event):
               \n\n{head6}",
             link_preview=False,
             buttons=[
-                Button.url("📢 Follow Channel", "https://t.me/notudope"),
-                Button.url("🤖 UserBot REPO", "https://github.com/notudope/notubot"),
+                [
+                    Button.url("📢 Follow Channel", "https://t.me/notudope"),
+                    Button.url("🤖 UserBot REPO", "https://github.com/notudope/notubot"),
+                ],
             ],
         )
         await event.reply(f"\n**Contoh** : Ketik <`.help limit`> Untuk informasi pengunaan.")
