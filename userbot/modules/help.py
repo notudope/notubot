@@ -20,7 +20,7 @@ async def help_handler(event):
             await event.delete()
     else:
         head = f"`⚡NOTUBOT UserBot⚡ v{BOT_VER}`"
-        head1 = f"[REPO](https://github.com/notudope/notubot) / [Channel](https://t.me/notudope) / [Grup](https://t.me/NOTUBOTS)"
+        head1 = f"[  [REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Grup](https://t.me/NOTUBOTS)  ]"
 
         head2 = f"😎 **User :** __{DEFAULTUSER}__"
         head3 = f"📦 **Module :** `{len(CMD_HELP)}`"
