@@ -280,7 +280,7 @@ with bot:
 async def update_restart_msg(chat_id, msg_id):
     DEFAULTUSER = str(ALIVE_NAME) if ALIVE_NAME else uname().node
     message = (
-        f"**[REPO](https://github.com/notudope/notubot)** `⚡NOTUBOT UserBot⚡ v{BOT_VER}` [RUNNING]\n"
+        f"`⚡NOTUBOT UserBot⚡ v{BOT_VER}` [RUNNING]\n"
         f"[REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Grup](https://t.me/NOTUBOTS)\n\n"
         f"🐍 **Python :** `v{python_version()}`\n"
         f"📦 **Telethon :** `v{version.__version__}`\n"
