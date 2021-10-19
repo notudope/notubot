@@ -127,7 +127,7 @@ async def amireallyalive(alive):
     """For .alive command, check if the bot is running."""
     logo = ALIVE_LOGO
     output = (
-        f"`⚡NOTUBOT UserBot⚡ v{BOT_VER}` [RUNNING] [{repo.active_branch.name.upper()}]\n"
+        f"`⚡NOTUBOT UserBot⚡ v{BOT_VER}` `{repo.active_branch.name}`\n"
         f"[REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Grup](https://t.me/NOTUBOTS)\n\n"
         f"🐍 **Python :** `v{python_version()}`\n"
         f"📦 **Telethon :** `v{version.__version__}`\n"
