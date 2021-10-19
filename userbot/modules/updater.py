@@ -11,6 +11,7 @@ from git import Repo
 from git.exc import GitCommandError, InvalidGitRepositoryError, NoSuchPathError
 
 from userbot import (
+    LOGS,
     BOTLOG,
     BOTLOG_CHATID,
     CMD_HELP,
@@ -168,14 +169,14 @@ async def update(event, repo, ups_rem, ac_br):
 @register(outgoing=True, pattern=r"^.update(?: |$)(now|deploy|pull|push|one|all)?")
 async def upstream(event):
     "For .update command, check if the bot is up to date, update if specified"
-    await event.edit("`.`")
-    await event.edit("`..`")
-    await event.edit("`...`")
-    
-    conf = event.pattern_match.group(1)
+    opts = event.pattern_match.group(1)
     off_repo = UPSTREAM_REPO_URL
     force_update = False
 
+    LOGS.info(opts)
+    LOGS.info(type(opts))
+
+    await event.edit("`...`")
     try:
         txt = "`Oops.. Pembaruan tidak dapat dilanjutkan karena "
         txt += "Beberapa masalah terjadi`\n\n**LOGTRACE:**\n"
@@ -187,7 +188,7 @@ async def upstream(event):
         await event.edit(f"{txt}\n`Kesalahan diawal! {error}`")
         return repo.__del__()
     except InvalidGitRepositoryError as error:
-        if conf is None:
+        if opts is None:
             return await event.edit(
                 f"`Direktori {error} "
                 "sepertinya bukan repositori git.\n"
@@ -222,16 +223,11 @@ async def upstream(event):
 
     changelog = await gen_chlog(repo, f"HEAD..upstream/{ac_br}")
 
-    if conf == "deploy" or conf == "push" or conf == "all":
-        await event.edit("`Proses Deploy ⚡NOTUBOT UserBot⚡ harap tunggu...`")
-        await deploy(event, repo, ups_rem, ac_br, txt)
-        return
-
     if changelog == "" and force_update is False:
         await event.edit("\n`⚡NOTUBOT UserBot⚡`  **up-to-date** branch " f"`{UPSTREAM_REPO_BRANCH}`\n")
         return repo.__del__()
 
-    if conf == "" and force_update is False:
+    if opts == "" and force_update is False:
         await print_changelogs(event, ac_br, changelog)
         await event.delete()
         await event.respond("Jalankan `.update now|pull|one` untuk __memperbarui sementara__.")
@@ -247,10 +243,13 @@ async def upstream(event):
         await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡ Loading....77%`")
         await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡ Updating...90%`")
         await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡ mohon tunggu sebentar...100%`")
-        
-    if conf == "now" or conf == "pull" or conf == "one":
+
+    if opts == "now" or opts == "pull" or opts == "one":
         await event.edit("`Memperbarui ⚡NOTUBOT UserBot⚡ harap tunggu...`")
         await update(event, repo, ups_rem, ac_br)
+    elif opts == "deploy" or opts == "push" or opts == "all":
+        await event.edit("`Proses Deploy ⚡NOTUBOT UserBot⚡ harap tunggu...`")
+        await deploy(event, repo, ups_rem, ac_br, txt)
     return
 
 
