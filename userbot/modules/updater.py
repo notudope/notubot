@@ -11,7 +11,6 @@ from git import Repo
 from git.exc import GitCommandError, InvalidGitRepositoryError, NoSuchPathError
 
 from userbot import (
-    LOGS,
     BOTLOG,
     BOTLOG_CHATID,
     CMD_HELP,
@@ -173,9 +172,6 @@ async def upstream(event):
     off_repo = UPSTREAM_REPO_URL
     force_update = False
 
-    LOGS.info(opts)
-    LOGS.info(type(opts))
-
     await event.edit("`...`")
     try:
         txt = "`Oops.. Pembaruan tidak dapat dilanjutkan karena "
@@ -227,7 +223,7 @@ async def upstream(event):
         await event.edit("\n`⚡NOTUBOT UserBot⚡`  **up-to-date** branch " f"`{UPSTREAM_REPO_BRANCH}`\n")
         return repo.__del__()
 
-    if opts == "" and force_update is False:
+    if opts is None and force_update is False:
         await print_changelogs(event, ac_br, changelog)
         await event.delete()
         await event.respond("Jalankan `.update now|pull|one` untuk __memperbarui sementara__.")
