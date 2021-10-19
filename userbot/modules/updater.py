@@ -94,7 +94,7 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
             await event.edit(f"{txt}\n" "`Kredensial Heroku tidak valid untuk deploy UserBot dyno.`")
             return repo.__del__()
 
-        await event.edit("`UserBot dyno sedang memperbarui, harap tunggu, perkiraan waktu 5-7 menit...`")
+        await event.edit("`UserBot dyno sedang memperbarui, harap tunggu, perkiraan waktu 4-7 menit...`")
 
         try:
             from userbot.modules.sql_helper.globals import addgvar, delgvar
@@ -129,7 +129,7 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
             await event.edit("`⚡NOTUBOT UserBot⚡ berhasil diperbarui, dimuat ulang...`")
             if BOTLOG:
                 await event.client.send_message(
-                    BOTLOG_CHATID, "#bot #deploy \n" "`⚡NOTUBOT UserBot⚡ Berhasil Diperbarui.`"
+                    BOTLOG_CHATID, "#bot #deploy \n" "**⚡NOTUBOT UserBot⚡ Berhasil Diperbarui ツ**"
                 )
 
     else:
@@ -151,7 +151,7 @@ async def update(event, repo, ups_rem, ac_br):
     await event.edit("**⚡NOTUBOT UserBot⚡** `Tunggu beberapa detik!`")
 
     if BOTLOG:
-        await event.client.send_message(BOTLOG_CHATID, "#bot #now \n" "`⚡NOTUBOT UserBot⚡ Telah Diperbarui.`")
+        await event.client.send_message(BOTLOG_CHATID, "#bot #now \n" "**⚡NOTUBOT UserBot⚡ Telah Diperbarui ツ**")
 
     try:
         from userbot.modules.sql_helper.globals import addgvar, delgvar
@@ -165,7 +165,7 @@ async def update(event, repo, ups_rem, ac_br):
     execle(sys.executable, *args, environ)
 
 
-@register(outgoing=True, pattern=r"^.update(?: |$)(now|deploy|pull|push)?")
+@register(outgoing=True, pattern=r"^.update(?: |$)(now|deploy|pull|push|one|all)?")
 async def upstream(event):
     "For .update command, check if the bot is up to date, update if specified"
     conf = event.pattern_match.group(1)
@@ -186,10 +186,10 @@ async def upstream(event):
     except InvalidGitRepositoryError as error:
         if conf is None:
             return await event.edit(
-                f"`Sayangnya, direktori {error} "
+                f"`Direktori {error} "
                 "sepertinya bukan repositori git.\n"
                 "Tapi bisa memperbaiki dengan memperbarui paksa UserBot menggunakan "
-                ".update now atau update pull.`"
+                ".update now|pull|one.`"
             )
         repo = Repo.init()
         origin = repo.create_remote("upstream", off_repo)
@@ -203,10 +203,10 @@ async def upstream(event):
     if ac_br != UPSTREAM_REPO_BRANCH:
         await event.edit(
             "**[UPDATER]:**\n"
-            f"`Looks like you are using your own custom branch ({ac_br}). "
-            "in that case, Updater is unable to identify "
-            "which branch is to be merged. "
-            "please checkout to any official branch`"
+            f"`Sepertinya menggunakan custom branch ({ac_br}). "
+            "Dalam hal ini, Updater tidak dapat mengidentifikasi "
+            "branch mana yang akan digabung. "
+            "Silakan gunakan official branch.`"
         )
         return repo.__del__()
     try:
@@ -219,8 +219,8 @@ async def upstream(event):
 
     changelog = await gen_chlog(repo, f"HEAD..upstream/{ac_br}")
 
-    if conf == "deploy" or conf == "push":
-        await event.edit("`Proses Deploy ⚡NOTUBOT UserBot⚡, harap tunggu...`")
+    if conf == "deploy" or conf == "push" or conf == "all":
+        await event.edit("`Proses Deploy ⚡NOTUBOT UserBot⚡ harap tunggu...`")
         await deploy(event, repo, ups_rem, ac_br, txt)
         return
 
@@ -231,22 +231,22 @@ async def upstream(event):
     if conf == "" and force_update is False:
         await print_changelogs(event, ac_br, changelog)
         await event.delete()
-        await event.respond("Jalankan `.update now` atau `.update pull` untuk __memperbarui sementara__.")
-        await event.respond("Jalankan `.update deploy` atau `.update push` untuk __memperbarui permanen__.")
+        await event.respond("Jalankan `.update now|pull|one` untuk __memperbarui sementara__.")
+        await event.respond("Jalankan `.update deploy|push|all` untuk __memperbarui permanen__.")
         return
 
     if force_update:
         await event.edit("`Memaksa sinkronisasi ke kode UserBot stabil terbaru, harap tunggu...`")
     else:
-        await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡, Loading....1%`")
-        await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡, Loading....20%`")
-        await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡, Loading....35%`")
-        await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡, Loading....77%`")
-        await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡, Updating...90%`")
-        await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡, mohon tunggu sebentar...100%`")
+        await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡ Loading....1%`")
+        await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡ Loading....20%`")
+        await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡ Loading....35%`")
+        await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡ Loading....77%`")
+        await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡ Updating...90%`")
+        await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡ mohon tunggu sebentar...100%`")
 
-    if conf == "now" or conf == "pull":
-        await event.edit("`Memperbarui ⚡NOTUBOT UserBot⚡, harap tunggu...`")
+    if conf == "now" or conf == "pull" or conf == "one":
+        await event.edit("`Memperbarui ⚡NOTUBOT UserBot⚡ harap tunggu...`")
         await update(event, repo, ups_rem, ac_br)
     return
 
@@ -256,11 +256,11 @@ CMD_HELP.update(
         "update": ">`.update`"
         "\nUsage: Mengecek apakah ada pembaruan pada repo UserBot "
         "dan termasuk menampilkan changelog."
-        "\n\n>`.update now|pull`"
+        "\n\n>`.update now|pull|one`"
         "\nUsage: Memperbarui sistem UserBot, "
         "jika ada pembaruan pada repo UserBot."
-        "\n\n>`.update deploy|push`"
+        "\n\n>`.update deploy|push|all`"
         "\nUsage: Deploy UserBot (heroku)"
-        "\nIni akan memaksa deploy meskipun tidak ada pembaruan pada UserBot."
+        "\nini akan memaksa deploy meskipun tidak ada pembaruan pada UserBot."
     }
 )
