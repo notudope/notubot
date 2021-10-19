@@ -21,7 +21,7 @@ async def help_handler(event):
             await asyncio.sleep(200)
             await event.delete()
     else:
-        head = f"**`⚡NOTUBOT UserBot⚡ v{BOT_VER}`"
+        head = f"`⚡NOTUBOT UserBot⚡ v{BOT_VER}`"
         head2 = f"😎 **User :** __{DEFAULTUSER}__"
         head3 = f"📦 **Module :** `{len(CMD_HELP)}`"
         head4 = "👨‍💻 **Usage :** `.help` `<nama module>`"
