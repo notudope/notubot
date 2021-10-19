@@ -37,7 +37,10 @@ async def help_handler(event):
 
         await event.edit("⚡")
         await asyncio.sleep(1)
-        await event.edit(
+        await event.delete()
+
+        helper = await event.client.send_message(
+            event.chat_id,
             f"{head}\
               \n\n{head2}\
               \n{head3}\
@@ -53,6 +56,7 @@ async def help_handler(event):
                 ],
             ],
         )
-        await event.reply(f"\n**Contoh** : Ketik <`.help limit`> Untuk informasi pengunaan.")
+
+        await helper.reply(f"\n**Contoh** : Ketik <`.help limit`> Untuk informasi pengunaan.")
         await asyncio.sleep(1000)
-        await event.delete()
+        await helper.delete()
