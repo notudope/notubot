@@ -237,6 +237,14 @@ async def upstream(event):
 
     if force_update:
         await event.edit("`Memaksa sinkronisasi ke kode UserBot stabil terbaru, harap tunggu...`")
+    else:
+        await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡ Loading....1%`")
+        await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡ Loading....20%`")
+        await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡ Loading....35%`")
+        await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡ Loading....77%`")
+        await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡ Updating...90%`")
+        await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡ mohon tunggu sebentar...100%`")
+        
     if conf == "now" or conf == "pull" or conf == "one":
         await event.edit("`Memperbarui ⚡NOTUBOT UserBot⚡ harap tunggu...`")
         await update(event, repo, ups_rem, ac_br)
