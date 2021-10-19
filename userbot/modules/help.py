@@ -1,6 +1,8 @@
 import asyncio
 from platform import uname
 
+from telethon import Button
+
 from userbot import CMD_HELP, BOT_VER, ALIVE_NAME
 from userbot.events import register
 
@@ -19,7 +21,7 @@ async def help_handler(event):
             await asyncio.sleep(200)
             await event.delete()
     else:
-        head = f"**[REPO](https://github.com/notudope/notubot)** `⚡NOTUBOT UserBot⚡ v{BOT_VER}`"
+        head = f"**`⚡NOTUBOT UserBot⚡ v{BOT_VER}`"
         head2 = f"😎 **User :** __{DEFAULTUSER}__"
         head3 = f"📦 **Module :** `{len(CMD_HELP)}`"
         head4 = "👨‍💻 **Usage :** `.help` `<nama module>`"
@@ -33,6 +35,8 @@ async def help_handler(event):
             string += "`  |  "
         string = string.rstrip(" |")
 
+        await event.edit("⚡")
+        await asyncio.sleep(1)
         await event.edit(
             f"{head}\
               \n\n{head2}\
@@ -42,7 +46,11 @@ async def help_handler(event):
               \n\n{string}\
               \n\n{head6}",
             link_preview=False,
+            buttons=[
+                (Button.url("📢 Follow Channel", "https://t.me/notudope")),
+                (Button.url("🤖 UserBot REPO", "https://github.com/notudope/notubot")),
+            ],
         )
         await event.reply(f"\n**Contoh** : Ketik <`.help limit`> Untuk informasi pengunaan.")
-        await asyncio.sleep(2000)
+        await asyncio.sleep(1000)
         await event.delete()
