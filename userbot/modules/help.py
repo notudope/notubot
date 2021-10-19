@@ -39,6 +39,12 @@ async def help_handler(event):
         await asyncio.sleep(1)
         await event.delete()
 
+        markup = event.client.build_reply_markup(
+            [
+                Button.url("📢 Follow Channel", "https://t.me/notudope"),
+                Button.url("🤖 UserBot REPO", "https://github.com/notudope/notubot"),
+            ]
+        )
         helper = await event.client.send_message(
             event.chat_id,
             f"{head}\
@@ -49,12 +55,7 @@ async def help_handler(event):
               \n\n{string}\
               \n\n{head6}",
             link_preview=False,
-            buttons=[
-                [
-                    Button.url("📢 Follow Channel", "https://t.me/notudope"),
-                    Button.url("🤖 UserBot REPO", "https://github.com/notudope/notubot"),
-                ],
-            ],
+            buttons=markup,
         )
 
         await helper.reply(f"\n**Contoh** : Ketik <`.help limit`> Untuk informasi pengunaan.")
