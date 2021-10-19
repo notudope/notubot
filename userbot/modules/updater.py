@@ -126,7 +126,7 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
             await asyncio.sleep(5)
             return await event.delete()
         else:
-            await event.edit("`⚡NOTUBOT UserBot⚡ berhasil diperbarui, dimuat ulang...`")
+            await event.edit("`⚡NOTUBOT UserBot⚡ Berhasil Diperbarui, Dimuat Ulang...`")
             if BOTLOG:
                 await event.client.send_message(
                     BOTLOG_CHATID, "#bot #deploy \n" "**⚡NOTUBOT UserBot⚡ Berhasil Diperbarui ツ**"
@@ -146,9 +146,9 @@ async def update(event, repo, ups_rem, ac_br):
     await update_requirements()
     await event.edit("**⚡NOTUBOT UserBot⚡** `Berhasil Diperbarui!`")
     await asyncio.sleep(1)
-    await event.edit("**⚡NOTUBOT UserBot⚡** `Dimuat ulang...`")
+    await event.edit("**⚡NOTUBOT UserBot⚡** `Dimuat Ulang...`")
     await asyncio.sleep(1)
-    await event.edit("**⚡NOTUBOT UserBot⚡** `Tunggu beberapa detik!`")
+    await event.edit("**⚡NOTUBOT UserBot⚡** `Tunggu Beberapa Detik...`")
 
     if BOTLOG:
         await event.client.send_message(BOTLOG_CHATID, "#bot #now \n" "**⚡NOTUBOT UserBot⚡ Telah Diperbarui ツ**")
@@ -238,13 +238,13 @@ async def upstream(event):
         await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡ Loading....35%`")
         await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡ Loading....77%`")
         await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡ Updating...90%`")
-        await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡ mohon tunggu sebentar...100%`")
+        await event.edit("`Proses Update ⚡NOTUBOT UserBot⚡ Mohon Tunggu Sebentar...100%`")
 
     if opts == "now" or opts == "pull" or opts == "one":
-        await event.edit("`Memperbarui ⚡NOTUBOT UserBot⚡ harap tunggu...`")
+        await event.edit("`Memperbarui ⚡NOTUBOT UserBot⚡ Harap Tunggu...`")
         await update(event, repo, ups_rem, ac_br)
     elif opts == "deploy" or opts == "push" or opts == "all":
-        await event.edit("`Proses Deploy ⚡NOTUBOT UserBot⚡ harap tunggu...`")
+        await event.edit("`Proses Deploy ⚡NOTUBOT UserBot⚡ Harap Tunggu...`")
         await deploy(event, repo, ups_rem, ac_br, txt)
     return
 
