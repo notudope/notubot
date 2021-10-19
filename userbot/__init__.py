@@ -264,7 +264,6 @@ with bot:
 
 async def check_alive():
     await bot.send_message(BOTLOG_CHATID, "```Well Done... ⚡NOTUBOT UserBot⚡ Launched 🚀```")
-    return
 
 
 with bot:

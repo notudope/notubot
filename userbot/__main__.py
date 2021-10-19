@@ -1,5 +1,3 @@
-""" Userbot start point """
-
 from importlib import import_module
 from sys import argv
 
