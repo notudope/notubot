@@ -129,7 +129,7 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
             await event.edit("`⚡NOTUBOT UserBot⚡ Berhasil Diperbarui, Dimuat Ulang...`")
             if BOTLOG:
                 await event.client.send_message(
-                    BOTLOG_CHATID, "#bot #deploy \n" "**⚡NOTUBOT UserBot⚡ Berhasil Diperbarui ツ**"
+                    BOTLOG_CHATID, "#bot #push \n" "**⚡NOTUBOT UserBot⚡ Berhasil Diperbarui ツ**"
                 )
 
     else:
@@ -151,7 +151,7 @@ async def update(event, repo, ups_rem, ac_br):
     await event.edit("**⚡NOTUBOT UserBot⚡** `Tunggu Beberapa Detik...`")
 
     if BOTLOG:
-        await event.client.send_message(BOTLOG_CHATID, "#bot #now \n" "**⚡NOTUBOT UserBot⚡ Telah Diperbarui ツ**")
+        await event.client.send_message(BOTLOG_CHATID, "#bot #pull \n" "**⚡NOTUBOT UserBot⚡ Telah Diperbarui ツ**")
 
     try:
         from userbot.modules.sql_helper.globals import addgvar, delgvar

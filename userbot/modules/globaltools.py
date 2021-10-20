@@ -261,7 +261,6 @@ async def gcast(event):
                 await event.client.send_message(chat, msg)
             except BaseException:
                 failed += 1
-
         await asyncio.sleep(0.3)
 
     await procs.edit(f"Berhasil mengirim Pesan Grup ke `{success}` obrolan, gagal mengirim ke `{failed}` obrolan.")
@@ -288,7 +287,6 @@ async def gucast(event):
                 await event.client.send_message(chat, msg)
             except BaseException:
                 failed += 1
-
         await asyncio.sleep(0.3)
 
     await procs.edit(f"Berhasil mengirim Pesan Pribadi ke `{success}` obrolan, gagal mengirim ke `{failed}` obrolan.")
