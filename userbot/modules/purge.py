@@ -54,7 +54,7 @@ async def purgeme(event):
     await smsg.delete()
 
 
-@register(outgoing=True, disable_errors=True, pattern=r"^\.del|del$")
+@register(outgoing=True, disable_errors=True, pattern=r"^(\.del|del)$")
 async def delete(event):
     """For .del command, delete the replied message."""
     reply = await event.get_reply_message()
