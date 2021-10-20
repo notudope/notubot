@@ -94,7 +94,7 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
             await event.edit(f"{txt}\n" "`Kredensial Heroku tidak valid untuk deploy UserBot dyno.`")
             return repo.__del__()
 
-        await event.edit("`UserBot dyno sedang memperbarui, harap tunggu, perkiraan waktu 4-7 menit...`")
+        await event.edit("`⚡NOTUBOT UserBot⚡ dyno sedang memperbarui, perkiraan waktu 4-7 menit...`")
 
         try:
             from userbot.modules.sql_helper.globals import addgvar, delgvar
