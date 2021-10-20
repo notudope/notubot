@@ -1,6 +1,8 @@
 import asyncio
 
-from userbot import CMD_HELP
+from telethon.tl.functions.channels import DeleteUserHistoryRequest
+
+from userbot import CMD_HELP, LOGS
 from userbot.events import register
 
 
@@ -21,6 +23,7 @@ async def delete(event):
 @register(outgoing=True, pattern=r"^\.purge$")
 async def fastpurger(event):
     """For .purge command, purge all messages starting from the reply."""
+    """
     chat = await event.get_input_chat()
     msgs = []
     itermsg = event.client.iter_messages(chat, min_id=event.reply_to_msg_id)
@@ -39,32 +42,130 @@ async def fastpurger(event):
 
     if msgs:
         await event.client.delete_messages(chat, msgs)
-    done = await event.client.send_message(event.chat_id, f"`Purged {str(count)} pesan.`")
+    procs = await event.client.send_message(event.chat_id, f"`Purged {str(count)} pesan.`")
 
     await asyncio.sleep(2)
-    await done.delete()
+    await procs.delete()
+    """
+
+    match = event.pattern_match.group(1)
+    try:
+        text = event.text[6]
+    except IndexError:
+        text = None
+
+    if text and event.text[6] in ["m", "a"]:
+        return
+
+    if not event._client._bot and ((match) or (event.is_reply and event.is_private)):
+        count = 0
+
+        async for msg in event.client.iter_messages(
+            event.chat_id,
+            limit=int(match) if match else None,
+            min_id=event.reply_to_msg_id if event.is_reply else None,
+        ):
+            await msg.delete()
+            count += 0
+        procs = await event.client.send_message(
+            event.chat_id,
+            f"`Purged {count} pesan.`",
+        )
+        await asyncio.sleep(1)
+        await event.delete()
+        await procs.delete()
+        return
+
+    if not event.reply_to_msg_id:
+        await event.edit("`Balas pesan untuk menghapus dari.`")
+        return
+    try:
+        await event.client.delete_messages(
+            event.chat_id, [x for x in range(event.reply_to_msg_id, event.id + 1)]  # noqa: C416
+        )
+    except Exception as e:
+        LOGS.info(e)
+
+    procs = await event.client.send_message(event.chat_id, "`Purged complete!`")
+    await asyncio.sleep(1)
+    await procs.delete()
 
 
-@register(outgoing=True, pattern=r"^\.purgeme")
+@register(outgoing=True, pattern=r"^\.purgeme ?(.*)")
 async def purgeme(event):
-    """For .purgeme, delete x count of your latest message."""
-    message = event.text
-    count = int(message[9:])
-    index = 1
+    """For .purgeme, purge Only your messages from the replied message."""
+    opts = event.pattern_match.group(1)
+    if opts and not event.is_reply:
+        try:
+            num = int(opts)
+        except BaseException:
+            await event.edit("`Input tidak valid.`")
+            return
 
-    async for message in event.client.iter_messages(event.chat_id, from_user="me"):
-        if index > count + 1:
-            break
-        index = index + 1
-        await message.delete()
+        done = 0
+        async for m in event.client.iter_messages(event.chat_id, limit=num, from_user="me"):
+            await m.delete()
+            done += 1
+
+        procs = await event.client.send_message(
+            event.chat_id,
+            f"`Purged {done} pesan.`",
+        )
+        await asyncio.sleep(1)
+        await event.delete()
+        await procs.delete()
+        return
+
+    chat = await event.get_input_chat()
+    msgs = []
+    count = 0
+    if not (event.reply_to_msg_id or opts):
+        await event.edit("Membalas pesan untuk purge atau gunakan seperti `purgeme <num>`")
+        return
+
+    async for m in event.client.iter_messages(
+        chat,
+        from_user="me",
+        min_id=event.reply_to_msg_id,
+    ):
+        msgs.append(m)
+        count += 1
+        msgs.append(event.reply_to_msg_id)
+        if len(msgs) == 100:
+            await event.client.delete_messages(chat, msgs)
+            msgs = []
+
+    if msgs:
+        await event.client.delete_messages(chat, msgs)
 
     procs = await event.client.send_message(
         event.chat_id,
         f"`Purged {str(count)} pesan.`",
     )
     await asyncio.sleep(1)
-    index = 1
     await procs.delete()
+
+
+@register(outgoing=True, disable_errors=True, pattern=r"^\.purgeall$")
+async def purgeall(event):
+    """For .purgeme, delete all messages of replied user."""
+    if not event.is_reply:
+        await event.edit("`Balas pesan seseorang untuk menghapusnya.`")
+        return
+
+    name = (await event.get_reply_message()).sender
+    try:
+        await event.client(DeleteUserHistoryRequest(event.chat_id, name.id))
+
+        procs = await event.client.send_message(
+            event.chat_id,
+            f"`Berhasil menghapus semua pesan dari {name.first_name}.`",
+        )
+        await asyncio.sleep(5)
+        await procs.delete()
+        # await event.delete()
+    except BaseException:
+        await event.delete()
 
 
 @register(outgoing=True, disable_errors=True, pattern=r"^\.copy$")
@@ -119,6 +220,8 @@ CMD_HELP.update(
         "\nUsage: Menghapus semua pesan dari balasan."
         "\n\n>`.purgeme <x>`"
         "\nUsage: Menghapus <x> pesan dari yang terbaru."
+        "\n\n>`.purgeall`"
+        "\nUsage: Menghapus semua pesan pengguna yang dibalas."
         "\n\n>`.copy`"
         "\nUsage: Copy pesan yang dibalas."
         "\n\n>`.edit <newmessage>`"
