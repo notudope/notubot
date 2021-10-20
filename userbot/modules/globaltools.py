@@ -301,7 +301,7 @@ CMD_HELP.update(
         "\nUsage: Membatalkan global Banned."
         "\n\n>`.gcast`"
         "\nUsage: Mengirim Pesan Group secara global, "
-        "Gak usah idiot, jangan berlebihan, resiko (limit, kena kick/banned/fban) ditanggung pengguna!"
+        "\nGak usah idiot, jangan berlebihan, resiko (limit, kena kick/banned/fban) ditanggung pengguna!"
         "\n\n>`.gucast`"
         "\nUsage: Mengirim Pesan Pribadi secara global, "
         "Gak usah spam, seperlunya aja!"

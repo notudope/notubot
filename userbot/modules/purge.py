@@ -180,7 +180,7 @@ async def selfd(event):
 
 CMD_HELP.update(
     {
-        "purge": ">`.del`"
+        "purge": ">`.del|del|Del`"
         "\nUsage: Menghapus pesan yang dibalas."
         "\n\n>`.purge`"
         "\nUsage: Menghapus semua pesan dari balasan."
