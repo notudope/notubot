@@ -122,7 +122,7 @@ async def purgeme(event):
 
 @register(outgoing=True, disable_errors=True, pattern=r"^\.purgeall$")
 async def purgeall(event):
-    """For .purgeme, delete all messages of replied user."""
+    """For .purgeall, delete all messages of replied user."""
     if not event.is_reply:
         await event.edit("`Balas pesan seseorang untuk menghapusnya.`")
         return
@@ -130,7 +130,6 @@ async def purgeall(event):
     name = (await event.get_reply_message()).sender
     try:
         await event.client(DeleteUserHistoryRequest(event.chat_id, name.id))
-
         procs = await event.client.send_message(
             event.chat_id,
             f"`Berhasil menghapus semua pesan dari {name.first_name}.`",
