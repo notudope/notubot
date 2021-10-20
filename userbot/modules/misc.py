@@ -1,11 +1,3 @@
-# Copyright (C) 2019 The Raphielscape Company LLC.
-#
-# Licensed under the Raphielscape Public License, Version 1.c (the "License");
-# you may not use this file except in compliance with the License.
-#
-# You can find misc modules, which dont fit in anything xD
-""" Userbot module for other small commands. """
-
 import io
 import sys
 from os import environ, execle
@@ -20,6 +12,7 @@ from userbot import (
 )
 from userbot.events import register
 from userbot.utils import time_formatter
+from userbot.utils.format import parse_pre
 
 
 @register(outgoing=True, pattern=r"^\.random")
@@ -88,7 +81,6 @@ async def reedme(e):
     )
 
 
-# Copyright (c) Gegham Zakaryan | 2019
 @register(outgoing=True, pattern=r"^\.repeat (.*)")
 async def repeat(rep):
     cnt, txt = rep.pattern_match.group(1).split(" ", 1)
@@ -101,14 +93,6 @@ async def repeat(rep):
         replyText += toBeRepeated + "\n"
 
     await rep.edit(replyText)
-
-
-@register(outgoing=True, pattern=r"^\.repo$")
-async def repo_is_here(event):
-    """For .repo command, just returns the repo URL."""
-    await event.edit(
-        "📦 **[Disini REPO](https://github.com/notudope/notubot)** UserBot keren yang gw pake.", link_preview=False
-    )
 
 
 @register(outgoing=True, pattern=r"^\.raw$")
@@ -135,16 +119,26 @@ async def raw(event):
         )
 
 
+@register(outgoing=True, pattern=r"^\.json$")
+async def json(event):
+    "To get details of that message in json format."
+    reply = await event.get_reply_message() if event.reply_to_msg_id else event
+
+    await event.edit(reply.stringify(), parse_mode=parse_pre)
+
+
 CMD_HELP.update(
     {
         "random": ">`.random <item1> <item2> ... <itemN>`" "\nUsage: Get a random item from the list of items.",
         "sleep": ">`.sleep <seconds>`" "\nUsage: Let yours snooze for a few seconds.",
         "shutdown": ">`.shutdown`" "\nUsage: Shutdown bot",
-        "repo": ">`.repo`" "\nUsage: Github Repo of this bot",
         "readme": ">`.readme`" "\nUsage: Provide links to setup the userbot and it's modules.",
         "repeat": ">`.repeat <no> <text>`"
         "\nUsage: Repeats the text for a number of times. Don't confuse this with spam tho.",
         "restart": ">`.restart`" "\nUsage: Restarts the bot !!",
         "raw": ">`.raw`" "\nUsage: Get detailed JSON-like formatted data about replied message.",
+        "json": ">`.json`"
+        "\nUsage: Mengambil data json dari sebuah pesan, "
+        "Balas pesan tersebut untuk menampilkannya!",
     }
 )

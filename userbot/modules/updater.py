@@ -249,6 +249,12 @@ async def upstream(event):
     return
 
 
+@register(outgoing=True, pattern=r"^\.repo$")
+async def repo(event):
+    """For .repo command, just returns the repo URL."""
+    await event.edit("📦 **[Disini REPO](https://github.com/notudope/notubot)** `⚡NOTUBOT UserBot⚡`", link_preview=False)
+
+
 CMD_HELP.update(
     {
         "update": ">`.update`"
@@ -260,5 +266,7 @@ CMD_HELP.update(
         "\n\n>`.update deploy|push|all`"
         "\nUsage: Deploy UserBot (heroku)"
         "\nini akan memaksa deploy meskipun tidak ada pembaruan pada UserBot."
+        "\n\n>`.repo`"
+        "\nUsage: Github Repository NOTUBOT"
     }
 )

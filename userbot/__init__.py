@@ -256,7 +256,7 @@ with bot:
 
 
 async def check_alive():
-    await bot.send_message(BOTLOG_CHATID, "```⚡NOTUBOT UserBot⚡ Launched 🚀```")
+    await bot.send_message(BOTLOG_CHATID, f"`⚡NOTUBOT UserBot⚡ v{BOT_VER} Launched 🚀`")
 
 
 with bot:
