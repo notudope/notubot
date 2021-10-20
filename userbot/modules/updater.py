@@ -148,7 +148,7 @@ async def update(event, repo, ups_rem, ac_br):
     await asyncio.sleep(1)
     await event.edit("**⚡NOTUBOT UserBot⚡** `Dimuat Ulang...`")
     await asyncio.sleep(1)
-    await event.edit("**⚡NOTUBOT UserBot⚡** `Tunggu Beberapa Detik...`")
+    await event.edit("**⚡NOTUBOT UserBot⚡** `Tunggu Beberapa Detik Dan Cobalah...`")
 
     if BOTLOG:
         await event.client.send_message(BOTLOG_CHATID, "#bot #pull \n" "**⚡NOTUBOT UserBot⚡ Telah Diperbarui ツ**")

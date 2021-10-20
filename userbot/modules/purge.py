@@ -120,7 +120,7 @@ async def purgeme(event):
     await procs.delete()
 
 
-@register(outgoing=True, disable_errors=True, pattern=r"^\.purgeall$")
+@register(outgoing=True, disable_errors=True, groups_only=True, pattern=r"^\.purgeall$")
 async def purgeall(event):
     """For .purgeall, delete all messages of replied user."""
     if not event.is_reply:
@@ -130,13 +130,9 @@ async def purgeall(event):
     name = (await event.get_reply_message()).sender
     try:
         await event.client(DeleteUserHistoryRequest(event.chat_id, name.id))
-        procs = await event.client.send_message(
-            event.chat_id,
+        await event.edit(
             f"`Berhasil menghapus semua pesan dari {name.first_name}.`",
         )
-        await asyncio.sleep(5)
-        await procs.delete()
-        # await event.delete()
     except BaseException:
         await event.delete()
 
@@ -156,7 +152,7 @@ async def copy(event):
 
 
 @register(outgoing=True, disable_errors=True, pattern=r"^\.edit")
-async def editer(event):
+async def edit(event):
     """For .edit command, edit your last message."""
     message = event.text
     chat = await event.get_input_chat()
@@ -173,7 +169,7 @@ async def editer(event):
 
 
 @register(outgoing=True, disable_errors=True, pattern=r"^\.sd")
-async def selfdestruct(event):
+async def selfd(event):
     """For .sd command, make seflf-destructable messages."""
     message = event.text
     counter = int(message[4:6])
