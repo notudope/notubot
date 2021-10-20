@@ -29,7 +29,7 @@ async def get_full_user(event):
         if user.isnumeric():
             user = int(user)
         if not user:
-            await event.edit("`Wajib menyertakan ID user!`")
+            await event.edit("`Wajib menyertakan ID user.`")
             return
 
         if event.message.entities is not None:
@@ -102,7 +102,7 @@ async def gban(event):
     if not sender.id == me.id:
         procs = await event.edit("`...`")
     else:
-        procs = await event.edit("`Global Banned user ini!`")
+        procs = await event.edit("`Global Banned user ini...`")
     await procs.edit("`Gbanning...`")
 
     mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)

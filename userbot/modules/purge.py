@@ -4,6 +4,20 @@ from userbot import CMD_HELP
 from userbot.events import register
 
 
+@register(outgoing=True, disable_errors=True, pattern=r"^(\.del|del|Del)$")
+async def delete(event):
+    """For .del command, delete the replied message."""
+    reply = await event.get_reply_message()
+    if reply:
+        try:
+            await reply.delete()
+            await event.delete()
+        except BaseException:
+            await event.delete()
+    else:
+        await event.delete()
+
+
 @register(outgoing=True, pattern=r"^\.purge$")
 async def fastpurger(event):
     """For .purge command, purge all messages starting from the reply."""
@@ -36,36 +50,21 @@ async def purgeme(event):
     """For .purgeme, delete x count of your latest message."""
     message = event.text
     count = int(message[9:])
-    i = 1
+    index = 1
 
     async for message in event.client.iter_messages(event.chat_id, from_user="me"):
-        if i > count + 1:
+        if index > count + 1:
             break
-        i = i + 1
+        index = index + 1
         await message.delete()
 
-    smsg = await event.client.send_message(
+    procs = await event.client.send_message(
         event.chat_id,
         f"`Purged {str(count)} pesan.`",
     )
-
     await asyncio.sleep(1)
-    i = 1
-    await smsg.delete()
-
-
-@register(outgoing=True, disable_errors=True, pattern=r"^(\.del|del|Del)$")
-async def delete(event):
-    """For .del command, delete the replied message."""
-    reply = await event.get_reply_message()
-    if reply:
-        try:
-            await reply.delete()
-            await event.delete()
-        except BaseException:
-            await event.delete()
-    else:
-        await event.delete()
+    index = 1
+    await procs.delete()
 
 
 @register(outgoing=True, disable_errors=True, pattern=r"^\.copy$")
@@ -89,14 +88,14 @@ async def editer(event):
     chat = await event.get_input_chat()
     self_id = await event.client.get_peer_id("me")
     string = str(message[6:])
-    i = 1
+    index = 1
 
     async for message in event.client.iter_messages(chat, self_id):
-        if i == 2:
+        if index == 2:
             await message.edit(string)
             await event.delete()
             break
-        i = i + 1
+        index = index + 1
 
 
 @register(outgoing=True, pattern=r"^\.sd")
@@ -107,9 +106,9 @@ async def selfdestruct(event):
     text = str(event.text[6:])
     await event.delete()
 
-    smsg = await event.client.send_message(event.chat_id, text)
+    procs = await event.client.send_message(event.chat_id, text)
     await asyncio.sleep(counter)
-    await smsg.delete()
+    await procs.delete()
 
 
 CMD_HELP.update(
@@ -126,6 +125,6 @@ CMD_HELP.update(
         "\nUsage: Mengubah pesan terbaru dengan <newmessage>."
         "\n\n>`.sd <x> <message>`"
         "\nUsage: Membuat pesan menjadi selfdestructs dalam <x> detik."
-        "\nUsahakan tetap dibawah 100 detik, untuk mengatasi bot tertidur."
+        "\nUsahakan tetap dibawah 100 detik, untuk mengatasi UserBot tertidur."
     }
 )
