@@ -25,7 +25,7 @@ async def help_handler(event):
         head2 = f"😎 **Owner :** __{DEFAULTUSER}__"
         head3 = f"🤖 **Version :** `v{BOT_VER}`"
         head4 = f"📦 **Module :** `{len(CMD_HELP)}`"
-        head5 = "👨‍💻 **Usage :** `.help` `<nama module>`"
+        head5 = "👨‍💻 **Usage :** `.help <nama module>`"
         head6 = "Daftar semua perintah tersedia di bawah ini: "
         head7 = "📌 **Gunakan perintah diatas dengan bijak dan seperlunya, resiko ditanggung pengguna!**"
 
