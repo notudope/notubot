@@ -210,12 +210,10 @@ def migration_workaround():
     return None
 
 
-# 'bot' variable
+bot = None
 if STRING_SESSION:
-    # pylint: disable=invalid-name
     bot = TelegramClient(StringSession(STRING_SESSION), API_ID, API_HASH)
 else:
-    # pylint: disable=invalid-name
     bot = TelegramClient("userbot", API_ID, API_HASH)
 
 
