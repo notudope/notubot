@@ -29,7 +29,7 @@ async def get_full_user(event):
         if user.isnumeric():
             user = int(user)
         if not user:
-            await event.edit("`Wajib menyertakan ID user.`")
+            await event.edit("`Wajib menyertakan ID User.`")
             return
 
         if event.message.entities is not None:
@@ -121,7 +121,7 @@ async def gban(event):
         if not reason:
             reason = "Private"
     except BaseException:
-        return await procs.edit("`Wajib menyertakan ID user!`")
+        return await procs.edit("`Wajib menyertakan ID User.`")
 
     if user:
         if user.id in [2006788653, 2003361410]:
@@ -175,7 +175,7 @@ async def ungban(event):
     if not sender.id == me.id:
         procs = await event.edit("`...`")
     else:
-        procs = await event.edit("`Membatalkan Global Banned user ini!`")
+        procs = await event.edit("`Membatalkan Global Banned user ini...`")
     await procs.edit(f"`UnGbanning...`")
 
     mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
@@ -194,7 +194,7 @@ async def ungban(event):
         if not reason:
             reason = "Private"
     except BaseException:
-        return await procs.edit("`Wajib menyertakan ID user!`")
+        return await procs.edit("`Wajib menyertakan ID User.`")
 
     if user:
         if user.id in [2006788653, 2003361410]:
