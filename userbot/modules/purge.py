@@ -20,8 +20,8 @@ async def delete(event):
         await event.delete()
 
 
-@register(outgoing=True, pattern=r"^\.purge ?(.*)")
-async def fastpurger(event):
+@register(outgoing=True, disable_errors=True, pattern=r"^\.purge(?: |$)(.*)")
+async def purge(event):
     """For .purge command, purge all messages starting from the reply."""
     """
     chat = await event.get_input_chat()
@@ -77,7 +77,7 @@ async def fastpurger(event):
         return
 
     if not event.reply_to_msg_id:
-        await event.edit("`Balas pesan untuk menghapus dari.`")
+        await event.edit("`Balas pesan untuk menghapus dari?`")
         return
     try:
         await event.client.delete_messages(
@@ -91,7 +91,7 @@ async def fastpurger(event):
     await procs.delete()
 
 
-@register(outgoing=True, pattern=r"^\.purgeme ?(.*)")
+@register(outgoing=True, disable_errors=True, pattern=r"^\.purgeme(?: |$)(.*)")
 async def purgeme(event):
     """For .purgeme, purge Only your messages from the replied message."""
     opts = event.pattern_match.group(1)
@@ -182,7 +182,7 @@ async def copy(event):
         await event.delete()
 
 
-@register(outgoing=True, pattern=r"^\.edit")
+@register(outgoing=True, disable_errors=True, pattern=r"^\.edit")
 async def editer(event):
     """For .edit command, edit your last message."""
     message = event.text
@@ -199,7 +199,7 @@ async def editer(event):
         index = index + 1
 
 
-@register(outgoing=True, pattern=r"^\.sd")
+@register(outgoing=True, disable_errors=True, pattern=r"^\.sd")
 async def selfdestruct(event):
     """For .sd command, make seflf-destructable messages."""
     message = event.text
