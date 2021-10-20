@@ -80,7 +80,6 @@ async def purgeme(event):
         async for m in event.client.iter_messages(event.chat_id, limit=num, from_user="me"):
             await m.delete()
             done += 1
-
         procs = await event.client.send_message(
             event.chat_id,
             f"`Purged {done} pesan.`",
@@ -96,7 +95,6 @@ async def purgeme(event):
     if not (event.reply_to_msg_id or opts):
         await event.edit("Membalas pesan untuk purge atau gunakan seperti `purgeme <num>`")
         return
-
     async for m in event.client.iter_messages(
         chat,
         from_user="me",
@@ -108,10 +106,8 @@ async def purgeme(event):
         if len(msgs) == 100:
             await event.client.delete_messages(chat, msgs)
             msgs = []
-
     if msgs:
         await event.client.delete_messages(chat, msgs)
-
     procs = await event.client.send_message(
         event.chat_id,
         f"`Purged {str(count)} pesan.`",
