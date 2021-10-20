@@ -117,6 +117,7 @@ async def purgeme(event):
         f"`Purged {str(count)} pesan.`",
     )
     await asyncio.sleep(1)
+    await event.delete()
     await procs.delete()
 
 
