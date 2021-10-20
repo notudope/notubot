@@ -23,31 +23,6 @@ async def delete(event):
 @register(outgoing=True, disable_errors=True, pattern=r"^\.purge(?: |$)(.*)")
 async def purge(event):
     """For .purge command, purge all messages starting from the reply."""
-    """
-    chat = await event.get_input_chat()
-    msgs = []
-    itermsg = event.client.iter_messages(chat, min_id=event.reply_to_msg_id)
-    count = 0
-
-    if event.reply_to_msg_id is not None:
-        async for msg in itermsg:
-            msgs.append(msg)
-            count = count + 1
-            msgs.append(event.reply_to_msg_id)
-            if len(msgs) == 100:
-                await event.client.delete_messages(chat, msgs)
-                msgs = []
-    else:
-        return await event.edit("`Balas pesan itu untuk memulai menghapus!`")
-
-    if msgs:
-        await event.client.delete_messages(chat, msgs)
-    procs = await event.client.send_message(event.chat_id, f"`Purged {str(count)} pesan.`")
-
-    await asyncio.sleep(2)
-    await procs.delete()
-    """
-
     match = event.pattern_match.group(1)
     try:
         text = event.text[6]
@@ -59,26 +34,25 @@ async def purge(event):
 
     if not event._client._bot and ((match) or (event.is_reply and event.is_private)):
         count = 0
-
         async for msg in event.client.iter_messages(
             event.chat_id,
             limit=int(match) if match else None,
             min_id=event.reply_to_msg_id if event.is_reply else None,
         ):
             await msg.delete()
-            count += 0
+            count += 1
         procs = await event.client.send_message(
             event.chat_id,
             f"`Purged {count} pesan.`",
         )
         await asyncio.sleep(1)
-        await event.delete()
         await procs.delete()
         return
 
     if not event.reply_to_msg_id:
         await event.edit("`Balas pesan untuk menghapus dari?`")
         return
+
     try:
         await event.client.delete_messages(
             event.chat_id, [x for x in range(event.reply_to_msg_id, event.id + 1)]  # noqa: C416
