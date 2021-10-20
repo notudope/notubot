@@ -26,7 +26,7 @@ async def fakeaction(event):
             except BaseException:
                 return await event.edit("`Format salah.`")
 
-    await event.edit(f'`Memulai "Fake Action" selama {seconds} detik.`')
+    await event.edit(f'`Memulai "Fake {act.capitalize()}" selama {seconds} detik.`')
     await asyncio.sleep(5)
     await event.delete()
     async with event.client.action(event.chat_id, act):
