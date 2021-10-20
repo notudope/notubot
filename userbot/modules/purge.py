@@ -20,7 +20,7 @@ async def delete(event):
         await event.delete()
 
 
-@register(outgoing=True, pattern=r"^\.purge$")
+@register(outgoing=True, pattern=r"^\.purge ?(.*)")
 async def fastpurger(event):
     """For .purge command, purge all messages starting from the reply."""
     """
