@@ -42,8 +42,8 @@ async def help(event):
         head7 = "📌 **Gunakan perintah diatas dengan bijak dan seperlunya, resiko ditanggung pengguna!**"
 
         string = ""
-        for i in CMD_HELP.values():
-            string += f"`{str(i[1])}`, "
+        for i in CMD_HELP:
+            string += f"`{str(i)}`, "
         string = string[:-2]
 
         await event.edit("⚡")
