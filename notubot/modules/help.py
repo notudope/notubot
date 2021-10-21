@@ -36,14 +36,14 @@ async def help(event):
 
         head2 = f"😎 **Owner :** __{ALIVE_NAME}__"
         head3 = f"🤖 **Version :** `v{BOT_VER}`"
-        head4 = f"📦 **Module :** `{len(CMD_HELP)}`"
+        head4 = f"📦 **Module :** `{len(CMD_HELP.values())}`"
         head5 = "👨‍💻 **Usage :** `.help <nama module>`"
         head6 = "Daftar semua perintah tersedia di bawah ini: "
         head7 = "📌 **Gunakan perintah diatas dengan bijak dan seperlunya, resiko ditanggung pengguna!**"
 
         string = ""
         for i in CMD_HELP.values():
-            string += f"`{str(i)}`, "
+            string += f"`{str(i[1])}`, "
         string = string[:-2]
 
         await event.edit("⚡")
