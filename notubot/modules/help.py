@@ -23,9 +23,8 @@ async def help(event):
 
     if args:
         if args in CMD_HELP:
-            await event.edit(str(CMD_HELP[args][0]))
             await event.edit(
-                f"Berikut cara pengunaan untuk module **{CMD_HELP[args][0]}**:\n\n" + str(CMD_HELP[args][1])
+                f"Berikut pengunaan module **{CMD_HELP[args][0]}**:\n\n" + str(CMD_HELP[args][1])
             )
         else:
             await event.edit(f"😖 Module [`{args}`] tidak ada! Ketik ```.help``` untuk melihat nama module yang benar.")
@@ -44,7 +43,7 @@ async def help(event):
 
         string = ""
         for i in CMD_HELP.values():
-            string += f"`{str(i[0])}`, "
+            string += f"`{str(i)}`, "
         string = string[:-2]
 
         await event.edit("⚡")
