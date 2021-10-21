@@ -171,26 +171,24 @@ async def limit(event):
 
     async with event.client.conversation("@SpamBot") as conv:
         try:
-            response = conv.wait_event(events.NewMessage(incoming=True, from_users=178220800))
+            res = conv.wait_event(events.NewMessage(incoming=True, from_users=178220800))
             await conv.send_message("/start")
-            response = await response
+            res = await res
             await event.client.send_read_acknowledge(conv.chat_id)
         except YouBlockedUserError:
             await event.edit("`Unblock dulu @SpamBot`")
             return
-        await event.edit(f"~ {response.message.message}")
+        await event.edit(f"~ {res.message.message}")
 
 
 CMD_HELP.update(
     {
-        "scraper": ">`.inviteall <id/username>`"
-        "\nUsage: Menculik pengguna dari grup dan ditambahkan ke grup."
-        "\n\n>`.getmemb`"
-        "\nUsage: Mendapatkan semua member dalam grup."
-        "\n\n>`.addmemb`"
-        "\nUsage: Menambahkan member ke target grup, "
-        "Pertama, jalankan `.getmemb` lalu gunakan perintah ini ke target grup."
-        "\n\n>`.limit`"
-        "\nUsage: Untuk cek akun kena limit."
+        "scraper": [
+            "Scraper",
+            " - `.inviteall <id/username>`: Menculik pengguna dari grup dan ditambahkan ke grup.\n"
+            " - `.getmemb`: Mendapatkan semua member dalam grup.\n"
+            " - `.addmemb`: Menambahkan member ke target grup. Pertama, jalankan `.getmemb` lalu gunakan perintah ini ke target grup.\n"
+            " - `.limit`: Untuk cek akun kena limit.\n",
+        ]
     }
 )

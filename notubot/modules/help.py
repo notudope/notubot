@@ -23,9 +23,12 @@ async def help(event):
 
     if args:
         if args in CMD_HELP:
-            await event.edit(str(CMD_HELP[args]))
+            await event.edit(str(CMD_HELP[args][0]))
+            await event.edit(
+                f"Berikut cara pengunaan untuk module **{CMD_HELP[args][0]}**:\n\n" + str(CMD_HELP[args][1])
+            )
         else:
-            await event.edit(f"😖 Perintah [`{args}`] tidak ada, ketikan dengan benar!")
+            await event.edit(f"😖 Module [`{args}`] tidak ada! Ketik ```.help``` untuk melihat nama module yang benar.")
             await asyncio.sleep(200)
             await event.delete()
     else:
@@ -62,6 +65,6 @@ async def help(event):
             link_preview=False,
         )
 
-        await helper.reply(f"\n**Contoh** : Ketik <`.help limit`> Untuk informasi pengunaan.")
+        await helper.reply(f"\n**Contoh** : Ketik <`.help admin`> Untuk informasi pengunaan.")
         await asyncio.sleep(1000)
         await helper.delete()

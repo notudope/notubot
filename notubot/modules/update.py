@@ -263,16 +263,12 @@ async def repo(event):
 
 CMD_HELP.update(
     {
-        "update": ">`.update`"
-        "\nUsage: Mengecek apakah ada pembaruan pada repo UserBot "
-        "dan termasuk menampilkan changelog."
-        "\n\n>`.update now|pull|one`"
-        "\nUsage: Memperbarui sistem UserBot, "
-        "jika ada pembaruan pada repo UserBot."
-        "\n\n>`.update deploy|push|all`"
-        "\nUsage: Deploy UserBot (heroku)"
-        "\nini akan memaksa deploy meskipun tidak ada pembaruan pada UserBot."
-        "\n\n>`.repo`"
-        "\nUsage: Github Repository UserBot"
+        "update": [
+            "Update",
+            " - `.update`: Mengecek apakah ada pembaruan pada repo UserBot termasuk menampilkan changelog.\n"
+            " - `.update now|pull|one`: Memperbarui sistem UserBot jika ada pembaruan pada repo UserBot.\n"
+            " - `.update deploy|push|all`: Deploy UserBot (heroku), ini akan memaksa deploy meskipun tidak ada pembaruan pada UserBot.\n"
+            " - `.repo`: Github Repository UserBot.\n",
+        ]
     }
 )

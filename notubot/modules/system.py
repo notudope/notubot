@@ -19,12 +19,13 @@ from notubot import (
     ALIVE_LOGO,
     ALIVE_NAME,
     CMD_HELP,
-    bot,
     BOT_VER,
     BOT_NAME,
     IG_ALIVE,
 )
 from notubot.events import bot_cmd
+
+DEFAULTUSER = ALIVE_NAME
 
 
 @bot_cmd(outgoing=True, pattern=r"^\.sysd$")
@@ -126,7 +127,7 @@ async def amireallyalive(event):
     text = (
         f"`{BOT_NAME}`\n"
         f"[REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Grup](https://t.me/NOTUBOTS)  /  [Instagram]({IG_ALIVE})\n\n"
-        f"😎 **Owner :** __{ALIVE_NAME}__\n"
+        f"😎 **Owner :** __{DEFAULTUSER}__\n"
         f"🤖 **Version :** `v{BOT_VER}`\n"
         f"🐍 **Python :** `v{python_version()}`\n"
         f"📦 **Telethon :** `v{version.__version__}\n`"
@@ -144,7 +145,7 @@ async def amireallyalive(event):
     if ALIVE_LOGO:
         try:
             logo = ALIVE_LOGO
-            await bot.send_file(event.chat_id, logo, caption=text)
+            await event.client.send_file(event.chat_id, logo, caption=text)
             await event.delete()
         except MediaEmptyError:
             await event.edit(
@@ -155,36 +156,39 @@ async def amireallyalive(event):
         await event.client.send_message(event.chat_id, text, link_preview=False, buttons=buttons)
 
 
-@bot_cmd(outgoing=True, pattern=r"^\.aliveu")
+@bot_cmd(outgoing=True, pattern="^.aliveu")
 async def amireallyaliveuser(username):
     """For .aliveu command, change the username in the .alive command."""
-    message = username.text
-    output = ".aliveu [new user without brackets] nor can it be empty"
-    if not (message == ".aliveu" or message[7:8] != " "):
-        newuser = message[8:]
-        global ALIVE_NAME
-        ALIVE_NAME = newuser
-        output = "Successfully changed user to " + newuser + "!"
-    await username.edit("`" f"{output}" "`")
+    if not username.text[0].isalpha() and username.text[0] not in ("/", "#", "@", "!"):
+        message = username.text
+        output = ".aliveu [new user without brackets] nor can it be empty"
+        if not (message == ".aliveu" or message[7:8] != " "):
+            newuser = message[8:]
+            global DEFAULTUSER
+            DEFAULTUSER = newuser
+            output = "Successfully changed user to " + newuser + "!"
+        await username.edit("`" f"{output}" "`")
 
 
 @bot_cmd(outgoing=True, pattern=r"^\.resetalive$")
 async def amireallyalivereset(ureset):
     """For .resetalive command, reset the username in the .alive command."""
-    global ALIVE_NAME
-    await ureset.edit("`" "Successfully reset user for alive!" "`")
+    if not ureset.text[0].isalpha() and ureset.text[0] not in ("/", "#", "@", "!"):
+        global DEFAULTUSER
+        DEFAULTUSER = ALIVE_NAME
+        await ureset.edit("`" "Successfully reset user for alive!" "`")
 
 
 CMD_HELP.update(
     {
-        "sysd": ">`.sysd`" "\nUsage: Shows system information using neofetch.",
-        "botver": ">`.botver`" "\nUsage: Shows the userbot version.",
-        "pip": ">`.pip <module(s)>`" "\nUsage: Does a search of pip modules(s).",
-        "alive": ">`.alive`"
-        "\nUsage: Type .alive to see wether your bot is working or not."
-        "\n\n>`.aliveu <text>`"
-        "\nUsage: Changes the 'user' in alive to the text you want."
-        "\n\n>`.resetalive`"
-        "\nUsage: Resets the user to default.",
+        "system": [
+            "System",
+            " - `.sysd`: Show system information using neofetch.\n"
+            " - `.botver`: Show NOTUBOT version.\n"
+            " - `.pip <module(s)>`: Search module(s) in PyPI.\n"
+            " - `.alive`: Check if NOTUBOT is running. \n"
+            " - `.aliveu <new_user>`: Change the user name in .alive command (aesthetics change only)\n"
+            " - `.resetalive`: Reset the user name in the .alive command to default (aesthetics change only)\n",
+        ]
     }
 )

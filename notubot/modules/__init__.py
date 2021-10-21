@@ -10,7 +10,7 @@ from notubot import LOGS
 
 def __list_all_modules():
     import glob
-    from os.path import basename, dirname, isfile
+    from os.path import dirname, basename, isfile
 
     mod_paths = glob.glob(dirname(__file__) + "/*.py")
     all_modules = [
