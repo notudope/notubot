@@ -9,7 +9,7 @@ bs4==0.0.1
 CairoSVG==2.5.2
 cffi==1.15.0
 covid
-cowpy==1.1.2
+cowpy
 deezloader>=2021.9.22
 dnspython
 emoji
