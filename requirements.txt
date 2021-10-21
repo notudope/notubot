@@ -1,3 +1,5 @@
+loguru==0.5.3
+
 aiofile
 aiohttp[speedups]
 appdirs

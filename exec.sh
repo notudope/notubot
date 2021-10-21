@@ -6,7 +6,7 @@ UNIXTIME=$(date +%s)
 
 if [ -z ${1} ] || [ ${1} == "-x" ] ; then
 	cd ${BOTDIR}
-	python3 -m userbot
+	python3 -m notubot
 	RETVAL=${?}
 	cd ${RUNDIR}
 	exit $RETVAL
@@ -14,7 +14,7 @@ elif [ ${1} == "-d" ] || [ ${1} == "--daemonize" ] ; then
 	echo -e "I: Running silently in the background like a ninja..."
 	cd ${BOTDIR}
 	
-	nohup python3 -m userbot >>${UNIXTIME}-notubot.log 2>&1 & echo "I: Userbot PID is ${!}"
+	nohup python3 -m notubot >>${UNIXTIME}-notubot.log 2>&1 & echo "I: NOTUBOT PID is ${!}"
 	deactivate
 	cd ${RUNDIR}
 	exit 0

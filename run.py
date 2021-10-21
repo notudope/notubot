@@ -17,8 +17,8 @@ CYAN = "\x1b[36m"
 python = "python3"
 nocache = f"{python} -B"
 
-app_prod = f"{python} -m userbot -env prod"
-app_dev = f"{python} -m userbot -env dev"
+app_prod = f"{python} -m notubot -env prod"
+app_dev = f"{python} -m notubot -env dev"
 app_dev_watch = f"{python} -m scripts.autoreload {app_dev}"
 
 black = "brunette --config=setup.cfg ."

@@ -13,4 +13,4 @@ COPY ./sample_config.env ./config.env* /home/notubot/
 WORKDIR /home/notubot/
 
 # Finalization
-CMD ["python3","-m","userbot"]
+CMD ["python3","-m","notubot"]
