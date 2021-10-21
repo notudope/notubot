@@ -1,6 +1,6 @@
 # `notubot`
 
-> Another **userbot** powered by `telethon` for lazy **Telegram** user 😖
+> Another **UserBot** powered by `Telethon` for lazy **Telegram** user 😖
 
 <p align="center">
     <a href="https://github.com/notudope/notubot/stargazers"> <img src="https://img.shields.io/github/stars/notudope/notubot?logo=github&style=flat-square" alt="Stars" /></a>
@@ -44,7 +44,7 @@ Click this button below to Deploy to Heroku
 * [vckyou](https://github.com/vckyou) - Geez-UserBot
 * [TeamUltroid](https://github.com/TeamUltroid) - Ultroid
 
-and [everyone](https://github.com/notudope/notubot/graphs/contributors) that makes this userbot awesome!
+and [everyone](https://github.com/notudope/notubot/graphs/contributors) that makes this UserBot awesome :D
 
 ## License
 Licensed under [GNU General Public License v3.0](https://github.com/notudope/notubot/blob/main/LICENSE)
