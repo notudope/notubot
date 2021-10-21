@@ -8,13 +8,10 @@
 import sys
 from importlib import import_module
 
-import uvloop
 from telethon.errors.rpcerrorlist import PhoneNumberInvalidError
 
 from notubot import BOT_VER, LOGS, bot
 from notubot.modules import ALL_MODULES
-
-uvloop.install()
 
 INVALID_PH = (
     "\nERROR: The Phone No. entered is INVALID"

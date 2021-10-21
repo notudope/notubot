@@ -66,7 +66,7 @@ LOGS.configure(
         },
     ],
 )
-LOGS.opt(lazy=True, colors=True)
+LOGS.opt(lazy=True)
 
 
 class InterceptHandler(logging.Handler):
