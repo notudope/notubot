@@ -8,7 +8,6 @@
 import logging
 import signal
 import sys
-from datetime import datetime
 from os import (
     environ,
     getenv,
@@ -21,7 +20,6 @@ from platform import python_version, uname
 from time import sleep
 
 from dotenv import dotenv_values, load_dotenv
-from loguru import logger as LOGS
 from pylast import LastFMNetwork, md5
 from pySmartDL import SmartDL
 from requests import get
@@ -45,28 +43,8 @@ config = {
     **environ,
 }
 
-# Logging at the start to catch everything
-fmtLog = "<bold><cyan>[{name}]</cyan></bold><level>[{level}]</level><bold><green>[{time:YY-MM-DD/HH:mm:ss}]</green> <cyan>{function}</cyan>:<cyan>{line}</cyan></bold> - {message}"
-timeName = datetime.now().strftime("%d-%m-%Y")
-fmtFile = "{name}:{function}:{line} | {time:YY-MMM-DD HH:mm:ss} - {message}"
-
-LOGS.remove()
-LOGS.configure(
-    handlers=[
-        {"sink": sys.stderr, "format": fmtLog, "colorize": True},
-        {
-            "sink": "logs/notubot-{}.log".format(timeName),
-            "format": fmtFile,
-            "rotation": "50 MB",
-            "retention": "3 days",
-            "encoding": "utf8",
-            "serialize": True,
-            "enqueue": True,
-            "filter": lambda record: record["level"].name == "ERROR",
-        },
-    ],
-)
-LOGS.opt(lazy=True)
+logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
+LOGS = logging.getLogger(__name__)
 
 
 class InterceptHandler(logging.Handler):

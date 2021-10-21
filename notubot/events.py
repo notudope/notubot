@@ -125,9 +125,9 @@ def bot_cmd(**args):
             except BaseException:
                 if not disable_errors:
                     date = strftime("%Y-%m-%d %H:%M:%S", gmtime())
-                    title = get_display_name(chat)
+                    title = get_display_name(chat.chat)
                     text = "**NOTUBOT ERROR REPORT**\n"
-                    text += "Untuk melaporkan kesalahan **teruskan pesan ini ke** @NOTUBOTS."
+                    text += "Laporkan kesalahan **teruskan pesan ini ke** @NOTUBOTS"
                     ftext = "NOTUBOT ERROR REPORT: Laporkan ini ke @NOTUBOTS\n\n"
 
                     ftext += "--------BEGIN NOTUBOT TRACEBACK LOG--------\n"
