@@ -30,7 +30,11 @@
 
 ### Heroku
 Click this button below to Deploy to Heroku
-<p align="center"><a href="https://heroku.com/deploy?template=https://github.com/notudope/notubot/tree/main"><img src="https://www.herokucdn.com/deploy/button.png" alt="Deploy to Heroku"/></a></p>
+<p align="center">
+<a href="https://heroku.com/deploy?template=https://github.com/notudope/notubot/tree/main">
+  <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy to Heroku">
+</a>
+</p>
 
 ## Credits
 * [RaphielGang](https://github.com/RaphielGang/Telegram-Paperplane) - Telegram-Paperplane

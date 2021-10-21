@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # python3 -m pip install --upgrade https://github.com/LonamiWebs/Telethon/archive/master.zip
-import telethon
+from telethon import TelegramClient
+from telethon.sessions import StringSession
 
 print("my.telegram.org")
 
 API_KEY = int(input("Enter API_KEY here: "))
 API_HASH = input("Enter API_HASH here: ")
 
-client = telethon.TelegramClient(telethon.sessions.StringSession(), API_KEY, API_HASH)
+client = TelegramClient(StringSession(), API_KEY, API_HASH)
 
 
 async def main():

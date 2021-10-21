@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# NOTUBOT - UserBot
+# Copyright (C) 2021 notudope
+#
+# This file is a part of < https://github.com/notudope/notubot/ >
+# PLease read the GNU General Public License v3.0 in
+# <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
+
 import argparse
 import shlex
 import subprocess
