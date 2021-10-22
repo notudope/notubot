@@ -147,9 +147,7 @@ notubot/modules/sql_helper/__pycache__/*
 [Ll]ib
 [Ll]ib64
 [Ll]ocal
-[Ss]cripts
 pyvenv.cfg
-.venv
 pip-selfcheck.json
 
 *-notubot.log
