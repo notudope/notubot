@@ -23,13 +23,13 @@ CYAN = "\x1b[36m"
 
 python = "python3"
 app = f"{python} -m notubot"
-app_watch = f"{python} -m scripts.autoreload {app}"
+app_watch = f"{python} scripts/autoreload.py {app}"
 
 black = "brunette --config=setup.cfg ."
 isort = "isort --settings-file=setup.cfg ."
 flake8 = "flake8 --config=setup.cfg ."
 mypy = "mypy --config-file=setup.cfg ."
-prettyjson = f"{python} -m scripts.prettyjson"
+prettyjson = f"{python} scripts/prettyjson.py"
 
 
 def run_command(cmd) -> None:
