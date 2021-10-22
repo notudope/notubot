@@ -32,7 +32,7 @@ CMD_HELP.update(
     {
         "totalmsg": [
             "Total Message",
-            " - `.total [username]/<reply>`: Melihat total pesan pengguna dalam obrolan saat ini.\n",
+            " - `.total [username]/<reply>` : Melihat total pesan pengguna dalam obrolan saat ini.\n",
         ]
     }
 )

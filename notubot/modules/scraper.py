@@ -185,10 +185,10 @@ CMD_HELP.update(
     {
         "scraper": [
             "Scraper",
-            " - `.inviteall <id/username>`: Menculik pengguna dari grup dan ditambahkan ke grup.\n"
-            " - `.getmemb`: Mendapatkan semua member dalam grup.\n"
-            " - `.addmemb`: Menambahkan member ke target grup. Pertama, jalankan `.getmemb` lalu gunakan perintah ini ke target grup.\n"
-            " - `.limit`: Untuk cek akun kena limit.\n",
+            " - `.inviteall <id/username>` : Menculik pengguna dari grup dan ditambahkan ke grup.\n"
+            " - `.getmemb` : Mendapatkan semua member dalam grup.\n"
+            " - `.addmemb` : Menambahkan member ke target grup. Pertama, jalankan `.getmemb` lalu gunakan perintah ini ke target grup.\n"
+            " - `.limit` : Untuk cek akun kena limit.\n",
         ]
     }
 )

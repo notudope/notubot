@@ -265,10 +265,10 @@ CMD_HELP.update(
     {
         "update": [
             "Update",
-            " - `.update`: Mengecek apakah ada pembaruan pada repo UserBot termasuk menampilkan changelog.\n"
-            " - `.update now|pull|one`: Memperbarui sistem UserBot jika ada pembaruan pada repo UserBot.\n"
-            " - `.update deploy|push|all`: Deploy UserBot (heroku), ini akan memaksa deploy meskipun tidak ada pembaruan pada UserBot.\n"
-            " - `.repo`: Github Repository UserBot.\n",
+            " - `.update` : Mengecek apakah ada pembaruan pada repo UserBot termasuk menampilkan changelog.\n"
+            " - `.update now|pull|one` : Memperbarui sistem UserBot jika ada pembaruan pada repo UserBot.\n"
+            " - `.update deploy|push|all` : Deploy UserBot (heroku), ini akan memaksa deploy meskipun tidak ada pembaruan pada UserBot.\n"
+            " - `.repo` : Github Repository UserBot.\n",
         ]
     }
 )
