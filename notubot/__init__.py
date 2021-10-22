@@ -46,24 +46,6 @@ config = {
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 LOGS = logging.getLogger(__name__)
 
-
-class InterceptHandler(logging.Handler):
-    def emit(self, record):
-        try:
-            level = LOGS.level(record.levelname).name
-        except ValueError:
-            level = record.levelno
-        frame, depth = logging.currentframe(), 2
-        while frame.f_code.co_filename == logging.__file__:
-            frame = frame.f_back
-            depth += 1
-        LOGS.opt(depth=depth, exception=record.exc_info).log(level, record.getMessage())
-
-
-logging.getLogger("telethon").setLevel(logging.ERROR)
-logging.basicConfig(handlers=[InterceptHandler()], level="INFO")
-
-
 if sys.version_info[0] < 3 or sys.version_info[1] < 8:
     LOGS.info("You MUST have a python version of at least 3.8." "Multiple features depend on this. Bot quitting.")
     quit(1)

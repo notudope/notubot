@@ -833,9 +833,9 @@ async def get_bots(event):
         remove("botlist.txt")
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.allunban(?: |$)(.*)")
+@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.(allunban|unbanall)(?: |$)(.*)")
 async def allunban(event):
-    await event.edit("`Mencari daftar anggota...`")
+    await event.edit("`Mencari daftar blokir...`")
     p = 0
     (await event.get_chat()).title
     async for i in event.client.iter_participants(
@@ -849,12 +849,12 @@ async def allunban(event):
         except BaseException:
             pass
 
-    await event.edit("`Berhasil unbanned semua anggota group.`")
+    await event.edit("`Berhasil unbanned semua daftar blokir.`")
 
 
 CMD_HELP.update(
     {
-        "admin": [
+        "admin=": [
             "Admin",
             " - `.promote <username/reply> <custom rank (optional)>` : Provides admin rights to the person in the chat.\n"
             " - `.demote <username/reply>` : Revokes the person's admin permissions in the chat.\n"
