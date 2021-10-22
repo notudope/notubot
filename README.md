@@ -38,7 +38,7 @@ Click this button below to Deploy to Heroku.
 </p>
 
 ## Credits
-* [RaphielGang](https://github.com/RaphielGang/Telegram-Paperplane) - Telegram-Paperplane
+* [RaphielGang](https://github.com/RaphielGang) - Telegram-Paperplane
 * [adekmaulana](https://github.com/adekmaulana) - ProjectBish
 * [MoveAngel](https://github.com/MoveAngel) - One4uBot
 * [BianSepang](https://github.com/BianSepang) - WeebProject
