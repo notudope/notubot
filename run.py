@@ -22,8 +22,6 @@ BLUE = "\x1b[34m"
 CYAN = "\x1b[36m"
 
 python = "python3"
-nocache = f"{python} -B"
-
 app = f"{python} -m notubot"
 app_watch = f"{python} -m scripts.autoreload {app}"
 
@@ -31,7 +29,7 @@ black = "brunette --config=setup.cfg ."
 isort = "isort --settings-file=setup.cfg ."
 flake8 = "flake8 --config=setup.cfg ."
 mypy = "mypy --config-file=setup.cfg ."
-prettyjson = f"{nocache} -m scripts.prettyjson"
+prettyjson = f"{python} -m scripts.prettyjson"
 
 
 def run_command(cmd) -> None:
