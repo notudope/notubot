@@ -5,12 +5,12 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV TZ=Asia/Jakarta
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+# hadolint ignore=DL3008
 RUN apt-get -qq -y install --no-install-recommends \
+    tini \
     tzdata \
     locales \
-    tini
-
-RUN dpkg-reconfigure -f noninteractive tzdata \
+    && dpkg-reconfigure -f noninteractive tzdata \
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 ENV LANG en_US.utf8
 
