@@ -101,11 +101,11 @@ CMD_HELP.update(
     {
         "vctools": [
             "VC Tools",
-            "❯`.startvc <silent/s> <judul obrolan>`"
+            ">`.startvc <silent/s> <judul obrolan>`\n"
             "↳ : Memulai Obrolan Video.\n\n"
-            "❯`.stopvc <silent/s>`"
+            ">`.stopvc <silent/s>`\n"
             "↳ : Mematikan Obrolan Video.\n\n"
-            "❯`.vcinvite`"
+            ">`.vcinvite`\n"
             "↳ : Mengundang semua anggota grup ke Obrolan Video.",
         ]
     }

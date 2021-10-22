@@ -854,7 +854,7 @@ async def allunban(event):
 
 CMD_HELP.update(
     {
-        "admin=": [
+        "admin": [
             "Admin",
             " - `.promote <username/reply> <custom rank (optional)>` : Provides admin rights to the person in the chat.\n"
             " - `.demote <username/reply>` : Revokes the person's admin permissions in the chat.\n"
