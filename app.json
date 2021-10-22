@@ -65,12 +65,14 @@
       "required": false
     },
     "BOTLOG": {
-      "description": "Incase you want to turn off logging, put this to false",
-      "value": "False"
+      "description": "Incase you want to turn off logging, put this to False",
+      "value": "True",
+      "required": true
     },
     "BOTLOG_CHATID": {
       "description": "ChatID of the Log group. Set it to '0' if BOTLOG = False and/or if LOGSPAMMER = False.",
-      "value": "0"
+      "value": "0",
+      "required": true
     },
     "PM_AUTO_BAN": {
       "description": "PM Auto-Ban Feature Switch. Also known as the 'bleep blop, this is a bot...' module.",

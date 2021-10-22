@@ -18,10 +18,10 @@ from telethon.utils import get_display_name
 
 from notubot import (
     BOTLOG_CHATID,
-    LOGSPAMMER,
     bot,
     BOT_VER,
     BOT_NAME,
+    LOGSPAMMER,
 )
 from notubot.utils.tools import time_formatter as tf
 

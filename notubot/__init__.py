@@ -8,6 +8,7 @@
 import logging
 import signal
 import sys
+from distutils.util import strtobool
 from os import (
     environ,
     getenv,
@@ -47,16 +48,15 @@ logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s
 LOGS = logging.getLogger(__name__)
 
 if sys.version_info[0] < 3 or sys.version_info[1] < 8:
-    LOGS.info("You MUST have a python version of at least 3.8." "Multiple features depend on this. Bot quitting.")
-    quit(1)
+    LOGS.info("HARUS menggunakan versi python minimal 3.8.")
+    sys.exit(1)
 
 # Check if the config was edited by using the already used variable.
-# Basically, its the 'virginity check' for the config file ;)
-CONFIG_CHECK = getenv("___________PLOX_______REMOVE_____THIS_____LINE__________", default="")
+CONFIG_CHECK = strtobool(getenv("_____REMOVE_____THIS_____LINE_____", default="False"))
 
 if CONFIG_CHECK:
-    LOGS.info("Please remove the line mentioned in the first hashtag from the config.env file")
-    quit(1)
+    LOGS.info("Hapus baris dalam hashtag pertama dari file config.env")
+    sys.exit(1)
 
 # Telegram App KEY and HASH
 API_ID = int(getenv("API_ID", default=0))
@@ -69,8 +69,8 @@ STRING_SESSION = getenv("STRING_SESSION", default="")
 BOTLOG_CHATID = int(getenv("BOTLOG_CHATID", default=0))
 
 # Userbot logging feature switch.
-BOTLOG = bool(getenv("BOTLOG", False))
-LOGSPAMMER = bool(getenv("LOGSPAMMER", False))
+BOTLOG = strtobool(getenv("BOTLOG", default="True"))
+LOGSPAMMER = strtobool(getenv("LOGSPAMMER", default="True"))
 
 # Blacklist group
 BLACKLIST_GROUP = list(map(int, getenv("BLACKLIST_GROUP", default="").split()))
@@ -82,7 +82,7 @@ BOT_NAME = getenv("BOT_NAME", default="⚡NOTUBOT UserBot⚡")
 BOT_VER = getenv("BOT_VER", default="0.1")
 
 # Bleep Blop, this is a bot ;)
-PM_AUTO_BAN = bool(getenv("PM_AUTO_BAN", False))
+PM_AUTO_BAN = strtobool(getenv("PM_AUTO_BAN", default="False"))
 
 # Default .alive name and logo
 ALIVE_NAME = getenv("ALIVE_NAME", default=uname().node)
@@ -112,15 +112,15 @@ OPEN_WEATHER_MAP_APPID = getenv("OPEN_WEATHER_MAP_APPID", default="")
 WEATHER_DEFCITY = getenv("WEATHER_DEFCITY", default="")
 
 # Anti Spambot Config
-ANTI_SPAMBOT = bool(getenv("ANTI_SPAMBOT", False))
-ANTI_SPAMBOT_SHOUT = bool(getenv("ANTI_SPAMBOT_SHOUT", False))
+ANTI_SPAMBOT = strtobool(getenv("ANTI_SPAMBOT", default="False"))
+ANTI_SPAMBOT_SHOUT = strtobool(getenv("ANTI_SPAMBOT_SHOUT", default="False"))
 
 # Time & Date - Country and Time Zone
 COUNTRY = getenv("COUNTRY", default="ID")
 TZ_NUMBER = int(getenv("TZ_NUMBER", default=1))
 
 # Clean Welcome
-CLEAN_WELCOME = bool(getenv("CLEAN_WELCOME", True))
+CLEAN_WELCOME = strtobool(getenv("CLEAN_WELCOME", default="True"))
 
 # OCR API key
 OCR_SPACE_API_KEY = getenv("OCR_SPACE_API_KEY", default="")
@@ -180,14 +180,14 @@ binaries = {
     "https://raw.githubusercontent.com/adekmaulana/megadown/master/megadown": "bin/megadown",
     "https://raw.githubusercontent.com/yshalsager/cmrudl.py/master/cmrudl.py": "bin/cmrudl",
 }
-for binary, p in binaries.items():
-    downloader = SmartDL(binary, p, progress_bar=False)
-    downloader.start()
-    chmod(p, 0o755)
+for file, bin in binaries.items():
+    if not path.exists(bin):
+        downloader = SmartDL(file, bin, progress_bar=False)
+        downloader.start()
+        chmod(bin, 0o755)
 
 
 def shutdown_bot(signum, frame):
-    LOGS.info("Received SIGTERM.")
     bot.disconnect()
     sys.exit(143)
 
@@ -227,23 +227,23 @@ else:
 async def check_botlog_chatid():
     if not BOTLOG_CHATID and LOGSPAMMER:
         LOGS.info(
-            "You must set up the BOTLOG_CHATID variable in the config.env or environment variables, for the private error log storage to work."
+            "Wajib mengatur variabel BOTLOG_CHATID di config.env atau environment variabel, supaya penyimpanan log kesalahan pribadi berfungsi."
         )
-        quit(1)
+        sys.exit(1)
     elif not BOTLOG_CHATID and BOTLOG:
         LOGS.info(
-            "You must set up the BOTLOG_CHATID variable in the config.env or environment variables, for the userbot logging feature to work."
+            "Wajib mengatur variabel BOTLOG_CHATID di config.env atau environment variabel, supaya fitur logging berfungsi."
         )
-        quit(1)
+        sys.exit(1)
     elif not BOTLOG or not LOGSPAMMER:
         return
+
     entity = await bot.get_entity(BOTLOG_CHATID)
     if entity.default_banned_rights.send_messages:
         LOGS.info(
-            "Your account doesn't have rights to send messages to BOTLOG_CHATID "
-            "group. Check if you typed the Chat ID correctly."
+            "Akun tidak memiliki hak/akses untuk mengirim pesan ke grup BOTLOG_CHATID. Periksa apakah ID Obrolan sudah benar."
         )
-        quit(1)
+        sys.exit(1)
 
 
 async def check_alive():
@@ -255,11 +255,8 @@ with bot:
         bot.loop.run_until_complete(check_botlog_chatid())
         bot.loop.run_until_complete(check_alive())
     except BaseException:
-        LOGS.info(
-            "BOTLOG_CHATID environment variable isn't a "
-            "valid entity. Check your environment variables/config.env file."
-        )
-        quit(1)
+        LOGS.info("Environment variable BOTLOG_CHATID tidak valid. Periksa environment variable atau config.env file.")
+        sys.exit(1)
 
 
 async def update_restart_msg(chat_id, msg_id):

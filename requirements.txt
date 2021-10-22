@@ -1,6 +1,5 @@
 aiofile==3.7.2
 aiohttp[speedups]
-uvloop>=0.16.0
 appdirs==1.4.4
 aria2p==0.10.4
 async_generator==1.10
