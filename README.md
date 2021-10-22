@@ -1,6 +1,6 @@
 # `notubot`
 
-> Another **UserBot** made in __Python 3.8__ using `Telethon` for awesome **Telegram** user 😎
+> Another **UserBot** written in _Python 3.8_ using `Telethon` for _awesome Telegram user_ 😎
 
 <p align="center">
     <a href="https://github.com/notudope/notubot/stargazers"> <img src="https://img.shields.io/github/stars/notudope/notubot?logo=github&style=flat-square" alt="Stars" /></a>
@@ -29,7 +29,8 @@
 ## Deploy
 
 ### Heroku
-Click this button below to Deploy to Heroku
+Click this button below to Deploy to Heroku.
+
 <p align="center">
 <a href="https://heroku.com/deploy?template=https://github.com/notudope/notubot/tree/main">
   <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy to Heroku">
@@ -47,4 +48,4 @@ Click this button below to Deploy to Heroku
 and [everyone](https://github.com/notudope/notubot/graphs/contributors) that makes this UserBot awesome :D
 
 ## License
-Licensed under [GNU General Public License v3.0](https://github.com/notudope/notubot/blob/main/LICENSE)
+Licensed under [GNU General Public License](https://github.com/notudope/notubot/blob/main/LICENSE) v3.0.
