@@ -50,7 +50,7 @@ jobs:
       - name: Beautify shell scripts
         uses: illvart/beautysh-action@latest
         with:
-          args: '*.sh --indent-size 2'
+          args: '*.sh --indent-size 2 &>/dev/null'
           
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v4
