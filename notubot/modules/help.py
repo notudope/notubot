@@ -44,14 +44,12 @@ async def help(event):
 
 Daftar semua module beserta perintah tersedia dibawah ini:
 
-______________________________
 {modules}
-______________________________
 
 📌 **Gunakan perintah dengan bijak dan seperlunya, resiko ditanggung pengguna!**"""
 
         await event.edit("⚡")
-        await asyncio.sleep(0.5)
+        await asyncio.sleep(0.3)
         await event.delete()
         helper = await event.client.send_message(
             event.chat_id,
