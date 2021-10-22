@@ -32,7 +32,7 @@ async def help(event):
         modules = ""
         for index in CMD_HELP:
             modules += f"`{str(index)}`  |  "
-        modules = modules[:-2]
+        modules = modules[:-3]
 
         text = f"""`{BOT_NAME}`
 [REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Grup](https://t.me/NOTUBOTS)
