@@ -30,8 +30,8 @@ async def help(event):
             await event.delete()
     else:
         modules = ""
-        for index in CMD_HELP:
-            modules += f"`{str(index)}`  |  "
+        for m in CMD_HELP:
+            modules += f"`{str(m)}`  |  "
         modules = modules[:-3]
 
         text = f"""`{BOT_NAME}`
@@ -44,7 +44,9 @@ async def help(event):
 
 Daftar semua module beserta perintah tersedia dibawah ini:
 
+______________________________
 {modules}
+______________________________
 
 📌 **Gunakan perintah dengan bijak dan seperlunya, resiko ditanggung pengguna!**"""
 
