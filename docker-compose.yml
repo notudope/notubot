@@ -1,6 +1,12 @@
-version: '3.4'
-
+version: "3.9"
 services:
+  notubot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    restart: on-failure
   db:
     image: postgres
     environment:
@@ -9,11 +15,4 @@ services:
       - POSTGRES_PASSWORD=PASSWORD
     ports:
       - 5432:5432
-    restart: always
-  notubot:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    depends_on:
-      - db
     restart: always

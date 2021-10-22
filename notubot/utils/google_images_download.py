@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # In[ ]:
 #  coding: utf-8
+"""
+Searching and Downloading Google Images to the local disk
 
-###### Searching and Downloading Google Images to the local disk ######
+isort:skip_file
+"""
 
 import argparse
-# Import Libraries
 import codecs
 import datetime
 import http.client
@@ -14,7 +16,7 @@ import os
 import re
 import ssl
 import sys
-import time  # Importing the time library to check the time of code execution
+import time
 import urllib.request
 from http.client import BadStatusLine, IncompleteRead
 from urllib.parse import quote

@@ -24,14 +24,14 @@ CYAN = "\x1b[36m"
 python = "python3"
 nocache = f"{python} -B"
 
-app_prod = f"{python} -m notubot -env prod"
-app_dev = f"{python} -m notubot -env dev"
-app_dev_watch = f"{python} -m scripts.autoreload {app_dev}"
+app = f"{python} -m notubot"
+app_watch = f"{python} -m scripts.autoreload {app}"
 
 black = "brunette --config=setup.cfg ."
 isort = "isort --settings-file=setup.cfg ."
 flake8 = "flake8 --config=setup.cfg ."
 mypy = "mypy --config-file=setup.cfg ."
+prettyjson = f"{nocache} -m scripts.prettyjson"
 
 
 def run_command(cmd) -> None:
@@ -61,6 +61,8 @@ def lint() -> None:
     run_command(flake8)
     # print(f"{CYAN}> {mypy}{RST}")
     # run_command(mypy)
+    print(f"{CYAN}> {prettyjson}{RST}")
+    run_command(prettyjson)
 
 
 class CapitalisedHelpFormatter(argparse.HelpFormatter):
@@ -94,23 +96,23 @@ def main() -> None:
         print(f"{BOLD}{GREEN}[ PRODUCTION MODE ]{RST}")
         clean()
 
-        print(f"{BOLD}{BLUE}> {app_prod}{RST}")
-        run_command(app_prod)
+        print(f"{BOLD}{BLUE}> {app}{RST}")
+        run_command(app)
 
     elif args.dev:
         print(f"{BOLD}{GREEN}[ DEVELOPMENT MODE ]{RST}")
         clean()
 
         lint()
-        print(f"{BOLD}{BLUE}> {app_dev}{RST}")
-        run_command(app_dev)
+        print(f"{BOLD}{BLUE}> {app}{RST}")
+        run_command(app)
 
     elif args.watch:
         print(f"{BOLD}{GREEN}[ WATCHED DEVELOPMENT MODE ]{RST}")
         clean()
 
-        print(f"{BOLD}{BLUE}> {app_dev_watch}{RST}")
-        run_command(app_dev_watch)
+        print(f"{BOLD}{BLUE}> {app_watch}{RST}")
+        run_command(app_watch)
 
     elif args.lint:
         print(f"{BOLD}{YELLOW}Run linting and format code...{RST}")
