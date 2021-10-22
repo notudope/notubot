@@ -23,7 +23,7 @@ async def help(event):
 
     if args:
         if args in CMD_HELP:
-            await event.edit(f"Module **{CMD_HELP[args][0]}**:\n\n" + str(CMD_HELP[args][1]))
+            await event.edit(f"Module **{CMD_HELP[args][0]}**\n\n" + str(CMD_HELP[args][1]))
         else:
             await event.edit(f"😐 Module [`{args}`] tidak ada! Ketik ```.help``` untuk melihat nama module yang benar.")
             await asyncio.sleep(200)
