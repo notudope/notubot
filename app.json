@@ -1,15 +1,18 @@
 {
   "name": "NOTUBOT UserBot",
-  "description": "[notubot] A modular Telegram userbot running on Python 3.8",
+  "description": "[notubot] Another UserBot made in Python 3.8 using Telethon for awesome Telegram user.",
+  "logo": "",
   "keywords": [
+    "Telethon",
     "telegram",
     "userbot",
+    "python",
     "plugin",
     "modular",
     "productivity"
   ],
   "repository": "https://github.com/notudope/notubot",
-  "website": "https://telegra.ph/How-to-host-a-Telegram-Userbot-11-02",
+  "website": "https://github.com/notudope/notubot",
   "success_url": "https://t.me/notudope",
   "stack": "container",
   "env": {

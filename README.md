@@ -1,6 +1,6 @@
 # `notubot`
 
-> Another **UserBot** powered by `Telethon` for lazy **Telegram** user 😖
+> Another **UserBot** made in __Python 3.8__ using `Telethon` for awesome **Telegram** user 😎
 
 <p align="center">
     <a href="https://github.com/notudope/notubot/stargazers"> <img src="https://img.shields.io/github/stars/notudope/notubot?logo=github&style=flat-square" alt="Stars" /></a>
