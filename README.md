@@ -3,11 +3,12 @@
 > Another **UserBot** written in _Python 3.8_ using `Telethon` for _awesome Telegram user_ 😎
 
 <p align="center">
-    <a href="https://github.com/notudope/notubot/stargazers"> <img src="https://img.shields.io/github/stars/notudope/notubot?logo=github&style=flat-square" alt="Stars" /></a>
-    <a href="https://github.com/notudope/notubot/network/members"> <img src="https://img.shields.io/github/forks/notudope/notubot?logo=github&style=flat-square" alt="Forks" /></a>
-    <a href="https://github.com/notudope/notubot/watchers"> <img src="https://img.shields.io/github/watchers/notudope/notubot?logo=github&style=flat-square" alt="Watch" /></a><br>
-    <a href="https://github.com/notudope/notubot/graphs/contributors"> <img src="https://img.shields.io/github/contributors/notudope/notubot?color=blue&style=flat-square" alt="Contributors" /></a>
-    <a href="https://pypi.org/project/Telethon/"> <img src="https://img.shields.io/pypi/v/telethon?label=telethon&logo=pypi&logoColor=white&style=flat-square" /></a>
+    <a href="https://github.com/notudope/notubot/actions/workflows/ci.yml"><img src="https://github.com/notudope/notubot/actions/workflows/ci.yml/badge.svg" alt="CI" /></a><br>
+    <a href="https://github.com/notudope/notubot/stargazers"><img src="https://img.shields.io/github/stars/notudope/notubot?logo=github" alt="Stars" /></a>
+    <a href="https://github.com/notudope/notubot/network/members"><img src="https://img.shields.io/github/forks/notudope/notubot?logo=github" alt="Forks" /></a>
+    <a href="https://github.com/notudope/notubot/watchers"><img src="https://img.shields.io/github/watchers/notudope/notubot?logo=github" alt="Watch" /></a><br>
+    <a href="https://github.com/notudope/notubot/graphs/contributors"><img src="https://img.shields.io/github/contributors/notudope/notubot?color=blue" alt="Contributors" /></a>
+    <a href="https://pypi.org/project/Telethon/"><img src="https://img.shields.io/pypi/v/telethon?label=telethon&logo=pypi&logoColor=white" alt="Telethon" /></a>
 </p>
 
 ```
