@@ -56,6 +56,6 @@ Daftar semua module beserta perintah tersedia dibawah ini:
             text,
             link_preview=False,
         )
-        await helper.reply(f"\n**Contoh** : Ketik <`.help admin`> Untuk informasi pengunaan.")
+        await helper.reply("**Contoh :** Ketik <`.help admin`> Untuk informasi pengunaan.")
         await asyncio.sleep(1000)
         await helper.delete()
