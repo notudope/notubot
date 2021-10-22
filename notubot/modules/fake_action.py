@@ -42,13 +42,12 @@ async def fakeaction(event):
 
 CMD_HELP.update(
     {
-        "fakeaction": ">`.ftyping <detik>`"
-        "\nUsage : Seakan akan sedang mengetik padahal tidak."
-        "\n\n>`.faudio <detik>`"
-        "\nUsage : Berfungsi sama seperti ftyping tapi ini fake audio."
-        "\n\n>`.fgame <detik>`"
-        "\nUsage : Berfungsi sama seperti ftyping tapi ini fake game."
-        "\n\n>`.fvideo <detik>`"
-        "\nUsage : Berfungsi sama seperti ftyping tapi ini fake video."
+        "fakeaction": [
+            "Fake Action",
+            " - `.ftyping <detik>` : Seakan akan sedang mengetik padahal tidak.\n"
+            " - `.faudio <detik>` : Berfungsi sama seperti ftyping tapi ini fake audio.\n"
+            " - `.fgame <detik>` : Berfungsi sama seperti ftyping tapi ini fake game.\n"
+            " - `.fvideo <detik>` : Berfungsi sama seperti ftyping tapi ini fake video.\n",
+        ]
     }
 )

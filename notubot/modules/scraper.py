@@ -169,12 +169,12 @@ async def addmemb(event):
 async def limit(event):
     await event.edit("`Mengecek apakah akun kena limit...`")
 
-    async with event.client.conversation("@SpamBot") as conv:
+    async with event.client.conversation("@SpamBot") as cov:
         try:
-            res = conv.wait_event(events.NewMessage(incoming=True, from_users=178220800))
-            await conv.send_message("/start")
+            res = cov.wait_event(events.NewMessage(incoming=True, from_users=178220800))
+            await cov.send_message("/start")
             res = await res
-            await event.client.send_read_acknowledge(conv.chat_id)
+            await event.client.send_read_acknowledge(cov.chat_id)
         except YouBlockedUserError:
             await event.edit("`Unblock dulu @SpamBot`")
             return

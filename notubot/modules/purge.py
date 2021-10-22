@@ -187,20 +187,16 @@ async def selfd(event):
 
 CMD_HELP.update(
     {
-        "purge": ">`.del|del|Del`"
-        "\nUsage: Menghapus pesan yang dibalas."
-        "\n\n>`.purge`"
-        "\nUsage: Menghapus semua pesan dari balasan."
-        "\n\n>`.purgeme <x>`"
-        "\nUsage: Menghapus <x> pesan dari yang terbaru."
-        "\n\n>`.purgeall`"
-        "\nUsage: Menghapus semua pesan pengguna yang dibalas."
-        "\n\n>`.copy`"
-        "\nUsage: Copy pesan yang dibalas."
-        "\n\n>`.edit <newmessage>`"
-        "\nUsage: Mengubah pesan terbaru dengan <newmessage>."
-        "\n\n>`.sd <x> <message>`"
-        "\nUsage: Membuat pesan menjadi selfdestructs dalam <x> detik."
-        "\nUsahakan tetap dibawah 100 detik, untuk mengatasi UserBot tertidur."
+        "purge": [
+            "Purge",
+            " - `.del|del|Del` : Menghapus pesan yang dibalas.\n"
+            " - `.purge` : Menghapus semua pesan dari balasan.\n"
+            " - `.purgeme <x>` : Menghapus <x> pesan dari yang terbaru.\n"
+            " - `.purgeall` : Menghapus semua pesan pengguna yang dibalas.\n"
+            " - `.copy`: Copy pesan yang dibalas.\n"
+            " - `.edit <newmessage>` : Mengubah pesan terbaru dengan <newmessage>.\n"
+            " - `.sd <x> <message>` : Membuat pesan menjadi selfdestructs dalam <x> detik.\n"
+            "Usahakan tetap dibawah 100 detik, untuk mengatasi UserBot tertidur.\n",
+        ]
     }
 )

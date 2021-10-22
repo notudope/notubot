@@ -127,15 +127,16 @@ async def json(event):
 
 CMD_HELP.update(
     {
-        "random": ">`.random <item1> <item2> ... <itemN>`" "\nUsage: Get a random item from the list of items.",
-        "sleep": ">`.sleep <seconds>`" "\nUsage: Let yours snooze for a few seconds.",
-        "shutdown": ">`.shutdown`" "\nUsage: Shutdown bot",
-        "repeat": ">`.repeat <no> <text>`"
-        "\nUsage: Repeats the text for a number of times. Don't confuse this with spam tho.",
-        "restart": ">`.restart`" "\nUsage: Restarts the bot !!",
-        "raw": ">`.raw`" "\nUsage: Get detailed JSON-like formatted data about replied message.",
-        "json": ">`.json`"
-        "\nUsage: Mengambil data json dari sebuah pesan, "
-        "Balas pesan tersebut untuk menampilkannya!",
+        "misc": [
+            "Misc",
+            " - `.restart` : Restarts the bot.\n"
+            " - `.shutdown` : Shutdown bot.\n"
+            " - `.sleep <detik>` : Let yours snooze for a few seconds.\n"
+            " - `.random <item1> <item2> ... <itemN>` : Get a random item from the list of items.\n"
+            " - `.repeat <no> <text>` : Repeats the text for a number of times. Don't confuse this with spam tho.\n"
+            " - `.raw` : Get detailed JSON-like formatted data about replied message.\n"
+            " - `.json` : Mengambil data json dari sebuah pesan, \n"
+            "Balas pesan tersebut untuk menampilkannya!\n",
+        ]
     }
 )

@@ -326,18 +326,16 @@ async def gsend(event):
 
 CMD_HELP.update(
     {
-        "globaltools": ">`.gban`"
-        "\nUsage: Global Banned ke semua grup yang menjadi admin, "
-        "Gunakan perintah ini dengan bijak!"
-        "\n\n>`.ungban`"
-        "\nUsage: Membatalkan global Banned."
-        "\n\n>`.gcast`"
-        "\nUsage: Mengirim Pesan Group secara global, "
-        "\nGak usah idiot, jangan berlebihan, resiko (limit, kena kick/banned/fban) ditanggung pengguna!"
-        "\n\n>`.gucast`"
-        "\nUsage: Mengirim Pesan Pribadi secara global, "
-        "Gak usah spam, seperlunya aja!"
-        "\n\n>`.gsend <link grup> <pesan>`"
-        "\nUsage: Mengirim pesan jarak jauh ke grup lain."
+        "globaltools": [
+            "Global Tools",
+            " - `.gban` : Global Banned ke semua grup yang menjadi admin, \n"
+            "Gunakan perintah ini dengan bijak!\n"
+            " - `.ungban` : Membatalkan global Banned.\n"
+            " - `.gcast` : Mengirim Pesan Group secara global, \n"
+            "Gak usah idiot, jangan berlebihan, resiko (limit, kena kick/banned/fban) ditanggung pengguna!"
+            " - `.gucast` : Mengirim Pesan Pribadi secara global, \n"
+            "Gak usah spam, seperlunya aja!\n"
+            " - `.gsend <link grup> <pesan>` : Mengirim pesan jarak jauh ke grup lain.\n",
+        ]
     }
 )

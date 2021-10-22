@@ -23,9 +23,7 @@ async def help(event):
 
     if args:
         if args in CMD_HELP:
-            await event.edit(
-                f"Berikut pengunaan module **{CMD_HELP[args][0]}**:\n\n" + str(CMD_HELP[args][1])
-            )
+            await event.edit(f"Module **{CMD_HELP[args][0]}**:\n\n" + str(CMD_HELP[args][1]))
         else:
             await event.edit(f"😖 Module [`{args}`] tidak ada! Ketik ```.help``` untuk melihat nama module yang benar.")
             await asyncio.sleep(200)
@@ -36,18 +34,18 @@ async def help(event):
 
         head2 = f"😎 **Owner :** __{ALIVE_NAME}__"
         head3 = f"🤖 **Version :** `v{BOT_VER}`"
-        head4 = f"📦 **Module :** `{len(CMD_HELP.values())}`"
+        head4 = f"📦 **Module :** `{len(CMD_HELP)}`"
         head5 = "👨‍💻 **Usage :** `.help <nama module>`"
         head6 = "Daftar semua perintah tersedia di bawah ini: "
         head7 = "📌 **Gunakan perintah diatas dengan bijak dan seperlunya, resiko ditanggung pengguna!**"
 
         string = ""
-        for i in CMD_HELP:
-            string += f"`{str(i)}`, "
+        for index in CMD_HELP:
+            string += f"`{str(index)}` | "
         string = string[:-2]
 
         await event.edit("⚡")
-        await asyncio.sleep(1)
+        await asyncio.sleep(0.5)
         await event.delete()
 
         helper = await event.client.send_message(
