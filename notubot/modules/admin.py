@@ -854,8 +854,8 @@ async def allunban(event):
 
 CMD_HELP.update(
     {
-        "admins": [
-            "Admins",
+        "admin": [
+            "Admin",
             " - `.promote <username/reply> <custom rank (optional)>` : Provides admin rights to the person in the chat.\n"
             " - `.demote <username/reply>` : Revokes the person's admin permissions in the chat.\n"
             " - `.ban <username/reply> <reason (optional)>` : Bans the person off your chat.\n"
@@ -869,7 +869,7 @@ CMD_HELP.update(
             " - `.all` : Tag all member in the group chat.\n"
             " - `.admins` : Retrieves a list of admins in the chat.\n"
             " - `.bots` : Retrieves a list of bots in the chat.\n"
-            " - `.users` or >`.users <name of member>` : Retrieves all (or queried) users in the chat.\n"
+            " - `.users <name of member>` : Retrieves all (or queried) users in the chat.\n"
             " - `.setgppic <reply to image>` : Changes the group's display picture.\n"
             " - `.allunban` : Unbanned all members thought group.\n",
         ]
