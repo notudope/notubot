@@ -225,6 +225,10 @@ async def upstream(event):
 
     changelog = await gen_chlog(repo, f"HEAD..upstream/{ac_br}")
 
+    if opts == "deploy" or opts == "push" or opts == "all":
+        await event.edit(f"`Proses Deploy {BOT_NAME} Harap Tunggu...`")
+        await deploy(event, repo, ups_rem, ac_br, txt)
+
     if changelog == "" and force_update is False:
         await event.edit(f"\n`{BOT_NAME}`  **up-to-date** branch " f"`{UPSTREAM_REPO_BRANCH}`\n")
         return repo.__del__()
@@ -249,9 +253,6 @@ async def upstream(event):
     if opts == "now" or opts == "pull" or opts == "one":
         await event.edit(f"`Memperbarui {BOT_NAME} Harap Tunggu...`")
         await update(event, repo, ups_rem, ac_br)
-    elif opts == "deploy" or opts == "push" or opts == "all":
-        await event.edit(f"`Proses Deploy {BOT_NAME} Harap Tunggu...`")
-        await deploy(event, repo, ups_rem, ac_br, txt)
     return
 
 
