@@ -31,7 +31,7 @@ async def help(event):
     else:
         modules = ""
         for index in CMD_HELP:
-            modules += f"`{str(index)}` ❘ "
+            modules += f"`{str(index)}`  |  "
         modules = modules[:-2]
 
         text = f"""`{BOT_NAME}`
