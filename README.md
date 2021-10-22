@@ -45,7 +45,7 @@ Click this button below to Deploy to Heroku.
 * [vckyou](https://github.com/vckyou) - Geez-UserBot
 * [TeamUltroid](https://github.com/TeamUltroid) - Ultroid
 
-and [everyone](https://github.com/notudope/notubot/graphs/contributors) that makes this UserBot awesome :D
+and [everyone](https://github.com/notudope/notubot/graphs/contributors) 🦄
 
 ## License
 Licensed under [GNU General Public License](https://github.com/notudope/notubot/blob/main/LICENSE) v3.0.
