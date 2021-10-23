@@ -17,23 +17,22 @@ from notubot import (
     LOGS,
     bot,
     BOT_NAME,
+    LOOP,
 )
 from notubot.plugins import ALL_PLUGINS
-
-loop = asyncio.get_event_loop()
 
 
 async def shutdown_bot(signum) -> None:
     LOGS.warning("Received signal : {}".format(signum))
     await bot.disconnect()
-    if loop.is_running():
-        loop.stop()
+    if LOOP.is_running():
+        LOOP.stop()
 
 
 def trap() -> None:
     for signame in {"SIGINT", "SIGTERM", "SIGABRT"}:
         sig = getattr(signal, signame)
-        loop.add_signal_handler(sig, lambda s=sig: asyncio.create_task(shutdown_bot(s.name)))
+        LOOP.add_signal_handler(sig, lambda s=sig: asyncio.create_task(shutdown_bot(s.name)))
 
 
 trap()
@@ -56,7 +55,7 @@ async def main() -> None:
 if __name__ == "__main__":
     try:
         uvloop.install()
-        loop.run_until_complete(main())
+        LOOP.run_until_complete(main())
     except (NotImplementedError, KeyboardInterrupt, SystemExit):
         pass
     except Exception as e:

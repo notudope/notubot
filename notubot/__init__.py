@@ -217,13 +217,16 @@ def migration_workaround() -> None:
     return None
 
 
+LOOP = asyncio.get_event_loop()
+
+
 def client_connection() -> TelegramClient:
     client = None
     try:
         if STRING_SESSION:
-            client = TelegramClient(StringSession(STRING_SESSION), api_id=API_ID, api_hash=API_HASH)
+            client = TelegramClient(StringSession(STRING_SESSION), api_id=API_ID, api_hash=API_HASH, loop=LOOP)
         else:
-            client = TelegramClient("notubot", api_id=API_ID, api_hash=API_HASH)
+            client = TelegramClient("notubot", api_id=API_ID, api_hash=API_HASH, loop=LOOP)
 
         client.parse_mode = "markdown"
     except (AuthKeyDuplicatedError, PhoneNumberInvalidError, EOFError):
