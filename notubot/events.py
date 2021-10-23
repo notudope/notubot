@@ -25,8 +25,6 @@ from notubot import (
 )
 from notubot.utils.tools import time_formatter as tf
 
-# from notubot.utils.pastebin import PasteBin
-
 
 def bot_cmd(**args):
     """Register a new event."""
@@ -161,14 +159,6 @@ def bot_cmd(**args):
 
                     if LOGSPAMMER:
                         await chat.respond("`NOTUBOT-UserBot ERROR! Catatan disimpan pada BOTLOG.`")
-
-                        """
-                        async with PasteBin(ftext) as client:
-                            await client.post()
-                            if client:
-                                text += f"\n\nPasted to : [URL]({client.raw_link})"
-                        """
-
                         await chat.client.send_file(send_to, "error.log", caption=text)
                         remove("error.log")
             else:

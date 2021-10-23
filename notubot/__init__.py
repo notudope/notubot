@@ -6,7 +6,6 @@
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
 import logging
-import signal
 import sys
 from distutils.util import strtobool
 from os import (
@@ -25,7 +24,19 @@ from pylast import LastFMNetwork, md5
 from pySmartDL import SmartDL
 from requests import get
 from telethon import TelegramClient, version
+from telethon.errors.rpcerrorlist import ApiIdInvalidError, AuthKeyDuplicatedError, PhoneNumberInvalidError
 from telethon.sessions import StringSession
+
+logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
+LOGS = logging.getLogger(__name__)
+
+if not sys.platform.startswith("linux"):
+    LOGS.error("Wajib menggunakan Platform linux, saat ini {}".format(sys.platform))
+    sys.exit(1)
+
+if sys.version_info[0] < 3 or sys.version_info[1] < 8:
+    LOGS.error("HARUS menggunakan versi python minimal 3.8.")
+    sys.exit(1)
 
 dirs = ["logs", "bin"]
 for dir in dirs:
@@ -44,18 +55,11 @@ config = {
     **environ,
 }
 
-logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
-LOGS = logging.getLogger(__name__)
-
-if sys.version_info[0] < 3 or sys.version_info[1] < 8:
-    LOGS.info("HARUS menggunakan versi python minimal 3.8.")
-    sys.exit(1)
-
 # Check if the config was edited by using the already used variable.
 CONFIG_CHECK = strtobool(getenv("_____REMOVE_____THIS_____LINE_____", default="False"))
 
 if CONFIG_CHECK:
-    LOGS.info("Hapus baris dalam hashtag pertama dari file config.env")
+    LOGS.error("Hapus baris dalam hashtag pertama dari file config.env")
     sys.exit(1)
 
 # Telegram App KEY and HASH
@@ -187,19 +191,12 @@ for file, bin in binaries.items():
         chmod(bin, 0o755)
 
 
-def shutdown_bot(signum, frame):
-    bot.disconnect()
-    sys.exit(143)
-
-
-signal.signal(signal.SIGTERM, shutdown_bot)
-
-
-def migration_workaround():
+def migration_workaround() -> None:
     try:
         from notubot.modules.sql_helper.globals import addgvar, delgvar, gvarstatus
     except AttributeError:
         return None
+
     old_ip = gvarstatus("public_ip")
     new_ip = get("https://api.ipify.org").text
     if old_ip is None:
@@ -208,6 +205,7 @@ def migration_workaround():
         return None
     if old_ip == new_ip:
         return None
+
     sleep_time = 180
     LOGS.info(f"A change in IP address is detected, waiting for {sleep_time / 60} minutes before starting the bot.")
     sleep(sleep_time)
@@ -217,21 +215,39 @@ def migration_workaround():
     return None
 
 
-bot = None
-if STRING_SESSION:
-    bot = TelegramClient(session=StringSession(STRING_SESSION), api_id=API_ID, api_hash=API_HASH)
-else:
-    bot = TelegramClient(session="notubot", api_id=API_ID, api_hash=API_HASH)
+def client_connection() -> TelegramClient:
+    client = None
+    try:
+        if STRING_SESSION:
+            client = TelegramClient(StringSession(STRING_SESSION), api_id=API_ID, api_hash=API_HASH)
+        else:
+            client = TelegramClient("notubot", api_id=API_ID, api_hash=API_HASH)
+
+        client.parse_mode = "markdown"
+    except (AuthKeyDuplicatedError, PhoneNumberInvalidError, EOFError):
+        LOGS.warning("STRING_SESSION Kedaluwarsa. Silakan buat STRING_SESSION baru. Berhenti...")
+        sys.exit(1)
+    except ApiIdInvalidError:
+        LOGS.warning("Kombinasi API_ID dan API_HASH tidak valid. Silahkan cek ulang. Berhenti...")
+        sys.exit(1)
+    except Exception as e:
+        LOGS.exception("ERROR - {}".format(e))
+        sys.exit(1)
+
+    return client
 
 
-async def check_botlog_chatid():
+bot = client_connection()
+
+
+async def check_botlog_chatid() -> None:
     if not BOTLOG_CHATID and LOGSPAMMER:
-        LOGS.info(
+        LOGS.warning(
             "Wajib mengatur variabel BOTLOG_CHATID di config.env atau environment variabel, supaya penyimpanan log kesalahan pribadi berfungsi."
         )
         sys.exit(1)
     elif not BOTLOG_CHATID and BOTLOG:
-        LOGS.info(
+        LOGS.warning(
             "Wajib mengatur variabel BOTLOG_CHATID di config.env atau environment variabel, supaya fitur logging berfungsi."
         )
         sys.exit(1)
@@ -240,26 +256,37 @@ async def check_botlog_chatid():
 
     entity = await bot.get_entity(BOTLOG_CHATID)
     if entity.default_banned_rights.send_messages:
-        LOGS.info(
+        LOGS.warning(
             "Akun tidak memiliki hak/akses untuk mengirim pesan ke grup BOTLOG_CHATID. Periksa apakah ID Obrolan sudah benar."
         )
         sys.exit(1)
 
 
-async def check_alive():
+with bot:
+    try:
+        bot.loop.run_until_complete(check_botlog_chatid())
+    except BaseException:
+        LOGS.warning(
+            "Environment variable BOTLOG_CHATID tidak valid. Periksa environment variable atau config.env file."
+        )
+        sys.exit(1)
+
+
+async def check_alive() -> None:
     await bot.send_message(BOTLOG_CHATID, f"```{BOT_NAME} v{BOT_VER} Launched 🚀```")
 
 
 with bot:
     try:
-        bot.loop.run_until_complete(check_botlog_chatid())
         bot.loop.run_until_complete(check_alive())
     except BaseException:
-        LOGS.info("Environment variable BOTLOG_CHATID tidak valid. Periksa environment variable atau config.env file.")
+        LOGS.warning(
+            "Environment variable BOTLOG_CHATID tidak valid. Periksa environment variable atau config.env file."
+        )
         sys.exit(1)
 
 
-async def update_restart_msg(chat_id, msg_id):
+async def update_restart_msg(chat_id: int, msg_id: int) -> bool:
     message = (
         f"`{BOT_NAME}`\n"
         f"[REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Grup](https://t.me/NOTUBOTS)\n\n"
