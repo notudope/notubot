@@ -10,8 +10,6 @@ import signal
 import sys
 from importlib import import_module
 
-import uvloop
-
 from notubot import (
     BOT_VER,
     LOGS,
@@ -19,6 +17,9 @@ from notubot import (
     BOT_NAME,
 )
 from notubot.plugins import ALL_PLUGINS
+
+# import uvloop
+
 
 loop = asyncio.get_event_loop()
 
@@ -55,7 +56,7 @@ async def main() -> None:
 
 if __name__ == "__main__":
     try:
-        uvloop.install()
+        # uvloop.install()
         loop.run_until_complete(main())
     except (NotImplementedError, KeyboardInterrupt, SystemExit):
         pass
