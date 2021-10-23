@@ -31,11 +31,11 @@ logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s
 LOGS = logging.getLogger(__name__)
 
 if not sys.platform.startswith("linux"):
-    LOGS.error("Wajib menggunakan Platform linux, saat ini {}".format(sys.platform))
+    LOGS.error("HARUS menggunakan Platform linux, saat ini {}".format(sys.platform))
     sys.exit(1)
 
 if sys.version_info[0] < 3 or sys.version_info[1] < 8:
-    LOGS.error("HARUS menggunakan versi python minimal 3.8.")
+    LOGS.error("HARUS menggunakan python versi minimal 3.8.")
     sys.exit(1)
 
 dirs = ["logs", "bin"]
