@@ -5,6 +5,7 @@
 # PLease read the GNU General Public License v3.0 in
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
+import asyncio
 import logging
 import sys
 from distutils.util import strtobool
