@@ -13,7 +13,7 @@ from time import gmtime, strftime, sleep
 from traceback import format_exc
 
 from telethon import version, events
-from telethon.errors.rpcerrorlist import FloodWaitError, MessageIdInvalidError
+from telethon.errors.rpcerrorlist import FloodWaitError, MessageIdInvalidError, MessageNotModifiedError
 from telethon.utils import get_display_name
 
 from notubot import (
@@ -115,7 +115,13 @@ def bot_cmd(**args):
                 )
             except events.StopPropagation:
                 raise events.StopPropagation
-            except (MessageIdInvalidError, asyncio.exceptions.CancelledError, KeyboardInterrupt, SystemExit):
+            except (
+                MessageIdInvalidError,
+                MessageNotModifiedError,
+                asyncio.exceptions.CancelledError,
+                KeyboardInterrupt,
+                SystemExit,
+            ):
                 pass
 
             except BaseException:
@@ -146,6 +152,7 @@ def bot_cmd(**args):
 
                     ftext += "\n\n\nLast 5 commits:\n"
 
+                    # NotImplementedError
                     process = await asyncio.create_subprocess_shell(
                         command, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
                     )
