@@ -44,10 +44,14 @@ CMD_HELP.update(
     {
         "fakeaction": [
             "Fake Action",
-            " - `.ftyping <detik>` : Seakan akan sedang mengetik padahal tidak.\n"
-            " - `.faudio <detik>` : Berfungsi sama seperti ftyping tapi ini fake audio.\n"
-            " - `.fgame <detik>` : Berfungsi sama seperti ftyping tapi ini fake game.\n"
-            " - `.fvideo <detik>` : Berfungsi sama seperti ftyping tapi ini fake video.\n",
+            ">`.ftyping <detik>`\n"
+            "↳ : Seakan akan sedang mengetik padahal tidak.\n\n"
+            ">`.faudio <detik>`\n"
+            "↳ : Berfungsi sama seperti ftyping tapi ini fake audio.\n\n"
+            ">`.fgame <detik>`\n"
+            "↳ : Berfungsi sama seperti ftyping tapi ini fake game.\n\n"
+            ">`.fvideo <detik>`\n"
+            "↳ : Berfungsi sama seperti ftyping tapi ini fake video.",
         ]
     }
 )

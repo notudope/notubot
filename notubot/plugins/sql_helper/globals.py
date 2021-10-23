@@ -1,5 +1,5 @@
 try:
-    from notubot.modules.sql_helper import BASE, SESSION
+    from notubot.plugins.sql_helper import BASE, SESSION
 except ImportError:
     raise AttributeError
 

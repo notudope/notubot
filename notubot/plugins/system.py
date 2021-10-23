@@ -183,12 +183,18 @@ CMD_HELP.update(
     {
         "system": [
             "System",
-            " - `.sysd` : Show system information using neofetch.\n"
-            " - `.botver` : Show NOTUBOT version.\n"
-            " - `.pip <module(s)>` : Search module(s) in PyPI.\n"
-            " - `.alive` : Check if NOTUBOT is running. \n"
-            " - `.aliveu <new_user>` : Change the user name in .alive command (aesthetics change only)\n"
-            " - `.resetalive` : Reset the user name in the .alive command to default (aesthetics change only)\n",
+            ">`.sysd`\n"
+            "↳ : Show system information using neofetch.\n\n"
+            ">`.botver`\n"
+            "↳ : Show NOTUBOT version.\n\n"
+            ">`.pip <module(s)>`\n"
+            "↳ : Search module(s) in PyPI.\n\n"
+            ">`.alive`\n"
+            "↳ : Check if NOTUBOT is running.\n\n"
+            ">`.aliveu <new_user>`\n"
+            "↳ : Change the user name in .alive command (aesthetics change only).\n\n"
+            ">`.resetalive`\n"
+            "↳ : Reset the user name in the .alive command to default (aesthetics change only).",
         ]
     }
 )

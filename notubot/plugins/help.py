@@ -23,28 +23,28 @@ async def help(event):
 
     if args:
         if args in CMD_HELP:
-            await event.edit(f"Module **{CMD_HELP[args][0]}**\n\n" + str(CMD_HELP[args][1]))
+            await event.edit(f"📦 Plugin **{CMD_HELP[args][0]}** <`.help {args}`>\n\n" + str(CMD_HELP[args][1]))
         else:
-            await event.edit(f"😮‍💨 Module [`{args}`] tidak ada! Ketik <`.help`> untuk melihat nama module yang benar.")
+            await event.edit(f"😮‍💨 Plugin [`{args}`] tidak ada! Ketik <`.help`> untuk melihat nama plugin yang benar.")
             await asyncio.sleep(200)
             await event.delete()
     else:
-        modules = ""
-        for m in CMD_HELP:
-            modules += f"`{str(m)}`  |  "
-        modules = modules[:-3]
+        plugins = ""
+        for p in CMD_HELP:
+            plugins += f"`{str(p)}`  |  "
+        plugins = plugins[:-3]
 
         text = f"""`{BOT_NAME}`
 [REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Grup](https://t.me/NOTUBOTS)
 
 😎 **Owner :** __{ALIVE_NAME}__
 🤖 **Version :** `v{BOT_VER}`
-📦 **Module :** `{len(CMD_HELP)}`
-👨‍💻 **Usage :** `.help <nama module>`
+📦 **Plugin :** `{len(CMD_HELP)}`
+👨‍💻 **Usage :** `.help <nama plugin>`
 
-Daftar semua module beserta perintah tersedia dibawah ini:
+Daftar semua plugin beserta perintah tersedia dibawah ini:
 
-{modules}
+{plugins}
 
 📌 **Gunakan perintah dengan bijak dan seperlunya, resiko ditanggung pengguna!**"""
 

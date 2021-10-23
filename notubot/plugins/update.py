@@ -105,7 +105,7 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
         await event.edit(f"`{BOT_NAME} dyno sedang memperbarui, perkiraan waktu 2-7 menit...`")
 
         try:
-            from notubot.modules.sql_helper.globals import addgvar, delgvar
+            from notubot.plugins.sql_helper.globals import addgvar, delgvar
 
             delgvar("restartstatus")
             addgvar("restartstatus", f"{event.chat_id}\n{event.id}")
@@ -160,7 +160,7 @@ async def update(event, repo, ups_rem, ac_br):
         await event.client.send_message(BOTLOG_CHATID, "#bot #pull \n" f"**{BOT_NAME} Telah Diperbarui ツ**")
 
     try:
-        from notubot.modules.sql_helper.globals import addgvar, delgvar
+        from notubot.plugins.sql_helper.globals import addgvar, delgvar
 
         delgvar("restartstatus")
         addgvar("restartstatus", f"{event.chat_id}\n{event.id}")
@@ -266,10 +266,14 @@ CMD_HELP.update(
     {
         "update": [
             "Update",
-            " - `.update` : Mengecek apakah ada pembaruan pada repo UserBot termasuk menampilkan changelog.\n"
-            " - `.update now|pull|one` : Memperbarui sistem UserBot jika ada pembaruan pada repo UserBot.\n"
-            " - `.update deploy|push|all` : Deploy UserBot (heroku), ini akan memaksa deploy meskipun tidak ada pembaruan pada UserBot.\n"
-            " - `.repo` : Github Repository UserBot.\n",
+            ">`.update`\n"
+            "↳ : Mengecek apakah ada pembaruan pada repo UserBot termasuk menampilkan changelog.\n\n"
+            ">`.update now|pull|one`\n"
+            "↳ : Memperbarui sistem UserBot jika ada pembaruan pada repo UserBot.\n\n"
+            ">`.update deploy|push|all`\n"
+            "↳ : Deploy UserBot (heroku), ini akan memaksa deploy meskipun tidak ada pembaruan pada UserBot.\n\n"
+            ">`.repo`\n"
+            "↳ : Github Repository UserBot.\n\n",
         ]
     }
 )

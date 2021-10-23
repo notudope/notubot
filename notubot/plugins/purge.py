@@ -189,14 +189,21 @@ CMD_HELP.update(
     {
         "purge": [
             "Purge",
-            " - `.del|del|Del` : Menghapus pesan yang dibalas.\n"
-            " - `.purge` : Menghapus semua pesan dari balasan.\n"
-            " - `.purgeme <x>` : Menghapus <x> pesan dari yang terbaru.\n"
-            " - `.purgeall` : Menghapus semua pesan pengguna yang dibalas.\n"
-            " - `.copy`: Copy pesan yang dibalas.\n"
-            " - `.edit <newmessage>` : Mengubah pesan terbaru dengan <newmessage>.\n"
-            " - `.sd <x> <message>` : Membuat pesan menjadi selfdestructs dalam <x> detik.\n"
-            "Usahakan tetap dibawah 100 detik, untuk mengatasi UserBot tertidur.\n",
+            ">`.del|del|Del`\n"
+            "↳ : Menghapus pesan yang dibalas.\n\n"
+            ">`.purge`\n"
+            "↳ : Menghapus semua pesan dari balasan.\n\n"
+            ">`.purgeme <x>`\n"
+            "↳ : Menghapus <x> pesan dari yang terbaru.\n\n"
+            ">`.purgeall`\n"
+            "↳ : Menghapus semua pesan pengguna yang dibalas.\n\n"
+            ">`.copy`\n"
+            "↳ : Copy pesan yang dibalas.\n\n"
+            ">`.edit <pesan baru>`\n"
+            "↳ : Mengubah pesan terbaru dengan <pesan baru>.\n\n"
+            ">`.sd <x> <pesan>`\n"
+            "↳ : Membuat pesan menjadi selfdestructs dalam <x> detik.\n"
+            "Usahakan tetap dibawah 100 detik, untuk mengatasi UserBot tertidur.",
         ]
     }
 )

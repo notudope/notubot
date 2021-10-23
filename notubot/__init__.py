@@ -28,6 +28,8 @@ from telethon.errors.rpcerrorlist import ApiIdInvalidError, AuthKeyDuplicatedErr
 from telethon.sessions import StringSession
 
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
+logging.getLogger("asyncio").setLevel(logging.ERROR)
+logging.getLogger("telethon.network.mtprotosender").setLevel(logging.WARNING)
 LOGS = logging.getLogger(__name__)
 
 if not sys.platform.startswith("linux"):
@@ -137,7 +139,7 @@ DEEZER_ARL_TOKEN = getenv("DEEZER_ARL_TOKEN", default="")
 DEEZER_EMAIL = getenv("DEEZER_EMAIL", default="")
 DEEZER_PASSWORD = getenv("DEEZER_PASSWORD", default="")
 
-# Last.fm Module
+# Last.fm Plugin
 BIO_PREFIX = getenv("BIO_PREFIX", default="")
 DEFAULT_BIO = getenv("DEFAULT_BIO", default="")
 
@@ -159,7 +161,7 @@ if LASTFM_API and LASTFM_SECRET and LASTFM_USERNAME and LASTFM_PASS:
     except Exception:
         pass
 
-# Google Drive Module
+# Google Drive Plugin
 G_DRIVE_DATA = getenv("G_DRIVE_DATA", default="")
 G_DRIVE_CLIENT_ID = getenv("G_DRIVE_CLIENT_ID", default="")
 G_DRIVE_CLIENT_SECRET = getenv("G_DRIVE_CLIENT_SECRET", default="")
@@ -193,7 +195,7 @@ for file, bin in binaries.items():
 
 def migration_workaround() -> None:
     try:
-        from notubot.modules.sql_helper.globals import addgvar, delgvar, gvarstatus
+        from notubot.plugins.sql_helper.globals import addgvar, delgvar, gvarstatus
     except AttributeError:
         return None
 
@@ -300,7 +302,7 @@ async def update_restart_msg(chat_id: int, msg_id: int) -> bool:
 
 
 try:
-    from notubot.modules.sql_helper.globals import delgvar, gvarstatus
+    from notubot.plugins.sql_helper.globals import delgvar, gvarstatus
 
     chat_id, msg_id = gvarstatus("restartstatus").split("\n")
     try:

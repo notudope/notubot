@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, Text
 
-from notubot.modules.sql_helper import BASE, SESSION
+from notubot.plugins.sql_helper import BASE, SESSION
 
 
 class GoogleDriveCreds(BASE):

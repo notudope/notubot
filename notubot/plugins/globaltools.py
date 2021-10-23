@@ -72,7 +72,7 @@ async def handler(event):
         return
 
     try:
-        from notubot.modules.sql_helper.gmute_sql import is_gmuted
+        from notubot.plugins.sql_helper.gmute_sql import is_gmuted
 
         guser = await event.get_user()
         gmuted = is_gmuted(guser.id)
@@ -136,7 +136,7 @@ async def gban(event):
             return
 
         try:
-            from notubot.modules.sql_helper.gmute_sql import gmute
+            from notubot.plugins.sql_helper.gmute_sql import gmute
         except BaseException:
             pass
 
@@ -209,7 +209,7 @@ async def ungban(event):
             return
 
         try:
-            from notubot.modules.sql_helper.gmute_sql import ungmute
+            from notubot.plugins.sql_helper.gmute_sql import ungmute
         except BaseException:
             pass
 
@@ -328,14 +328,19 @@ CMD_HELP.update(
     {
         "globaltools": [
             "Global Tools",
-            " - `.gban` : Global Banned ke semua grup yang menjadi admin, \n"
-            "Gunakan perintah ini dengan bijak!\n"
-            " - `.ungban` : Membatalkan global Banned.\n"
-            " - `.gcast` : Mengirim Pesan Group secara global, \n"
-            "Gak usah idiot, jangan berlebihan, resiko (limit, kena kick/banned/fban) ditanggung pengguna!"
-            " - `.gucast` : Mengirim Pesan Pribadi secara global, \n"
-            "Gak usah spam, seperlunya aja!\n"
-            " - `.gsend <link grup> <pesan>` : Mengirim pesan jarak jauh ke grup lain.\n",
+            ">`.gban`\n"
+            "↳ : Global Banned ke semua grup yang menjadi admin,\n"
+            "Gunakan perintah ini dengan bijak.\n\n"
+            ">`.ungban`\n"
+            "↳ : Membatalkan global Banned.\n\n"
+            ">`.gcast`\n"
+            "↳ : Mengirim Pesan Group secara global,\n"
+            "Gak usah idiot, jangan berlebihan, resiko (limit, kena kick/banned/fban) ditanggung pengguna!\n\n"
+            ">`.gucast`\n"
+            "↳ : Mengirim Pesan Pribadi secara global,\n"
+            "Gak usah spam, seperlunya aja!\n\n"
+            ">`.gsend <link grup> <pesan>`\n"
+            "↳ : Mengirim pesan jarak jauh ke grup lain.",
         ]
     }
 )

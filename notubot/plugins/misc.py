@@ -31,7 +31,7 @@ async def restart(event):
         await event.client.send_message(BOTLOG_CHATID, "#bot #restart \n" "Restarting UserBot...")
 
     try:
-        from notubot.modules.sql_helper.globals import addgvar, delgvar
+        from notubot.plugins.sql_helper.globals import addgvar, delgvar
 
         delgvar("restartstatus")
         addgvar("restartstatus", f"{event.chat_id}\n{event.id}")
@@ -129,14 +129,21 @@ CMD_HELP.update(
     {
         "misc": [
             "Misc",
-            " - `.restart` : Restarts the bot.\n"
-            " - `.shutdown` : Shutdown bot.\n"
-            " - `.sleep <detik>` : Let yours snooze for a few seconds.\n"
-            " - `.random <item1> <item2> ... <itemN>` : Get a random item from the list of items.\n"
-            " - `.repeat <no> <text>` : Repeats the text for a number of times. Don't confuse this with spam tho.\n"
-            " - `.raw` : Get detailed JSON-like formatted data about replied message.\n"
-            " - `.json` : Mengambil data json dari sebuah pesan, \n"
-            "Balas pesan tersebut untuk menampilkannya!\n",
+            ">`.restart`\n"
+            "↳ : Restarts the bot.\n\n"
+            ">`.shutdown`\n"
+            "↳ : Shutdown bot.\n\n"
+            ">`.sleep <detik>`\n"
+            "↳ : Let yours snooze for a few seconds.\n\n"
+            ">`.random <item1> <item2> ... <itemN>`\n"
+            "↳ : Get a random item from the list of items.\n\n"
+            ">`.repeat <no> <text>`\n"
+            "↳ : Repeats the text for a number of times. Don't confuse this with spam tho.\n\n"
+            ">`.raw`\n"
+            "↳ : Get detailed JSON-like formatted data about replied message.\n\n"
+            ">`.json`\n"
+            "↳ : Mengambil data json dari sebuah pesan, \n"
+            "Balas pesan tersebut untuk menampilkannya!",
         ]
     }
 )

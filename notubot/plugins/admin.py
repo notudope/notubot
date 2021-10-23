@@ -270,7 +270,7 @@ async def muter(event):
     """
     # Check if the function running under SQL mode
     try:
-        from notubot.modules.sql_helper.spam_mute_sql import mute
+        from notubot.plugins.sql_helper.spam_mute_sql import mute
     except AttributeError:
         return await event.edit(NO_SQL)
 
@@ -318,7 +318,7 @@ async def unmuter(event):
     """For .unmute command, unmute the replied/tagged person"""
     # Check if the function running under SQL mode
     try:
-        from notubot.modules.sql_helper.spam_mute_sql import unmute
+        from notubot.plugins.sql_helper.spam_mute_sql import unmute
     except AttributeError:
         return await event.edit(NO_SQL)
 
@@ -356,8 +356,8 @@ async def unmuter(event):
 async def muters(event):
     """Used for deleting the messages of muted people"""
     try:
-        from notubot.modules.sql_helper.gmute_sql import is_gmuted
-        from notubot.modules.sql_helper.spam_mute_sql import is_muted
+        from notubot.plugins.sql_helper.gmute_sql import is_gmuted
+        from notubot.plugins.sql_helper.spam_mute_sql import is_muted
     except AttributeError:
         return
     muted = is_muted(event.chat_id)
@@ -395,7 +395,7 @@ async def ungmuter(event):
     """For .ungmute command, ungmutes the target in the userbot"""
     # Check if the function running under SQL mode
     try:
-        from notubot.modules.sql_helper.gmute_sql import ungmute
+        from notubot.plugins.sql_helper.gmute_sql import ungmute
     except AttributeError:
         await event.edit(NO_SQL)
         return
@@ -430,7 +430,7 @@ async def gmuter(event):
     """For .gmute command, globally mutes the replied/tagged person"""
     # Check if the function running under SQL mode
     try:
-        from notubot.modules.sql_helper.gmute_sql import gmute
+        from notubot.plugins.sql_helper.gmute_sql import gmute
     except AttributeError:
         await event.edit(NO_SQL)
         return
@@ -856,22 +856,37 @@ CMD_HELP.update(
     {
         "admin": [
             "Admin",
-            " - `.promote <username/reply> <custom rank (optional)>` : Provides admin rights to the person in the chat.\n"
-            " - `.demote <username/reply>` : Revokes the person's admin permissions in the chat.\n"
-            " - `.ban <username/reply> <reason (optional)>` : Bans the person off your chat.\n"
-            " - `.unban <username/reply>` : Removes the ban from the person in the chat.\n"
-            " - `.mute <username/reply> <reason (optional)>` : Mutes the person in the chat, works on admins too.\n"
-            " - `.unmute <username/reply>` : Removes the person from the muted list.\n"
-            " - `.gmute <username/reply> <reason (optional)>` : Mutes the person in all groups you have in common with them.\n"
-            " - `.ungmute <username/reply>` : Reply someone's message with .ungmute to remove them from the gmuted list.\n"
-            " - `.zombies` : Searches for deleted accounts in a group.\n"
-            "Use .zombies clean to remove deleted accounts from the group.\n"
-            " - `.all` : Tag all member in the group chat.\n"
-            " - `.admins` : Retrieves a list of admins in the chat.\n"
-            " - `.bots` : Retrieves a list of bots in the chat.\n"
-            " - `.users <name of member>` : Retrieves all (or queried) users in the chat.\n"
-            " - `.setgppic <reply to image>` : Changes the group's display picture.\n"
-            " - `.allunban` : Unbanned all members thought group.\n",
+            ">`.promote <username/reply> <custom rank (optional)>`\n"
+            "↳ : Provides admin rights to the person in the chat.\n\n"
+            ">`.demote <username/reply>`\n"
+            "↳ : Revokes the person's admin permissions in the chat.\n\n"
+            ">`.ban <username/reply> <reason (optional)>`\n"
+            "↳ : Bans the person off your chat.\n\n"
+            ">`.unban <username/reply>`\n"
+            "↳ : Removes the ban from the person in the chat.\n\n"
+            ">`.mute <username/reply> <reason (optional)>`\n"
+            "↳ : Mutes the person in the chat, works on admins too.\n\n"
+            ">`.unmute <username/reply>`\n"
+            "↳ : Removes the person from the muted list.\n\n"
+            ">`.gmute <username/reply> <reason (optional)>`\n"
+            "↳ : Mutes the person in all groups you have in common with them.\n\n"
+            ">`.ungmute <username/reply>`\n"
+            "↳ : Reply someone's message with .ungmute to remove them from the gmuted list.\n\n"
+            ">`.zombies`\n"
+            "↳ : Searches for deleted accounts in a group.\n"
+            "Use .zombies clean to remove deleted accounts from the group.\n\n"
+            ">`.all`\n"
+            "↳ : Tag all member in the group chat.\n\n"
+            ">`.admins`\n"
+            "↳ : Retrieves a list of admins in the chat.\n\n"
+            ">`.bots`\n"
+            "↳ : Retrieves a list of bots in the chat.\n\n"
+            ">`.users <name of member>`\n"
+            "↳ : Retrieves all (or queried) users in the chat.\n\n"
+            ">`.setgppic <reply to image>`\n"
+            "↳ : Changes the group's display picture.\n\n"
+            ">`.allunban`\n"
+            "↳ : Unbanned all members thought group.",
         ]
     }
 )

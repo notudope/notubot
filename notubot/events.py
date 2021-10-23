@@ -5,7 +5,7 @@
 # PLease read the GNU General Public License v3.0 in
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
-from asyncio import create_subprocess_shell, subprocess
+import asyncio
 from os import remove
 from platform import python_version
 from sys import exc_info
@@ -90,7 +90,7 @@ def bot_cmd(**args):
                 return await chat.respond("`Gunakan perintah itu dalam grup!`")
 
             try:
-                from notubot.modules.sql_helper.blacklist_sql import get_blacklist
+                from notubot.plugins.sql_helper.blacklist_sql import get_blacklist
 
                 for blacklisted in get_blacklist():
                     if str(chat.chat_id) == blacklisted.chat_id:
@@ -113,11 +113,9 @@ def bot_cmd(**args):
                     send_to,
                     f"`{BOT_NAME} sudah bisa digunakan lagi!`",
                 )
-            except MessageIdInvalidError:
-                pass
             except events.StopPropagation:
                 raise events.StopPropagation
-            except KeyboardInterrupt:
+            except (MessageIdInvalidError, asyncio.exceptions.CancelledError, KeyboardInterrupt, SystemExit):
                 pass
 
             except BaseException:
@@ -148,7 +146,9 @@ def bot_cmd(**args):
 
                     ftext += "\n\n\nLast 5 commits:\n"
 
-                    process = await create_subprocess_shell(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    process = await asyncio.create_subprocess_shell(
+                        command, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+                    )
                     stdout, stderr = await process.communicate()
                     result = str(stdout.decode().strip()) + str(stderr.decode().strip())
 

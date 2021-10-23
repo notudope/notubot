@@ -18,7 +18,7 @@ from notubot import (
     bot,
     BOT_NAME,
 )
-from notubot.modules import ALL_MODULES
+from notubot.plugins import ALL_PLUGINS
 
 loop = asyncio.get_event_loop()
 
@@ -26,8 +26,8 @@ loop = asyncio.get_event_loop()
 async def shutdown_bot(signum) -> None:
     LOGS.warning("Received signal : {}".format(signum))
     await bot.disconnect()
-    await loop.shutdown_asyncgens()
-    loop.stop()
+    if loop.is_running():
+        loop.stop()
 
 
 def trap() -> None:
@@ -42,8 +42,8 @@ trap()
 async def main() -> None:
     await bot.start()
 
-    for module_name in ALL_MODULES:
-        import_module("notubot.modules.{}".format(module_name))
+    for plugins in ALL_PLUGINS:
+        import_module("notubot.plugins.{}".format(plugins))
 
     LOGS.info("{} v{} Launched 🚀".format(BOT_NAME, BOT_VER))
 
@@ -57,7 +57,7 @@ if __name__ == "__main__":
     try:
         uvloop.install()
         loop.run_until_complete(main())
-    except (KeyboardInterrupt, SystemExit):
+    except (NotImplementedError, KeyboardInterrupt, SystemExit):
         pass
     except Exception as e:
         LOGS.exception("main : {}".format(e))
