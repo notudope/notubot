@@ -26,8 +26,6 @@ async def help(event):
             await event.edit(f"📦 Plugin **{CMD_HELP[args][0]}** <`.help {args}`>\n\n" + str(CMD_HELP[args][1]))
         else:
             await event.edit(f"😮‍💨 Plugin [`{args}`] tidak ada! Ketik <`.help`> untuk melihat nama plugin yang benar.")
-            await asyncio.sleep(200)
-            await event.delete()
     else:
         plugins = ""
         for p in CMD_HELP:
@@ -57,5 +55,3 @@ Daftar semua plugin beserta perintah tersedia dibawah ini:
             link_preview=False,
         )
         await helper.reply("**Contoh :** Ketik <`.help admin`> Untuk informasi pengunaan.")
-        await asyncio.sleep(1000)
-        await helper.delete()
