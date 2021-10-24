@@ -22,7 +22,6 @@ from notubot.plugins import ALL_PLUGINS
 # import uvloop
 
 
-
 async def shutdown_bot(signum) -> None:
     LOGS.warning("Received signal : {}".format(signum))
     await bot.disconnect()
