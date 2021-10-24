@@ -10,8 +10,6 @@ import signal
 import sys
 from importlib import import_module
 
-import uvloop
-
 from notubot import (
     BOT_VER,
     LOGS,
@@ -20,6 +18,9 @@ from notubot import (
     LOOP,
 )
 from notubot.plugins import ALL_PLUGINS
+
+# import uvloop
+
 
 
 async def shutdown_bot(signum) -> None:
@@ -54,7 +55,7 @@ async def main() -> None:
 
 if __name__ == "__main__":
     try:
-        uvloop.install()
+        # uvloop.install()
         LOOP.run_until_complete(main())
     except (NotImplementedError, KeyboardInterrupt, SystemExit):
         pass
