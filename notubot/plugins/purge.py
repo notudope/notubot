@@ -8,6 +8,7 @@
 import asyncio
 
 from telethon.tl.functions.channels import DeleteUserHistoryRequest
+from telethon.utils import get_display_name
 
 from notubot import CMD_HELP, LOGS
 from notubot.events import bot_cmd
@@ -128,15 +129,16 @@ async def purgeall(event):
     if not event.is_reply:
         await event.edit("`Balas pesan seseorang untuk menghapusnya.`")
         return
-
     name = (await event.get_reply_message()).sender
     try:
         await event.client(DeleteUserHistoryRequest(event.chat_id, name.id))
         await event.edit(
-            f"`Berhasil menghapus semua pesan dari {name.first_name}.`",
+            f"`Berhasil menghapus semua pesan {get_display_name(name.chat)}`",
         )
+        await asyncio.sleep(2)
     except BaseException:
-        await event.delete()
+        pass
+    await event.delete()
 
 
 @bot_cmd(outgoing=True, disable_errors=True, pattern=r"^\.copy$")
