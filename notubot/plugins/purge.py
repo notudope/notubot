@@ -129,11 +129,11 @@ async def purgeall(event):
     if not event.is_reply:
         await event.edit("`Balas pesan seseorang untuk menghapusnya.`")
         return
-    name = (await event.get_reply_message()).sender
+    sender = (await event.get_reply_message()).sender
     try:
-        await event.client(DeleteUserHistoryRequest(event.chat_id, name.id))
+        await event.client(DeleteUserHistoryRequest(event.chat_id, sender.id))
         await event.edit(
-            f"`Berhasil menghapus semua pesan {get_display_name(name.chat)}`",
+            f"`Berhasil menghapus semua pesan {get_display_name(sender)}`",
         )
         await asyncio.sleep(2)
     except BaseException:
