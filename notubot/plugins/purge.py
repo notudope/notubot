@@ -20,11 +20,9 @@ async def delete(event):
     if reply:
         try:
             await reply.delete()
-            await event.delete()
         except BaseException:
-            await event.delete()
-    else:
-        await event.delete()
+            pass
+    await event.delete()
 
 
 @bot_cmd(outgoing=True, disable_errors=True, pattern=r"^\.purge(?: |$)(.*)")
@@ -50,7 +48,7 @@ async def purge(event):
             count += 1
         procs = await event.client.send_message(
             event.chat_id,
-            f"`Purged {count} pesan.`",
+            f"`Purged {count}`",
         )
         await asyncio.sleep(1)
         await procs.delete()
@@ -67,7 +65,7 @@ async def purge(event):
     except Exception as e:
         LOGS.info(e)
 
-    procs = await event.client.send_message(event.chat_id, "`Purged complete!`")
+    procs = await event.client.send_message(event.chat_id, "`Purged`")
     await asyncio.sleep(1)
     await procs.delete()
 
@@ -89,7 +87,7 @@ async def purgeme(event):
             done += 1
         procs = await event.client.send_message(
             event.chat_id,
-            f"`Purged {done} pesan.`",
+            f"`Purged {done}`",
         )
         await asyncio.sleep(1)
         await event.delete()
@@ -117,7 +115,7 @@ async def purgeme(event):
         await event.client.delete_messages(chat, msgs)
     procs = await event.client.send_message(
         event.chat_id,
-        f"`Purged {str(count)} pesan.`",
+        f"`Purged {str(count)}`",
     )
     await asyncio.sleep(1)
     await event.delete()
@@ -148,11 +146,9 @@ async def copy(event):
     if reply:
         try:
             await reply.reply(reply)
-            await event.delete()
         except BaseException:
-            await event.delete()
-    else:
-        await event.delete()
+            pass
+    await event.delete()
 
 
 @bot_cmd(outgoing=True, disable_errors=True, pattern=r"^\.edit")
@@ -160,13 +156,13 @@ async def edit(event):
     """For .edit command, edit your last message."""
     message = event.text
     chat = await event.get_input_chat()
-    self_id = await event.client.get_peer_id("me")
-    string = str(message[6:])
+    me = await event.client.get_peer_id("me")
+    new_message = str(message[6:])
     index = 1
 
-    async for message in event.client.iter_messages(chat, self_id):
+    async for msg in event.client.iter_messages(chat, me):
         if index == 2:
-            await message.edit(string)
+            await msg.edit(new_message)
             await event.delete()
             break
         index = index + 1
