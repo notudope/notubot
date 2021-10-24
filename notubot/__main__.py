@@ -19,8 +19,6 @@ from notubot import (
 )
 from notubot.plugins import ALL_PLUGINS
 
-# import uvloop
-
 
 async def shutdown_bot(signum) -> None:
     LOGS.warning("Received signal : {}".format(signum))
@@ -54,7 +52,6 @@ async def main() -> None:
 
 if __name__ == "__main__":
     try:
-        # uvloop.install()
         LOOP.run_until_complete(main())
     except (NotImplementedError, KeyboardInterrupt, SystemExit):
         pass

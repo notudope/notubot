@@ -56,7 +56,6 @@ git+https://github.com/LonamiWebs/Telethon
 telethon-session-sqlalchemy==0.2.16
 telethon-tgcrypto==0.0.3
 urbandict==0.6.1
-uvloop>=0.16.0
 validators==0.18.2
 vcsi==7.0.13
 wikipedia==1.4.0
