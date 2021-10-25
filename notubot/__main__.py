@@ -9,6 +9,7 @@ import asyncio
 import signal
 import sys
 from importlib import import_module
+from time import time
 
 from notubot import (
     BOT_VER,
@@ -16,11 +17,13 @@ from notubot import (
     bot,
     BOT_NAME,
     LOOP,
+    start_time,
 )
 from notubot.plugins import ALL_PLUGINS
+from notubot.utils.tools import time_formatter
 
 
-async def shutdown_bot(signum) -> None:
+async def shutdown_bot(signum: str) -> None:
     LOGS.warning("Received signal : {}".format(signum))
     await bot.disconnect()
     if LOOP.is_running():
@@ -52,10 +55,11 @@ async def main() -> None:
 
 if __name__ == "__main__":
     try:
+        LOGS.info("Took {} to start {}".format(time_formatter((time() - start_time)), BOT_NAME))
         LOOP.run_until_complete(main())
     except (NotImplementedError, KeyboardInterrupt, SystemExit):
         pass
-    except Exception as e:
+    except (BaseException, Exception) as e:
         LOGS.exception("main : {}".format(e))
     finally:
         LOGS.info("{} Stopped...".format(BOT_NAME))

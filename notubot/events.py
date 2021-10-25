@@ -6,14 +6,24 @@
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
 import asyncio
+from datetime import datetime
 from os import remove
 from platform import python_version
 from sys import exc_info
-from time import gmtime, strftime, sleep
+# from time import sleep
 from traceback import format_exc
 
 from telethon import version, events
-from telethon.errors.rpcerrorlist import FloodWaitError, MessageIdInvalidError, MessageNotModifiedError
+from telethon.errors.rpcerrorlist import (
+    FloodWaitError,
+    MessageIdInvalidError,
+    MessageNotModifiedError,
+    ChatSendStickersForbiddenError,
+    ChatSendMediaForbiddenError,
+    ChatSendInlineForbiddenError,
+    ChatSendGifsForbiddenError,
+    ChatWriteForbiddenError,
+)
 from telethon.utils import get_display_name
 
 from notubot import (
@@ -21,9 +31,13 @@ from notubot import (
     bot,
     BOT_VER,
     BOT_NAME,
+    BOTLOG,
     LOGSPAMMER,
+    LOGS,
 )
-from notubot.utils.tools import time_formatter as tf
+from notubot.utils.tools import time_formatter
+
+FLOOD_WAIT = 0
 
 
 def bot_cmd(**args):
@@ -103,30 +117,40 @@ def bot_cmd(**args):
 
             try:
                 await func(chat)
-            except FloodWaitError as fe:
-                await chat.client.send_message(
-                    send_to,
-                    f"`FloodWaitError:\n{str(fe)}\n\nSleeping for {tf(fe.seconds)}`",
+            except FloodWaitError as e:
+                FLOOD_WAIT = e.seconds
+                FLOOD_WAIT_HUMAN = time_formatter(FLOOD_WAIT)
+                LOGS.error(
+                    "A FloodWaitError of {}. Sleeping for {} and try again.".format(FLOOD_WAIT, FLOOD_WAIT_HUMAN)
                 )
-                sleep(fe.seconds + 10)
-                await chat.client.send_message(
-                    send_to,
-                    f"`{BOT_NAME} sudah bisa digunakan lagi!`",
-                )
+                await chat.delete()
+                # sleep(FLOOD_WAIT + 5)
+                await asyncio.sleep(FLOOD_WAIT + 5)
+                if BOTLOG:
+                    await chat.client.send_message(
+                        BOTLOG_CHATID,
+                        f"`{BOT_NAME} sudah bisa digunakan, setelah terkena FloodWaitError selama {FLOOD_WAIT_HUMAN}`",
+                    )
             except events.StopPropagation:
                 raise events.StopPropagation
             except (
                 MessageIdInvalidError,
                 MessageNotModifiedError,
+                ChatWriteForbiddenError,
+                ChatSendMediaForbiddenError,
+                ChatSendGifsForbiddenError,
+                ChatSendStickersForbiddenError,
+                ChatSendInlineForbiddenError,
                 asyncio.exceptions.CancelledError,
                 KeyboardInterrupt,
                 SystemExit,
             ):
                 pass
 
-            except BaseException:
+            except BaseException as e:
+                LOGS.exception(e)
                 if not disable_errors:
-                    date = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+                    date = (datetime.now()).strftime("%m/%d/%Y, %H:%M:%S")
                     title = get_display_name(chat.chat)
                     text = "**NOTUBOT ERROR REPORT**\n"
                     text += "Laporkan kesalahan **teruskan pesan ini ke** @NOTUBOTS"
@@ -158,7 +182,6 @@ def bot_cmd(**args):
                     )
                     stdout, stderr = await process.communicate()
                     result = str(stdout.decode().strip()) + str(stderr.decode().strip())
-
                     ftext += result
 
                     with open("error.log", "w+") as file:

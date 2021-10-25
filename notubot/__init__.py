@@ -18,7 +18,7 @@ from os import (
 )
 from pathlib import Path
 from platform import python_version, uname
-from time import sleep
+from time import sleep, time
 
 from dotenv import dotenv_values, load_dotenv
 from pylast import LastFMNetwork, md5
@@ -28,7 +28,11 @@ from telethon import TelegramClient, version
 from telethon.errors.rpcerrorlist import ApiIdInvalidError, AuthKeyDuplicatedError, PhoneNumberInvalidError
 from telethon.sessions import StringSession
 
-logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
+start_time = time()
+
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="%H:%M:%S", level=logging.INFO
+)
 logging.getLogger("asyncio").setLevel(logging.ERROR)
 logging.getLogger("telethon.network.mtprotosender").setLevel(logging.WARNING)
 LOGS = logging.getLogger(__name__)
