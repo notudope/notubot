@@ -87,12 +87,12 @@ async def inviteall(event):
     await procs.edit("`Mengumpulkan member...`")
     async for user in event.client.iter_participants(chat_id.full_chat.id):
         try:
-            LOGS.info(error)
+            LOGS.error(error)
             if error.startswith("Too"):
                 return await procs.edit(
-                    f"""Berhasil menjalankan (`mungkin akun limit atau dari Telethon, coba lagi nanti`)
-
-**ERROR :**
+                    f"""**Selesai Menculik Dengan Kesalahan**
+(`mungkin akun terkena limit atau kesalahan dari Telethon, coba lagi nanti`)
+**Kesalahan :**
 `{error}`
 
 • Diculik `{success}` orang.
@@ -103,16 +103,23 @@ async def inviteall(event):
             success = success + 1
 
             await procs.edit(
-                f"""• Diculik `{success}` orang.
+                f"""**Sedang Menculik...**
+• Diculik `{success}` orang.
 • Gagal menculik `{failed}` orang.
 
-**ERROR :** `{error}`"""
+**Kesalahan :** `{error}`"""
             )
         except Exception as e:
             error = str(e)
             failed = failed + 1
 
-    return await procs.edit(f"Berhasil menculik `{success}` orang. Gagal menculik `{failed}` orang.")
+        await asyncio.sleep(0.2)
+
+    return await procs.edit(
+        f"""**Selesai Menculik**
+• Berhasil menculik `{success}` orang.
+• Gagal menculik `{failed}` orang."""
+    )
 
 
 @bot_cmd(outgoing=True, groups_only=True, pattern=r"^\.getmemb$")
