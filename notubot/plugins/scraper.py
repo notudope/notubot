@@ -69,9 +69,9 @@ async def inviteall(event):
     me = await event.client.get_me()
 
     if not sender.id == me.id:
-        proc = await event.reply("`...`")
+        procs = await event.reply("`...`")
     else:
-        proc = await event.edit("`...`")
+        procs = await event.edit("`...`")
 
     chat_id = await get_chatinfo(event)
     chat = await event.get_chat()
@@ -79,13 +79,13 @@ async def inviteall(event):
     success = failed = 0
     error = "None"
 
-    await proc.edit("`Mengumpulkan member...`")
+    await procs.edit("`Mengumpulkan member...`")
 
     async for user in event.client.iter_participants(chat_id.full_chat.id):
         try:
             LOGS.info(error)
             if error.startswith("Too"):
-                return await proc.edit(
+                return await procs.edit(
                     f"""Berhasil menjalankan (`mungkin akun kena limit atau dari telethon, coba lagi nanti`)
 
 **ERROR :**
@@ -98,7 +98,7 @@ async def inviteall(event):
             await event.client(InviteToChannelRequest(channel=chat, users=[user.id]))
             success = success + 1
 
-            await proc.edit(
+            await procs.edit(
                 f"""• Diculik `{success}` orang.
 • Gagal menculik `{failed}` orang.
 
@@ -108,7 +108,7 @@ async def inviteall(event):
             error = str(e)
             failed = failed + 1
 
-    return await proc.edit(f"Berhasil menculik `{success}` orang. Gagal menculik `{failed}` orang.")
+    return await procs.edit(f"Berhasil menculik `{success}` orang. Gagal menculik `{failed}` orang.")
 
 
 @bot_cmd(outgoing=True, groups_only=True, pattern=r"^\.getmemb$")
