@@ -55,7 +55,7 @@ async def main() -> None:
 
 if __name__ == "__main__":
     try:
-        LOGS.info("Took {} to start {}".format(time_formatter((time() - start_time)), __botname__))
+        LOGS.info("Took {} to start {}".format(time_formatter((time() - start_time) * 1000), __botname__))
         LOOP.run_until_complete(main())
     except (NotImplementedError, KeyboardInterrupt, SystemExit):
         pass
