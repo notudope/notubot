@@ -17,11 +17,13 @@ def __list_all_plugins():
     start = time()
 
     paths = glob("{}/*.py".format(dirname(__file__)))
-    plugins = [
-        basename(plugin)[:-3]
-        for plugin in paths
-        if isfile(plugin) and plugin.endswith(".py") and not plugin.endswith("__init__.py")
-    ]
+    plugins = sorted(
+        [
+            basename(plugin)[:-3]
+            for plugin in paths
+            if isfile(plugin) and plugin.endswith(".py") and not plugin.endswith("__init__.py")
+        ]
+    )
 
     took = time_formatter((time() - start) * 1000)
     LOGS.info("Loaded Plugins {} (took {}) : {}".format(len(plugins), took, str(plugins)))
@@ -29,5 +31,5 @@ def __list_all_plugins():
     return plugins
 
 
-ALL_PLUGINS = sorted(__list_all_plugins())
+ALL_PLUGINS = __list_all_plugins()
 __all__ = ALL_PLUGINS + ["ALL_PLUGINS"]
