@@ -17,6 +17,7 @@ from telethon.errors.rpcerrorlist import (
     FloodWaitError,
     MessageIdInvalidError,
     MessageNotModifiedError,
+    MessageDeleteForbiddenError,
     ChatSendStickersForbiddenError,
     ChatSendMediaForbiddenError,
     ChatSendInlineForbiddenError,
@@ -118,13 +119,12 @@ def bot_cmd(**args):
                 await func(chat)
             except FloodWaitError as e:
                 FLOOD_WAIT = e.seconds
-                FLOOD_WAIT_HUMAN = time_formatter(FLOOD_WAIT)
+                FLOOD_WAIT_HUMAN = time_formatter((FLOOD_WAIT + 10) * 1000)
                 LOGS.error(
                     "A FloodWaitError of {}. Sleeping for {} and try again.".format(FLOOD_WAIT, FLOOD_WAIT_HUMAN)
                 )
                 await chat.delete()
-                # sleep(FLOOD_WAIT + 5)
-                await asyncio.sleep(FLOOD_WAIT + 5)
+                await asyncio.sleep(FLOOD_WAIT + 10)
                 if BOTLOG:
                     await chat.client.send_message(
                         BOTLOG_CHATID,
@@ -132,11 +132,13 @@ def bot_cmd(**args):
                             __botname__, FLOOD_WAIT_HUMAN
                         ),
                     )
+                return
             except events.StopPropagation:
                 raise events.StopPropagation
             except (
                 MessageIdInvalidError,
                 MessageNotModifiedError,
+                MessageDeleteForbiddenError,
                 ChatWriteForbiddenError,
                 ChatSendMediaForbiddenError,
                 ChatSendGifsForbiddenError,
@@ -148,7 +150,7 @@ def bot_cmd(**args):
             ):
                 pass
 
-            except BaseException as e:
+            except Exception as e:
                 LOGS.exception(e)
                 if not disable_errors:
                     date = (datetime.now()).strftime("%m/%d/%Y, %H:%M:%S")
@@ -157,7 +159,7 @@ def bot_cmd(**args):
                     text += "Laporkan kesalahan **teruskan pesan ini ke** @NOTUBOTS"
                     ftext = "NOTUBOT ERROR REPORT: Laporkan ini ke @NOTUBOTS\n\n"
 
-                    ftext += "--------BEGIN NOTUBOT TRACEBACK LOG--------\n"
+                    ftext += "--------START NOTUBOT CRASH LOG--------\n"
                     ftext += "\nNOTUBOT Version: " + str(__botversion__)
                     ftext += "\nPython Version: " + str(python_version())
                     ftext += "\nTelethon Version: " + str(version.__version__)
@@ -171,7 +173,7 @@ def bot_cmd(**args):
                     ftext += str(format_exc())
                     ftext += "\n\nError text:\n"
                     ftext += str(exc_info()[1])
-                    ftext += "\n\n--------END NOTUBOT TRACEBACK LOG--------"
+                    ftext += "\n\n--------END NOTUBOT CRASH LOG--------"
 
                     command = 'git log --pretty=format:"%an: %s" -5'
 

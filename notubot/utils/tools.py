@@ -26,17 +26,25 @@ def humanbytes(size: int) -> str:
     return str(round(size, 2)) + " " + dict_power_n[raised_to_pow] + "B"
 
 
-def time_formatter(seconds: int) -> str:
-    minutes, seconds = divmod(seconds, 60)
+def time_formatter(milliseconds):
+    minutes, seconds = divmod(int(milliseconds / 1000), 60)
     hours, minutes = divmod(minutes, 60)
     days, hours = divmod(hours, 24)
+    weeks, days = divmod(days, 7)
     tmp = (
-        ((str(days) + " day(s), ") if days else "")
-        + ((str(hours) + " hour(s), ") if hours else "")
-        + ((str(minutes) + " minute(s), ") if minutes else "")
-        + ((str(seconds) + " second(s), ") if seconds else "")
+        ((str(weeks) + "w:") if weeks else "")
+        + ((str(days) + "d:") if days else "")
+        + ((str(hours) + "h:") if hours else "")
+        + ((str(minutes) + "m:") if minutes else "")
+        + ((str(seconds) + "s") if seconds else "")
     )
-    return tmp[:-2]
+    if tmp != "":
+        if tmp.endswith(":"):
+            return tmp[:-1]
+        else:
+            return tmp
+    else:
+        return "0 s"
 
 
 def human_to_bytes(size: str) -> int:

@@ -59,7 +59,7 @@ async def sleepy(event):
     await event.edit("`I am sulking and snoozing...`")
 
     if BOTLOG:
-        str_counter = time_formatter(counter)
+        str_counter = time_formatter(counter * 1000)
         await event.client.send_message(
             BOTLOG_CHATID,
             f"You put the bot to sleep for {str_counter}.",
