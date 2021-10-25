@@ -8,6 +8,7 @@
 from time import time
 
 from notubot import LOGS
+from notubot.utils.tools import time_formatter
 
 
 def __list_all_plugins():
@@ -25,6 +26,6 @@ def __list_all_plugins():
 
 start = time()
 ALL_PLUGINS = sorted(__list_all_plugins())
-took = time() - start
-LOGS.info(f"Loaded Plugins {len(ALL_PLUGINS)} (took {took:.2f}s) : %s", str(ALL_PLUGINS))
+took = time_formatter((time() - start) * 1000)
+LOGS.info("Loaded Plugins {} (took {}) : {}".format(len(ALL_PLUGINS), took, str(ALL_PLUGINS)))
 __all__ = ALL_PLUGINS + ["ALL_PLUGINS"]
