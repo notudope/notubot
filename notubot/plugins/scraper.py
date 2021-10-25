@@ -90,7 +90,7 @@ async def inviteall(event):
             LOGS.info(error)
             if error.startswith("Too"):
                 return await procs.edit(
-                    f"""Berhasil menjalankan (`mungkin akun kena limit atau dari telethon, coba lagi nanti`)
+                    f"""Berhasil menjalankan (`mungkin akun limit atau dari Telethon, coba lagi nanti`)
 
 **ERROR :**
 `{error}`
