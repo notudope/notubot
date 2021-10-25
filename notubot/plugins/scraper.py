@@ -79,8 +79,12 @@ async def inviteall(event):
     success = failed = 0
     error = "None"
 
-    await procs.edit("`Mengumpulkan member...`")
+    if not chat_id:
+        await procs.delete()
+        await event.delete()
+        return
 
+    await procs.edit("`Mengumpulkan member...`")
     async for user in event.client.iter_participants(chat_id.full_chat.id):
         try:
             LOGS.info(error)
