@@ -19,8 +19,8 @@ from notubot import (
     ALIVE_LOGO,
     ALIVE_NAME,
     CMD_HELP,
-    BOT_VER,
-    BOT_NAME,
+    __botversion__,
+    __botname__,
     IG_ALIVE,
 )
 from notubot.events import bot_cmd
@@ -125,10 +125,10 @@ async def amireallyalive(event):
     """For .alive command, check if the bot is running."""
     logo = ALIVE_LOGO
     text = (
-        f"`{BOT_NAME}`\n"
+        f"`{__botname__}`\n"
         f"[REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Grup](https://t.me/NOTUBOTS)  /  [Instagram]({IG_ALIVE})\n\n"
         f"😎 **Owner :** __{DEFAULTUSER}__\n"
-        f"🤖 **Version :** `v{BOT_VER}`\n"
+        f"🤖 **Version :** `v{__botversion__}`\n"
         f"🐍 **Python :** `v{python_version()}`\n"
         f"📦 **Telethon :** `v{version.__version__}\n`"
         f"⚙️ **Branch :** `{Repo().active_branch.name}`"

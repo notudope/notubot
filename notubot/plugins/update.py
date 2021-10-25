@@ -25,7 +25,7 @@ from notubot import (
     HEROKU_APP_NAME,
     UPSTREAM_REPO_BRANCH,
     UPSTREAM_REPO_URL,
-    BOT_NAME,
+    __botname__,
 )
 from notubot.events import bot_cmd
 
@@ -55,7 +55,7 @@ async def gen_chlog(repo, diff):
 
 
 async def print_changelogs(event, ac_br, changelog):
-    changelog_str = f"`{BOT_NAME}` **Pembaruan Tersedia Untuk [{ac_br}]:\n\nCHANGELOG:**\n`{changelog}`"
+    changelog_str = f"`{__botname__}` **Pembaruan Tersedia Untuk [{ac_br}]:\n\nCHANGELOG:**\n`{changelog}`"
 
     if len(changelog_str) > 4096:
         await event.edit("`Data CHANGELOG terlalu besar, buka file untuk melihatnya.`")
@@ -88,7 +88,7 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
 
         if HEROKU_APP_NAME is None:
             await event.edit(
-                f"Harap **tentukan variabel** `HEROKU_APP_NAME` untuk dapat Deploy perubahan terbaru dari `{BOT_NAME}`."
+                f"Harap **tentukan variabel** `HEROKU_APP_NAME` untuk dapat Deploy perubahan terbaru dari `{__botname__}`."
             )
             repo.__del__()
             return
@@ -102,7 +102,7 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
             await event.edit(f"{txt}\n" "`Kredensial Heroku tidak valid untuk deploy UserBot dyno.`")
             return repo.__del__()
 
-        await event.edit(f"`{BOT_NAME} dyno sedang memperbarui, perkiraan waktu 2-7 menit...`")
+        await event.edit(f"`{__botname__} dyno sedang memperbarui, perkiraan waktu 2-7 menit...`")
 
         try:
             from notubot.plugins.sql_helper.globals import addgvar, delgvar
@@ -134,9 +134,11 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
             await asyncio.sleep(5)
             return await event.delete()
         else:
-            await event.edit(f"`{BOT_NAME} Berhasil Diperbarui, Dimuat Ulang...`")
+            await event.edit(f"`{__botname__} Berhasil Diperbarui, Dimuat Ulang...`")
             if BOTLOG:
-                await event.client.send_message(BOTLOG_CHATID, "#bot #push \n" f"**{BOT_NAME} Berhasil Diperbarui ツ**")
+                await event.client.send_message(
+                    BOTLOG_CHATID, "#bot #push \n" f"**{__botname__} Berhasil Diperbarui ツ**"
+                )
 
     else:
         await event.edit("Harap **tentukan variabel** `HEROKU_API_KEY`.")
@@ -150,14 +152,14 @@ async def update(event, repo, ups_rem, ac_br):
         repo.git.reset("--hard", "FETCH_HEAD")
 
     await update_requirements()
-    await event.edit(f"**{BOT_NAME}** `Berhasil Diperbarui!`")
+    await event.edit(f"**{__botname__}** `Berhasil Diperbarui!`")
     await asyncio.sleep(1)
-    await event.edit(f"**{BOT_NAME}** `Dimuat Ulang...`")
+    await event.edit(f"**{__botname__}** `Dimuat Ulang...`")
     await asyncio.sleep(1)
-    await event.edit(f"**{BOT_NAME}** `Tunggu Beberapa Detik Dan Cobalah...`")
+    await event.edit(f"**{__botname__}** `Tunggu Beberapa Detik Dan Cobalah...`")
 
     if BOTLOG:
-        await event.client.send_message(BOTLOG_CHATID, "#bot #pull \n" f"**{BOT_NAME} Telah Diperbarui ツ**")
+        await event.client.send_message(BOTLOG_CHATID, "#bot #pull \n" f"**{__botname__} Telah Diperbarui ツ**")
 
     try:
         from notubot.plugins.sql_helper.globals import addgvar, delgvar
@@ -226,11 +228,11 @@ async def upstream(event):
     changelog = await gen_chlog(repo, f"HEAD..upstream/{ac_br}")
 
     if opts == "deploy" or opts == "push" or opts == "all":
-        await event.edit(f"`Proses Deploy {BOT_NAME} Harap Tunggu...`")
+        await event.edit(f"`Proses Deploy {__botname__} Harap Tunggu...`")
         await deploy(event, repo, ups_rem, ac_br, txt)
 
     if changelog == "" and force_update is False:
-        await event.edit(f"\n`{BOT_NAME}`  **up-to-date** branch " f"`{UPSTREAM_REPO_BRANCH}`\n")
+        await event.edit(f"\n`{__botname__}`  **up-to-date** branch " f"`{UPSTREAM_REPO_BRANCH}`\n")
         return repo.__del__()
 
     if opts is None and force_update is False:
@@ -243,15 +245,15 @@ async def upstream(event):
     if force_update:
         await event.edit("`Memaksa sinkronisasi ke kode UserBot stabil terbaru, harap tunggu...`")
     else:
-        await event.edit(f"`Proses Update {BOT_NAME} Loading....1%`")
-        await event.edit(f"`Proses Update {BOT_NAME} Loading....20%`")
-        await event.edit(f"`Proses Update {BOT_NAME} Loading....35%`")
-        await event.edit(f"`Proses Update {BOT_NAME} Loading....77%`")
-        await event.edit(f"`Proses Update {BOT_NAME} Updating...90%`")
-        await event.edit(f"`Proses Update {BOT_NAME} Mohon Tunggu Sebentar...100%`")
+        await event.edit(f"`Proses Update {__botname__} Loading....1%`")
+        await event.edit(f"`Proses Update {__botname__} Loading....20%`")
+        await event.edit(f"`Proses Update {__botname__} Loading....35%`")
+        await event.edit(f"`Proses Update {__botname__} Loading....77%`")
+        await event.edit(f"`Proses Update {__botname__} Updating...90%`")
+        await event.edit(f"`Proses Update {__botname__} Mohon Tunggu Sebentar...100%`")
 
     if opts == "now" or opts == "pull" or opts == "one":
-        await event.edit(f"`Memperbarui {BOT_NAME} Harap Tunggu...`")
+        await event.edit(f"`Memperbarui {__botname__} Harap Tunggu...`")
         await update(event, repo, ups_rem, ac_br)
     return
 
@@ -259,7 +261,7 @@ async def upstream(event):
 @bot_cmd(outgoing=True, pattern=r"^\.repo$")
 async def repo(event):
     """For .repo command, just returns the repo URL."""
-    await event.edit(f"📦 **[Disini REPO](https://github.com/notudope/notubot)** `{BOT_NAME}`", link_preview=False)
+    await event.edit(f"📦 **[Disini REPO](https://github.com/notudope/notubot)** `{__botname__}`", link_preview=False)
 
 
 CMD_HELP.update(

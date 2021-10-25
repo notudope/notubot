@@ -16,7 +16,7 @@ from notubot import (
     BOTLOG_CHATID,
     CMD_HELP,
     bot,
-    BOT_NAME,
+    __botname__,
 )
 from notubot.events import bot_cmd
 from notubot.utils import time_formatter
@@ -25,7 +25,7 @@ from notubot.utils.format import parse_pre
 
 @bot_cmd(outgoing=True, pattern=r"^\.restart$")
 async def restart(event):
-    await event.edit(f"`Restarting {BOT_NAME} ...`")
+    await event.edit("`Restarting {} ...`".format(__botname__))
 
     if BOTLOG:
         await event.client.send_message(BOTLOG_CHATID, "#bot #restart \n" "Restarting UserBot...")
@@ -44,7 +44,7 @@ async def restart(event):
 
 @bot_cmd(outgoing=True, pattern=r"^\.shutdown$")
 async def shutdown(event):
-    await event.edit(f"`Shutting down {BOT_NAME} ...`")
+    await event.edit("`Shutting down {} ...`".format(__botname__))
 
     if BOTLOG:
         await event.client.send_message(BOTLOG_CHATID, "#bot #shutdown \n" "Shutting down UserBot...")

@@ -29,6 +29,8 @@ from telethon.errors.rpcerrorlist import ApiIdInvalidError, AuthKeyDuplicatedErr
 from telethon.sessions import StringSession
 
 start_time = time()
+__botversion__ = "0.1"
+__botname__ = "⚡NOTUBOT UserBot⚡"
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="%H:%M:%S", level=logging.INFO
@@ -85,12 +87,6 @@ LOGSPAMMER = strtobool(getenv("LOGSPAMMER", default="True"))
 
 # Blacklist group
 BLACKLIST_GROUP = list(map(int, getenv("BLACKLIST_GROUP", default="").split()))
-
-# Bot Project Name
-BOT_NAME = getenv("BOT_NAME", default="⚡NOTUBOT UserBot⚡")
-
-# Bot Version
-BOT_VER = getenv("BOT_VER", default="0.1")
 
 # Bleep Blop, this is a bot ;)
 PM_AUTO_BAN = strtobool(getenv("PM_AUTO_BAN", default="False"))
@@ -283,7 +279,7 @@ with bot:
 
 
 async def check_alive() -> None:
-    await bot.send_message(BOTLOG_CHATID, f"```{BOT_NAME} v{BOT_VER} Launched 🚀```")
+    await bot.send_message(BOTLOG_CHATID, "```{} v{} Launched 🚀```".format(__botname__, __botversion__))
 
 
 with bot:
@@ -298,10 +294,10 @@ with bot:
 
 async def update_restart_msg(chat_id: int, msg_id: int) -> bool:
     message = (
-        f"`{BOT_NAME}`\n"
+        f"`{__botname__}`\n"
         f"[REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Grup](https://t.me/NOTUBOTS)\n\n"
         f"😎 **Owner :** __{ALIVE_NAME}__\n"
-        f"🤖 **Version :** `v{BOT_VER}`\n"
+        f"🤖 **Version :** `v{__botversion__}`\n"
         f"🐍 **Python :** `v{python_version()}`\n"
         f"📦 **Telethon :** `v{version.__version__}`"
     )

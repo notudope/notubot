@@ -9,9 +9,9 @@ import asyncio
 
 from notubot import (
     CMD_HELP,
-    BOT_VER,
+    __botversion__,
     ALIVE_NAME,
-    BOT_NAME,
+    __botname__,
 )
 from notubot.events import bot_cmd
 
@@ -32,11 +32,11 @@ async def help(event):
             plugins += f"`{str(p)}`  |  "
         plugins = plugins[:-3]
 
-        text = f"""`{BOT_NAME}`
+        text = f"""`{__botname__}`
 [REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Grup](https://t.me/NOTUBOTS)
 
 😎 **Owner :** __{ALIVE_NAME}__
-🤖 **Version :** `v{BOT_VER}`
+🤖 **Version :** `v{__botversion__}`
 📦 **Plugin :** `{len(CMD_HELP)}`
 👨‍💻 **Usage :** `.help <nama plugin>`
 

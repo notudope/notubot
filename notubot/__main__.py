@@ -12,10 +12,10 @@ from importlib import import_module
 from time import time
 
 from notubot import (
-    BOT_VER,
+    __botversion__,
     LOGS,
     bot,
-    BOT_NAME,
+    __botname__,
     LOOP,
     start_time,
 )
@@ -45,7 +45,7 @@ async def main() -> None:
     for plugins in ALL_PLUGINS:
         import_module("notubot.plugins.{}".format(plugins))
 
-    LOGS.info("{} v{} Launched 🚀".format(BOT_NAME, BOT_VER))
+    LOGS.info("{} v{} Launched 🚀".format(__botname__, __botversion__))
 
     if len(sys.argv) not in (1, 3, 4):
         await bot.disconnect()
@@ -55,12 +55,12 @@ async def main() -> None:
 
 if __name__ == "__main__":
     try:
-        LOGS.info("Took {} to start {}".format(time_formatter((time() - start_time)), BOT_NAME))
+        LOGS.info("Took {} to start {}".format(time_formatter((time() - start_time)), __botname__))
         LOOP.run_until_complete(main())
     except (NotImplementedError, KeyboardInterrupt, SystemExit):
         pass
     except (BaseException, Exception) as e:
         LOGS.exception("main : {}".format(e))
     finally:
-        LOGS.info("{} Stopped...".format(BOT_NAME))
+        LOGS.info("{} Stopped...".format(__botname__))
         sys.exit()

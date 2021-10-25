@@ -10,7 +10,6 @@ from datetime import datetime
 from os import remove
 from platform import python_version
 from sys import exc_info
-# from time import sleep
 from traceback import format_exc
 
 from telethon import version, events
@@ -29,8 +28,8 @@ from telethon.utils import get_display_name
 from notubot import (
     BOTLOG_CHATID,
     bot,
-    BOT_VER,
-    BOT_NAME,
+    __botversion__,
+    __botname__,
     BOTLOG,
     LOGSPAMMER,
     LOGS,
@@ -129,7 +128,9 @@ def bot_cmd(**args):
                 if BOTLOG:
                     await chat.client.send_message(
                         BOTLOG_CHATID,
-                        f"`{BOT_NAME} sudah bisa digunakan, setelah terkena FloodWaitError selama {FLOOD_WAIT_HUMAN}`",
+                        "`{} sudah bisa digunakan, setelah terkena FloodWaitError selama {}`".format(
+                            __botname__, FLOOD_WAIT_HUMAN
+                        ),
                     )
             except events.StopPropagation:
                 raise events.StopPropagation
@@ -157,7 +158,7 @@ def bot_cmd(**args):
                     ftext = "NOTUBOT ERROR REPORT: Laporkan ini ke @NOTUBOTS\n\n"
 
                     ftext += "--------BEGIN NOTUBOT TRACEBACK LOG--------\n"
-                    ftext += "\nNOTUBOT Version: " + str(BOT_VER)
+                    ftext += "\nNOTUBOT Version: " + str(__botversion__)
                     ftext += "\nPython Version: " + str(python_version())
                     ftext += "\nTelethon Version: " + str(version.__version__)
                     ftext += "\nDate: " + date
