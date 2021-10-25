@@ -25,9 +25,9 @@ from notubot import CMD_HELP, LOGS
 from notubot.events import bot_cmd
 
 
-async def get_chat_id(event):
-    chat = event.pattern_match.group(1).strip()
-    chat_id = None
+async def get_chatinfo(event):
+    chat = event.pattern_match.group(1)
+    chat_info = None
 
     if chat:
         try:
@@ -41,26 +41,26 @@ async def get_chat_id(event):
             if reply.fwd_from and reply.fwd_from.channel_id is not None:
                 chat = reply.fwd_from.channel_id
         else:
-            chat = event.chat_id
+            chat = None
 
     try:
-        chat_id = await event.client(GetFullChatRequest(chat))
+        chat_info = await event.client(GetFullChatRequest(chat))
     except BaseException:
         try:
-            chat_id = await event.client(GetFullChannelRequest(chat))
+            chat_info = await event.client(GetFullChannelRequest(chat))
         except ChannelInvalidError:
-            await event.reply("`Group tidak valid!`")
+            await event.reply("`Group tidak valid.`")
             return None
         except ChannelPrivateError:
             await event.reply("`Ini adalah grup private atau dibanned dari sana.`")
             return None
         except ChannelPublicGroupNaError:
-            await event.reply("`Grup tidak ada!`")
+            await event.reply("`Grup tidak ada.`")
             return None
         except (TypeError, ValueError):
-            await event.reply("`Group tidak valid!`")
+            await event.reply("`Group tidak valid.`")
             return None
-    return chat_id
+    return chat_info
 
 
 @bot_cmd(outgoing=True, groups_only=True, pattern=r"^\.inviteall(?: |$)(.*)")
@@ -73,7 +73,7 @@ async def inviteall(event):
     else:
         proc = await event.edit("`...`")
 
-    chat_id = await get_chat_id(event)
+    chat_id = await get_chatinfo(event)
     chat = await event.get_chat()
 
     success = failed = 0
@@ -186,7 +186,7 @@ CMD_HELP.update(
         "scraper": [
             "Scraper",
             ">`.inviteall <id/username>`\n"
-            "↳ : Menculik pengguna dari grup dan ditambahkan ke grup.\n\n"
+            "↳ : Menculik orang dari grup dan ditambahkan ke grup.\n\n"
             ">`.getmemb`\n"
             "↳ : Mendapatkan semua member dalam grup.\n\n"
             ">`.addmemb`\n"
