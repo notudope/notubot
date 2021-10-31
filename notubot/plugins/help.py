@@ -24,7 +24,7 @@ async def help(event):
         if args in CMD_HELP:
             await event.edit(f"📦 Plugin **{CMD_HELP[args][0]}** <`.help {args}`>\n\n" + str(CMD_HELP[args][1]))
         else:
-            await event.edit(f"😮‍💨 Plugin [`{args}`] tidak ada! Ketik <`.help`> untuk melihat nama plugin yang benar.")
+            await event.edit(f"😡 Plugin [`{args}`] tidak ada! Ketik <`.help`> untuk melihat nama plugin yang benar.")
     else:
         plugins = ""
         for p in CMD_HELP:
@@ -34,10 +34,10 @@ async def help(event):
         text = f"""`{__botname__}`
 [REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Grup](https://t.me/NOTUBOTS)
 
-😎 **Owner :** __{ALIVE_NAME}__
-🤖 **Version :** `v{__botversion__}`
-📦 **Plugin :** `{len(CMD_HELP)}`
-👨‍💻 **Usage :** `.help <nama plugin>`
+😎 **Owner** - {ALIVE_NAME}
+🤖 **Version** - `v{__botversion__}`
+📦 **Plugin** - `{len(CMD_HELP)}`
+👨‍💻 **Usage** - `.help <nama plugin>`
 
 Daftar semua plugin beserta perintah tersedia dibawah ini:
 

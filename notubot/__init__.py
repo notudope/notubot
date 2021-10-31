@@ -295,11 +295,11 @@ with bot:
 async def update_restart_msg(chat_id: int, msg_id: int) -> bool:
     message = (
         f"`{__botname__}`\n"
-        f"[REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Grup](https://t.me/NOTUBOTS)\n\n"
-        f"😎 **Owner :** __{ALIVE_NAME}__\n"
-        f"🤖 **Version :** `v{__botversion__}`\n"
-        f"🐍 **Python :** `v{python_version()}`\n"
-        f"📦 **Telethon :** `v{version.__version__}`"
+        f"[REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Support](https://t.me/NOTUBOTS)  /  [Mutualan](https://t.me/CariTeman_Asik)\n\n"
+        f"**Owner** - {ALIVE_NAME}\n"
+        f"**Version** - `v{__botversion__}`\n"
+        f"**Python** - `{python_version()}`\n"
+        f"**Telethon** - `{version.__version__}`"
     )
     await bot.edit_message(chat_id, msg_id, message, link_preview=False)
     return True

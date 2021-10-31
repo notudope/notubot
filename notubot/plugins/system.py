@@ -8,6 +8,7 @@
 from asyncio import sleep, create_subprocess_exec, subprocess
 from platform import python_version
 from shutil import which
+from time import time
 
 from git import Repo
 from telethon import version, Button
@@ -20,8 +21,10 @@ from notubot import (
     CMD_HELP,
     __botversion__,
     __botname__,
+    start_time,
 )
 from notubot.events import bot_cmd
+from notubot.utils.tools import time_formatter
 
 DEFAULTUSER = ALIVE_NAME
 
@@ -79,6 +82,11 @@ async def aliveon(event):
     # [Instagram]({IG_ALIVE})
     me = await event.client.get_me()
     user = await event.client.get_entity("me")
+    uptime = time_formatter((time() - start_time) * 1000)
+    b = Repo().active_branch
+    g = Repo().remotes[0].config_reader.get("url")
+    r = g.replace(".git", f"/tree/{b}")
+    branch = f" `[{b}]({r})` "
 
     await event.edit("__Reconnect.__")
     await event.edit("__Reconnect..__")
@@ -93,21 +101,24 @@ async def aliveon(event):
     text = (
         f"`{__botname__}`\n"
         f"[REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Support](https://t.me/NOTUBOTS)  /  [Mutualan](https://t.me/CariTeman_Asik)\n\n"
-        f"😎 **Owner :** {DEFAULTUSER}\n"
-        f"👥 **Fullname :** {get_display_name(user)}\n"
-        f"🔖 **Username :** @{me.username}\n"
-        f"👁️‍🗨️ **ID :** `{me.id}`\n"
-        f"🤖 **Version :** `v{__botversion__}`\n"
-        f"📦 **Plugin :** `{len(CMD_HELP)}`\n"
-        f"🐍 **Python :** `v{python_version()}`\n"
-        f"📦 **Telethon :** `v{version.__version__}\n`"
-        f"⚙️ **Branch :** `{Repo().active_branch.name}`"
+        f"**Owner** - {DEFAULTUSER}\n"
+        f"**Fullname** - `{get_display_name(user)}`\n"
+        f"**Username** - @{me.username}\n"
+        f"**ID** - `{me.id}`\n"
+        f"**Version** - `v{__botversion__}`\n"
+        f"**Plugin** - `{len(CMD_HELP)}`\n"
+        f"**UpTime** - `{uptime}`\n"
+        f"**Python** - `{python_version()}`\n"
+        f"**Telethon** - `{version.__version__}\n`"
+        f"**Branch** - {branch}"
     )
 
     buttons = [
         [
             Button.url("REPO", "https://github.com/notudope/notubot"),
             Button.url("Channel", "https://t.me/notudope"),
+        ],
+        [
             Button.url("Support", "https://t.me/NOTUBOTS"),
             Button.url("Mutualan", "https://t.me/CariTeman_Asik"),
         ],
@@ -116,14 +127,19 @@ async def aliveon(event):
     if ALIVE_LOGO:
         try:
             await event.delete()
-            await event.client.send_file(event.chat_id, ALIVE_LOGO, caption=text)
+            await event.client.send_file(event.chat_id, ALIVE_LOGO, caption=text, buttons=buttons)
         except MediaEmptyError:
             await event.edit(
                 text + "\n\n `ALIVE_LOGO tidak valid.`",
             )
     else:
         await event.delete()
-        await event.client.send_message(event.chat_id, text, link_preview=False, buttons=buttons)
+        await event.client.send_message(
+            event.chat_id,
+            text,
+            buttons=buttons,
+            link_preview=False,
+        )
 
 
 @bot_cmd(outgoing=True, pattern="^.aliveu")
@@ -157,6 +173,22 @@ CMD_HELP.update(
         ]
     }
 )
+
+
+@bot_cmd(outgoing=True, pattern=r"^\.ping$")
+async def ping(event):
+    if event.out:
+        await event.delete()
+
+    start = time()
+    x = await event.respond("Pong !")
+    end = round((time() - start) * 1000)
+    uptime = time_formatter((time() - start_time) * 1000)
+    await x.edit("**Pong !!** `{}ms`\n**Uptime** - `{}`".format(end, uptime))
+    await sleep(15)
+    await x.delete()
+    await event.delete()
+
 
 CMD_HELP.update(
     {
