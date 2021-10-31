@@ -21,7 +21,7 @@ from telethon.tl.functions.channels import InviteToChannelRequest, GetFullChanne
 from telethon.tl.functions.messages import GetFullChatRequest
 from telethon.tl.types import InputPeerUser
 
-from notubot import CMD_HELP, LOGS
+from notubot import CMD_HELP
 from notubot.events import bot_cmd
 
 
@@ -49,7 +49,7 @@ async def get_chatinfo(event):
         try:
             chat_info = await event.client(GetFullChannelRequest(chat))
         except ChannelInvalidError:
-            await event.reply("`Group Username/ID tidak valid.`")
+            await event.reply("`Grup username/id tidak valid.`")
             return None
         except ChannelPrivateError:
             await event.reply("`Itu grup private atau dibanned dari sana.`")
@@ -58,7 +58,7 @@ async def get_chatinfo(event):
             await event.reply("`Grup tujuan tidak ada.`")
             return None
         except (TypeError, ValueError):
-            await event.reply("`Input tidak valid.`")
+            await event.reply("`Input grup username/id tidak valid.`")
             return None
     return chat_info
 
@@ -87,33 +87,29 @@ async def inviteall(event):
     await procs.edit("`Mengumpulkan member...`")
     async for user in event.client.iter_participants(chat_id.full_chat.id):
         try:
-            LOGS.error(error)
             if error.startswith("Too"):
                 return await procs.edit(
                     f"""**Selesai Menculik Dengan Kesalahan**
 (`mungkin akun terkena limit atau kesalahan dari Telethon, coba lagi nanti`)
-**Kesalahan :**
+**Kesalahan:**
 `{error}`
 
 • Diculik `{success}` orang.
 • Gagal menculik `{failed}` orang."""
                 )
-
             await event.client(InviteToChannelRequest(channel=chat, users=[user.id]))
             success = success + 1
-
             await procs.edit(
                 f"""**Sedang Menculik...**
 • Diculik `{success}` orang.
 • Gagal menculik `{failed}` orang.
 
-**Kesalahan :** `{error}`"""
+**Kesalahan:** `{error}`"""
             )
         except Exception as e:
             error = str(e)
             failed = failed + 1
-
-        await asyncio.sleep(0.2)
+        await asyncio.sleep(0.1)
 
     return await procs.edit(
         f"""**Selesai Menculik**
@@ -176,7 +172,7 @@ async def addmemb(event):
             continue
 
 
-@bot_cmd(outgoing=True, pattern=r"^\.limit(?: |$)(.*)")
+@bot_cmd(outgoing=True, disable_errors=True, pattern=r"^\.limit(?: |$)(.*)")
 async def limit(event):
     await event.edit("`Mengecek apakah akun kena limit...`")
 

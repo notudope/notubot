@@ -83,7 +83,6 @@ def user_list(ls, n):
 
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern=r"^\.setgpic$")
 async def set_group_photo(event):
-    """For .setgpic command, changes the picture of a group"""
     if not event.is_group:
         await event.edit("`I don't think this is a group.`")
         return
@@ -111,7 +110,6 @@ async def set_group_photo(event):
 
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern=r"^\.promote(?: |$)(.*)")
 async def promote(event):
-    """For .promote command, promotes the replied/tagged person"""
     new_rights = ChatAdminRights(
         add_admins=False,
         invite_users=True,
@@ -154,7 +152,6 @@ async def promote(event):
 
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern=r"^\.demote(?: |$)(.*)")
 async def demote(event):
-    """For .demote command, demotes the replied/tagged person"""
     # If passing, declare that we're going to demote
     await event.edit("`Demoting...`")
     rank = "admeme"  # dummy rank, lol.
@@ -196,7 +193,6 @@ async def demote(event):
 
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern=r"^\.ban(?: |$)(.*)")
 async def ban(event):
-    """For .ban command, bans the replied/tagged person"""
     user, reason = await get_user_from_event(event)
     if user:
         pass
@@ -237,7 +233,6 @@ async def ban(event):
 
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern=r"^\.unban(?: |$)(.*)")
 async def unban(event):
-    """For .unban command, unbans the replied/tagged person"""
     # If everything goes well...
     await event.edit("`Unbanning...`")
 
@@ -265,9 +260,6 @@ async def unban(event):
 
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.mute(?: |$)(.*)")
 async def muter(event):
-    """
-    This function is basically muting peeps
-    """
     # Check if the function running under SQL mode
     try:
         from notubot.plugins.sql_helper.spam_mute_sql import mute
@@ -315,7 +307,6 @@ async def muter(event):
 
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern=r"^\.unmute(?: |$)(.*)")
 async def unmuter(event):
-    """For .unmute command, unmute the replied/tagged person"""
     # Check if the function running under SQL mode
     try:
         from notubot.plugins.sql_helper.spam_mute_sql import unmute
@@ -354,7 +345,6 @@ async def unmuter(event):
 
 @bot_cmd(incoming=True, disable_errors=True)
 async def muters(event):
-    """Used for deleting the messages of muted people"""
     try:
         from notubot.plugins.sql_helper.gmute_sql import is_gmuted
         from notubot.plugins.sql_helper.spam_mute_sql import is_muted
@@ -392,7 +382,6 @@ async def muters(event):
 
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern=r"^\.ungmute(?: |$)(.*)")
 async def ungmuter(event):
-    """For .ungmute command, ungmutes the target in the userbot"""
     # Check if the function running under SQL mode
     try:
         from notubot.plugins.sql_helper.gmute_sql import ungmute
@@ -427,7 +416,6 @@ async def ungmuter(event):
 
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern=r"^\.gmute(?: |$)(.*)")
 async def gmuter(event):
-    """For .gmute command, globally mutes the replied/tagged person"""
     # Check if the function running under SQL mode
     try:
         from notubot.plugins.sql_helper.gmute_sql import gmute
@@ -497,8 +485,6 @@ async def all(event):
 
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.zombies(?: |$)(.*)")
 async def rm_deletedacc(event):
-    """For .zombies command, list all the ghost/deleted/zombie accounts in a chat."""
-
     con = event.pattern_match.group(1).lower()
     del_u = 0
     del_status = "`No deleted accounts found, Group is clean`"
@@ -551,7 +537,6 @@ async def rm_deletedacc(event):
 
 @bot_cmd(outgoing=True, groups_only=True, disable_errors=True, pattern=r"^\.admins$")
 async def get_admin(event):
-    """For .admins command, list all of the admins of the chat."""
     info = await event.client.get_entity(event.chat_id)
     title = info.title if info.title else "this chat"
     mentions = f"<b>Admins in {title}:</b> \n"
@@ -569,7 +554,6 @@ async def get_admin(event):
 
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern=r"^\.pin(?: |$)(.*)")
 async def pin(event):
-    """For .pin command, pins the replied/tagged message on the top the chat."""
     to_pin = event.reply_to_msg_id
 
     if not to_pin:
@@ -603,7 +587,6 @@ async def pin(event):
 
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern=r"^\.kick(?: |$)(.*)")
 async def kick(event):
-    """For .kick command, kicks the replied/tagged person from the group."""
     user, reason = await get_user_from_event(event)
     if not user:
         return await event.edit("`Couldn't fetch user.`")
@@ -632,7 +615,6 @@ async def kick(event):
 
 @bot_cmd(outgoing=True, groups_only=True, disable_errors=True, pattern=r"^\.users ?(.*)")
 async def get_users(event):
-    """For .users command, list all of the users in a chat."""
     info = await event.client.get_entity(event.chat_id)
     title = info.title if info.title else "this chat"
     mentions = f"Users in {title}: \n"
@@ -669,7 +651,6 @@ async def get_users(event):
 
 
 async def get_user_from_event(event):
-    """Get the user from argument or replied message."""
     args = event.pattern_match.group(1).split(" ", 1)
     extra = None
     if event.reply_to_msg_id and not len(args) == 2:
@@ -716,7 +697,6 @@ async def get_user_from_id(user, event):
 
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern=r"^\.usersdel ?(.*)")
 async def get_usersdel(event):
-    """For .usersdel command, list all of the deleted users in a chat."""
     info = await event.client.get_entity(event.chat_id)
     title = info.title if info.title else "this chat"
     mentions = f"deletedUsers in {title}: \n"
@@ -753,7 +733,6 @@ async def get_usersdel(event):
 
 
 async def get_userdel_from_event(event):
-    """Get the deleted user from argument or replied message."""
     args = event.pattern_match.group(1).split(" ", 1)
     extra = None
     if event.reply_to_msg_id and not len(args) == 2:
@@ -800,7 +779,6 @@ async def get_userdel_from_id(user, event):
 
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.bots$")
 async def get_bots(event):
-    """For .bots command, list all of the bots of the chat."""
     info = await event.client.get_entity(event.chat_id)
     title = info.title if info.title else "this chat"
     mentions = f"<b>Bots in {title}:</b>\n"

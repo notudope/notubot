@@ -17,9 +17,9 @@ from notubot.events import bot_cmd
     pattern="^.f(typing|audio|contact|document|game|location|photo|round|video)(?: |$)(.*)",
 )
 async def fakeaction(event):
-    act = event.pattern_match.group(1)
-    if act in ["audio", "round", "video"]:
-        act = "record-" + act
+    action = event.pattern_match.group(1)
+    if action in ["audio", "round", "video"]:
+        action = "record-" + action
 
     seconds = event.pattern_match.group(2)
     if not (seconds or seconds.isdigit()):
@@ -28,15 +28,13 @@ async def fakeaction(event):
         try:
             seconds = int(seconds)
         except BaseException:
-            try:
-                seconds = await event.ban_time(seconds)
-            except BaseException:
-                return await event.edit("`Format salah.`")
+            return await event.edit("`Format tidak valid.`")
 
-    await event.edit(f'`Memulai "Fake {act.capitalize()}" selama {seconds} detik.`')
+    await event.edit(f'`Memulai "Fake {action.capitalize()}" selama {seconds} detik.`')
     await asyncio.sleep(5)
     await event.delete()
-    async with event.client.action(event.chat_id, act):
+
+    async with event.client.action(event.chat_id, action):
         await asyncio.sleep(seconds)
 
 
@@ -45,13 +43,23 @@ CMD_HELP.update(
         "fakeaction": [
             "Fake Action",
             ">`.ftyping <detik>`\n"
-            "↳ : Seakan akan sedang mengetik padahal tidak.\n\n"
+            "↳ : Menampilkan aksi mengetik secara palsu.\n\n"
             ">`.faudio <detik>`\n"
-            "↳ : Berfungsi sama seperti ftyping tapi ini fake audio.\n\n"
-            ">`.fgame <detik>`\n"
-            "↳ : Berfungsi sama seperti ftyping tapi ini fake game.\n\n"
+            "↳ : Menampilkan aksi merekam secara palsu.\n\n"
             ">`.fvideo <detik>`\n"
-            "↳ : Berfungsi sama seperti ftyping tapi ini fake video.",
+            "↳ : Menampilkan aksi video secara palsu.\n\n"
+            ">`.fgame <detik>`\n"
+            "↳ : Menampilkan aksi bermain game secara palsu.\n\n"
+            ">`.flocation <detik>`\n"
+            "↳ : Menampilkan aksi lokasi secara palsu.\n\n"
+            ">`.fcontact <detik>`\n"
+            "↳ : Menampilkan aksi memilih kontak secara palsu.\n\n"
+            ">`.fround <detik>`\n"
+            "↳ : Menampilkan aksi pesan video secara palsu.\n\n"
+            ">`.fphoto <detik>`\n"
+            "↳ : Menampilkan mengirim foto secara palsu.\n\n"
+            ">`.fdocument <detik>`\n"
+            "↳ : Menampilkan mengirim dokumen secara palsu.",
         ]
     }
 )

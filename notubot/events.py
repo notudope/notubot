@@ -41,7 +41,7 @@ FLOOD_WAIT = 0
 
 
 def bot_cmd(**args):
-    """Register a new event."""
+    args["func"] = lambda e: not e.fwd_from and not e.via_bot_id
     pattern = args.get("pattern", None)
     disable_edited = args.get("disable_edited", False)
     ignore_unsafe = args.get("ignore_unsafe", False)

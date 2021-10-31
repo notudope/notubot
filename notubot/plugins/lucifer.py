@@ -6,9 +6,8 @@
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
 import asyncio
-import time
 
-from telethon.errors import FloodWaitError
+from telethon.errors.rpcerrorlist import FloodWaitError
 from telethon.tl.functions.channels import EditBannedRequest, DeleteMessagesRequest
 from telethon.tl.types import ChannelParticipantCreator, ChannelParticipantAdmin, ChatBannedRights
 
@@ -38,7 +37,7 @@ async def rocker(event):
     if rockers is True:
         await event.delete()
     else:
-        await event.edit("`Sedang memproses...`")
+        await event.edit("`...`")
 
     async for x in event.client.iter_participants(event.chat_id):
         if x.id == me.id:
@@ -57,11 +56,11 @@ async def rocker(event):
         except BaseException:
             pass
         except FloodWaitError as e:
-            time.sleep(e.seconds)
+            await asyncio.sleep(e.seconds + 10)
         await asyncio.sleep(1)
 
     if rockers is False:
-        await event.edit(f"👏 Congratulations\nFrom now, you have no friends!")
+        await event.edit("👏 Congratulations\nFrom now, you have no friends!")
 
 
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.gohell(?: |$)(.*)")
@@ -75,7 +74,7 @@ async def gohell(event):
     if lucifer is True:
         await event.delete()
     else:
-        await event.edit("`Sedang memproses...`")
+        await event.edit("`...`")
 
     async for x in event.client.iter_participants(event.chat_id):
         if x.id == me.id:
@@ -92,8 +91,8 @@ async def gohell(event):
         except BaseException:
             pass
         except FloodWaitError as e:
-            time.sleep(e.seconds)
+            await asyncio.sleep(e.seconds + 10)
         await asyncio.sleep(1)
 
     if lucifer is False:
-        await event.edit(f"You're Lucifer 👁️")
+        await event.edit("You're Lucifer 👁️")

@@ -54,7 +54,6 @@ async def shutdown(event):
 
 @bot_cmd(outgoing=True, pattern=r"^\.sleep ([0-9]+)$")
 async def sleepy(event):
-    """For .sleep command, let the userbot snooze for a few second."""
     counter = int(event.pattern_match.group(1))
     await event.edit("`I am sulking and snoozing...`")
 
@@ -71,7 +70,6 @@ async def sleepy(event):
 
 @bot_cmd(outgoing=True, pattern=r"^\.random")
 async def randomise(items):
-    """For .random command, get a random item from the list of items."""
     itemo = (items.text[8:]).split()
     if len(itemo) < 2:
         return await items.edit("`2 or more items are required! Check .help random for more info.`")
@@ -119,9 +117,7 @@ async def raw(event):
 
 @bot_cmd(outgoing=True, pattern=r"^\.json$")
 async def json(event):
-    "To get details of that message in json format."
     reply = await event.get_reply_message() if event.reply_to_msg_id else event
-
     await event.edit(reply.stringify(), parse_mode=parse_pre)
 
 

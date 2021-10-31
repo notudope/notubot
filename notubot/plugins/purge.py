@@ -15,7 +15,6 @@ from notubot.events import bot_cmd
 
 @bot_cmd(outgoing=True, disable_errors=True, pattern=r"^(\.del|del|Del)$")
 async def delete(event):
-    """For .del command, delete the replied message."""
     reply = await event.get_reply_message()
     if reply:
         try:
@@ -27,7 +26,6 @@ async def delete(event):
 
 @bot_cmd(outgoing=True, disable_errors=True, pattern=r"^\.purge(?: |$)(.*)")
 async def purge(event):
-    """For .purge command, purge all messages starting from the reply."""
     match = event.pattern_match.group(1)
     try:
         text = event.text[6]
@@ -63,7 +61,7 @@ async def purge(event):
             event.chat_id, [x for x in range(event.reply_to_msg_id, event.id + 1)]  # noqa: C416
         )
     except Exception as e:
-        LOGS.info(e)
+        LOGS.exception(e)
 
     procs = await event.client.send_message(event.chat_id, "`Purged`")
     await asyncio.sleep(1)
@@ -72,7 +70,6 @@ async def purge(event):
 
 @bot_cmd(outgoing=True, disable_errors=True, pattern=r"^\.purgeme(?: |$)(.*)")
 async def purgeme(event):
-    """For .purgeme, purge Only your messages from the replied message."""
     opts = event.pattern_match.group(1)
     if opts and not event.is_reply:
         try:
@@ -124,7 +121,6 @@ async def purgeme(event):
 
 @bot_cmd(outgoing=True, disable_errors=True, groups_only=True, pattern=r"^\.purgeall$")
 async def purgeall(event):
-    """For .purgeall, delete all messages of replied user."""
     if not event.is_reply:
         await event.edit("`Balas pesan seseorang untuk menghapusnya.`")
         return
@@ -142,7 +138,6 @@ async def purgeall(event):
 
 @bot_cmd(outgoing=True, disable_errors=True, pattern=r"^\.copy$")
 async def copy(event):
-    """For .copy command, copy replied message."""
     reply = await event.get_reply_message()
     if reply:
         try:
@@ -154,7 +149,6 @@ async def copy(event):
 
 @bot_cmd(outgoing=True, disable_errors=True, pattern=r"^\.edit")
 async def edit(event):
-    """For .edit command, edit your last message."""
     message = event.text
     chat = await event.get_input_chat()
     me = await event.client.get_peer_id("me")
@@ -171,7 +165,6 @@ async def edit(event):
 
 @bot_cmd(outgoing=True, disable_errors=True, pattern=r"^\.sd")
 async def selfd(event):
-    """For .sd command, make seflf-destructable messages."""
     message = event.text
     counter = int(message[4:6])
     text = str(event.text[6:])

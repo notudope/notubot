@@ -51,19 +51,6 @@
       "value": "https://github.com/notudope/notubot",
       "required": false
     },
-    "COUNTRY": {
-      "description": "Set your Country to be used in the .time and .date commands.",
-      "required": false
-    },
-    "TZ_NUMBER": {
-      "description": "Change this value in case your country has multiple Time Zones.",
-      "value": "1",
-      "required": false
-    },
-    "OPEN_WEATHER_MAP_APPID": {
-      "description": "Get your own APPID (API key)from https://api.openweathermap.org/data/2.5/weather",
-      "required": false
-    },
     "BOTLOG": {
       "description": "Incase you want to turn off logging, put this to False",
       "value": "True",
@@ -74,87 +61,9 @@
       "value": "0",
       "required": true
     },
-    "PM_AUTO_BAN": {
-      "description": "PM Auto-Ban Feature Switch. Also known as the 'bleep blop, this is a bot...' module.",
-      "value": "False"
-    },
-    "OCR_SPACE_API_KEY": {
-      "description": "OCR API Key for .ocr command. Get from https://ocr.space/ocrapi",
-      "required": false
-    },
-    "REM_BG_API_KEY": {
-      "description": "API Key for .rbg command. Get from https://www.remove.bg/api",
-      "required": false
-    },
-    "ANTI_SPAMBOT": {
-      "description": "Kicks spambots from groups after they join. [Requires admin powers in groups to kick.]",
-      "value": "False"
-    },
-    "ANTI_SPAMBOT_SHOUT": {
-      "description": "Report spambots to @admins in groups after they join, just in case when you don't have admin powers to kick that shit yourself.",
-      "value": "False"
-    },
-    "TMP_DOWNLOAD_DIRECTORY": {
-      "description": "Download location for many modules (GDrive, .download etc..)",
-      "value": "./downloads/"
-    },
-    "CLEAN_WELCOME": {
-      "description": "When a new person joins, the old welcome message is deleted.",
-      "value": "True"
-    },
-    "LASTFM_API": {
-      "description": "API Key for Last.FM module. [Get one from - https://www.last.fm/api/account/create]",
-      "required": false
-    },
-    "LASTFM_SECRET": {
-      "description": "SECRET Key for Last.FM module. [Get one from - https://www.last.fm/api/account/create]",
-      "required": false
-    },
-    "LASTFM_USERNAME": {
-      "description": "Last.FM Username",
-      "required": false
-    },
-    "LASTFM_PASSWORD": {
-      "description": "Last.FM Password",
-      "required": false
-    },
-    "BIO_PREFIX": {
-      "description": "Prefix for Last.FM Module Bio.",
-      "required": false
-    },
-    "DEFAULT_BIO": {
-      "description": "Default profile bio.",
-      "value": "Hoooman",
-      "required": false
-    },
-    "G_DRIVE_DATA": {
-      "description": "Your client_secret.json.",
-      "required": false
-    },
-    "G_DRIVE_INDEX_URL": {
-      "description": "Your Cloudflare Google Drive Index URL",
-      "required": false
-    },
-    "GENIUS_ACCESS_TOKEN": {
-      "description": "Client Access Token from https://genius.com/api-clients.",
-      "required": false
-    },
-    "WEATHER_DEFCITY": {
-      "description": "Set the default city for the userbot's weather module.",
-      "required": false
-    },
-    "USR_TOKEN_UPTOBOX": {
-      "description": "API for direct link uptobox, https://docs.uptobox.com/#how-to-find-my-api-token",
-      "required": false
-    },
     "LOGSPAMMER": {
       "description": "Set this to True in case you want the error logs to be stored in the userbot log group, instead of spitting out the file in the current chat, requires a valid BOTLOG_CHATID to be set.",
       "value": "True"
-    },
-    "DEEZER_ARL_TOKEN": {
-      "description": "Input your DEEZER ARL TOKEN",
-      "value": "",
-      "required": false
     },
     "TERM_ALIAS": {
       "description": "Display user for .term command",

@@ -74,25 +74,25 @@ async def vcstop(event):
 
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.vcinvite$")
 async def vcinvite(event):
-    ok = await event.edit("`Mengundang semua anggota grup ke Obrolan Video...`")
+    await event.edit("`Mengundang semua anggota grup ke Obrolan Video...`")
     users = []
-    z = 0
+    invited = 0
 
     async for x in event.client.iter_participants(event.chat_id):
         if not x.bot:
             users.append(x.id)
-    hmm = list(user_list(users, 6))
+    limit = list(user_list(users, 6))
 
     call = (await event.client(GetFullChannelRequest(event.chat.id))).full_chat.call
     if call:
-        for p in hmm:
+        for user in limit:
             try:
-                await event.client(InviteToGroupCallRequest(call=call, users=p))
-                z += 6
+                await event.client(InviteToGroupCallRequest(call=call, users=user))
+                invited += 6
             except BaseException:
                 pass
 
-    await ok.edit(f"`Diundang {z} anggota`")
+    await event.edit(f"`Diundang {invited} anggota`")
     await asyncio.sleep(20)
     await event.delete()
 
