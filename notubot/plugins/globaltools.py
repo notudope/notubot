@@ -162,7 +162,7 @@ async def gban(event):
 
     if BOTLOG:
         await event.client.send_message(
-            BOTLOG_CHATID, "**#Gbanned** [user.id](tg://user?id={}) {}".format(user.id, reason)
+            BOTLOG_CHATID, "**#Gbanned** [{}](tg://user?id={}) {}".format(user.id, user.id, reason)
         )
 
     text = f"""**#Gbanned** oleh {mention}
@@ -235,7 +235,7 @@ async def ungban(event):
 
     if BOTLOG:
         await event.client.send_message(
-            BOTLOG_CHATID, "**#UnGbanned** [user.id](tg://user?id={}) {}".format(user.id, reason)
+            BOTLOG_CHATID, "**#UnGbanned** [{}](tg://user?id={}) {}".format(user.id, user.id, reason)
         )
 
     text = f"""**#UnGbanned** oleh {mention}
