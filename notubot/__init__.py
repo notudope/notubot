@@ -99,8 +99,8 @@ ALIVE_LOGO = getenv("ALIVE_LOGO", default="")
 IG_ALIVE = getenv("IG_ALIVE", default="https://www.instagram.com/notudope")
 
 # Heroku Credentials for updater.
-HEROKU_APP_NAME = getenv("HEROKU_APP_NAME", default="")
-HEROKU_API_KEY = getenv("HEROKU_API_KEY", default="")
+HEROKU_APP_NAME = getenv("HEROKU_APP_NAME", default=None)
+HEROKU_API_KEY = getenv("HEROKU_API_KEY", default=None)
 
 # Custom (forked) repo URL for updater.
 UPSTREAM_REPO_URL = getenv("UPSTREAM_REPO_URL", "https://github.com/notudope/notubot.git")

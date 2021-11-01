@@ -14,6 +14,7 @@ from os import (
     path,
 )
 
+import heroku3
 from git import Repo
 from git.exc import GitCommandError, InvalidGitRepositoryError, NoSuchPathError
 
@@ -79,69 +80,66 @@ async def print_changelogs(event, ac_br, changelog):
 
 
 async def deploy(event, repo, ups_rem, ac_br, txt):
-    if HEROKU_API_KEY is not None:
-        import heroku3
-
-        heroku = heroku3.from_key(HEROKU_API_KEY)
-        heroku_app = None
-        heroku_applications = heroku.apps()
-
-        if HEROKU_APP_NAME is None:
-            await event.edit(
-                f"Harap **tentukan variabel** `HEROKU_APP_NAME` untuk dapat Deploy perubahan terbaru dari `{__botname__}`."
-            )
-            repo.__del__()
-            return
-
-        for app in heroku_applications:
-            if app.name == HEROKU_APP_NAME:
-                heroku_app = app
-                break
-
-        if heroku_app is None:
-            await event.edit(f"{txt}\n" "`Kredensial Heroku tidak valid untuk deploy UserBot dyno.`")
-            return repo.__del__()
-
-        await event.edit(f"`{__botname__} dyno sedang memperbarui, perkiraan waktu 2-7 menit...`")
-
-        try:
-            from notubot.plugins.sql_helper.globals import addgvar, delgvar
-
-            delgvar("restartstatus")
-            addgvar("restartstatus", f"{event.chat_id}\n{event.id}")
-        except AttributeError:
-            pass
-
-        ups_rem.fetch(ac_br)
-        repo.git.reset("--hard", "FETCH_HEAD")
-        heroku_git_url = heroku_app.git_url.replace("https://", "https://api:" + HEROKU_API_KEY + "@")
-        if "heroku" in repo.remotes:
-            remote = repo.remote("heroku")
-            remote.set_url(heroku_git_url)
-        else:
-            remote = repo.create_remote("heroku", heroku_git_url)
-
-        try:
-            remote.push(refspec="HEAD:refs/heads/master", force=True)
-        except Exception as error:
-            await event.edit(f"{txt}\n`Disini catatan kesalahan:\n{error}`")
-            return repo.__del__()
-
-        build = heroku_app.builds(order_by="created_at", sort="desc")[0]
-
-        if build.status == "failed":
-            await event.edit("`Build gagal!\n" "Dibatalkan atau ada beberapa kesalahan...`")
-            await asyncio.sleep(5)
-            return await event.delete()
-        else:
-            await event.edit(f"`{__botname__} Berhasil Diperbarui, Dimuat Ulang...`")
-            if BOTLOG:
-                await event.client.send_message(
-                    BOTLOG_CHATID, "#bot #push \n" f"**{__botname__} Berhasil Diperbarui ツ**"
-                )
-
-    else:
+    if HEROKU_API_KEY is None:
         await event.edit("Harap **tentukan variabel** `HEROKU_API_KEY`.")
+        return
+
+    heroku = heroku3.from_key(HEROKU_API_KEY)
+    heroku_app = None
+    heroku_applications = heroku.apps()
+
+    if HEROKU_APP_NAME is None:
+        await event.edit(
+            f"Harap **tentukan variabel** `HEROKU_APP_NAME` untuk Deploy perubahan terbaru dari `{__botname__}`."
+        )
+        repo.__del__()
+        return
+
+    for app in heroku_applications:
+        if app.name == HEROKU_APP_NAME:
+            heroku_app = app
+            break
+
+    if heroku_app is None:
+        await event.edit(f"{txt}\n" "`Variabel Heroku tidak valid untuk deploy UserBot dyno.`")
+        return repo.__del__()
+
+    await event.edit(f"`{__botname__} dyno sedang memperbarui, perkiraan waktu 2-7 menit...`")
+
+    try:
+        from notubot.plugins.sql_helper.globals import addgvar, delgvar
+
+        delgvar("restartstatus")
+        addgvar("restartstatus", f"{event.chat_id}\n{event.id}")
+    except AttributeError:
+        pass
+
+    ups_rem.fetch(ac_br)
+    repo.git.reset("--hard", "FETCH_HEAD")
+    heroku_git_url = heroku_app.git_url.replace("https://", "https://api:" + HEROKU_API_KEY + "@")
+
+    if "heroku" in repo.remotes:
+        remote = repo.remote("heroku")
+        remote.set_url(heroku_git_url)
+    else:
+        remote = repo.create_remote("heroku", heroku_git_url)
+
+    try:
+        remote.push(refspec="HEAD:refs/heads/main", force=True)
+    except Exception as e:
+        await event.edit(f"{txt}\n`Disini catatan kesalahan:\n{e}`")
+        return repo.__del__()
+
+    build = heroku_app.builds(order_by="created_at", sort="desc")[0]
+
+    if build.status == "failed":
+        await event.edit("`Build gagal!\n" "Dibatalkan atau ada beberapa kesalahan...`")
+        await asyncio.sleep(5)
+        return await event.delete()
+    else:
+        await event.edit(f"`{__botname__} Berhasil Diperbarui, Dimuat Ulang...`")
+        if BOTLOG:
+            await event.client.send_message(BOTLOG_CHATID, "#bot #push \n" f"**{__botname__} Berhasil Diperbarui ツ**")
     return
 
 
@@ -171,6 +169,7 @@ async def update(event, repo, ups_rem, ac_br):
 
     args = [sys.executable, "-m", "notubot"]
     execle(sys.executable, *args, environ)
+    return
 
 
 @bot_cmd(outgoing=True, pattern=r"^.update(?: |$)(now|deploy|pull|push|one|all)?")
@@ -184,34 +183,35 @@ async def upstream(event):
         txt = "`Oops.. Pembaruan tidak dapat dilanjutkan karena "
         txt += "Beberapa masalah terjadi`\n\n**LOGTRACE:**\n"
         repo = Repo()
-    except NoSuchPathError as error:
-        await event.edit(f"{txt}\n`Direktori {error} tidak ditemukan.`")
+    except NoSuchPathError as e:
+        await event.edit(f"{txt}\n`Direktori {e} tidak ditemukan.`")
         return repo.__del__()
-    except GitCommandError as error:
-        await event.edit(f"{txt}\n`Kesalahan diawal! {error}`")
+    except GitCommandError as e:
+        await event.edit(f"{txt}\n`Kesalahan diawal! {e}`")
         return repo.__del__()
-    except InvalidGitRepositoryError as error:
+    except InvalidGitRepositoryError as e:
         if opts is None:
             return await event.edit(
-                f"`Direktori {error} "
+                f"`Direktori {e} "
                 "sepertinya bukan repositori git.\n"
                 "Tapi bisa memperbaiki dengan memperbarui paksa UserBot menggunakan "
                 ".update now|pull|one.`"
             )
+
         repo = Repo.init()
         origin = repo.create_remote("upstream", off_repo)
         origin.fetch()
         force_update = True
-        repo.create_head("master", origin.refs.master)
-        repo.heads.master.set_tracking_branch(origin.refs.master)
-        repo.heads.master.checkout(True)
+        repo.create_head("main", origin.refs.main)
+        repo.heads.main.set_tracking_branch(origin.refs.main)
+        repo.heads.main.checkout(True)
 
     ac_br = repo.active_branch.name
     if ac_br != UPSTREAM_REPO_BRANCH:
         await event.edit(
             "**[UPDATER]:**\n"
             f"`Sepertinya menggunakan custom branch ({ac_br}). "
-            "Dalam hal ini, Updater tidak dapat mengidentifikasi "
+            "Ini tidak dapat mengidentifikasi "
             "branch mana yang akan digabung. "
             "Silakan gunakan official branch.`"
         )
@@ -254,7 +254,6 @@ async def upstream(event):
     if opts == "now" or opts == "pull" or opts == "one":
         await event.edit(f"`Memperbarui {__botname__} Harap Tunggu...`")
         await update(event, repo, ups_rem, ac_br)
-    return
 
 
 @bot_cmd(outgoing=True, pattern=r"^\.repo$")

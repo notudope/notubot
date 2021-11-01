@@ -5,13 +5,13 @@
 # PLease read the GNU General Public License v3.0 in
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
-from asyncio import sleep, create_subprocess_exec, subprocess
+import asyncio
 from platform import python_version
 from shutil import which
 from time import time
 
 from git import Repo
-from telethon import version, Button
+from telethon import version, custom
 from telethon.errors.rpcerrorlist import MediaEmptyError
 from telethon.utils import get_display_name
 
@@ -32,11 +32,11 @@ DEFAULTUSER = ALIVE_NAME
 @bot_cmd(outgoing=True, pattern=r"^\.sysd$")
 async def sysd(event):
     try:
-        fetch = await create_subprocess_exec(
+        fetch = await asyncio.create_subprocess_exec(
             "neofetch",
             "--stdout",
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
         )
 
         stdout, stderr = await fetch.communicate()
@@ -50,24 +50,24 @@ async def sysd(event):
 @bot_cmd(outgoing=True, pattern=r"^\.botver$")
 async def botver(event):
     if which("git") is not None:
-        ver = await create_subprocess_exec(
+        ver = await asyncio.create_subprocess_exec(
             "git",
             "describe",
             "--all",
             "--long",
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
         )
         stdout, stderr = await ver.communicate()
         verout = str(stdout.decode().strip()) + str(stderr.decode().strip())
 
-        rev = await create_subprocess_exec(
+        rev = await asyncio.create_subprocess_exec(
             "git",
             "rev-list",
             "--all",
             "--count",
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
         )
         stdout, stderr = await rev.communicate()
         revout = str(stdout.decode().strip()) + str(stderr.decode().strip())
@@ -86,7 +86,7 @@ async def aliveon(event):
     b = Repo().active_branch
     g = Repo().remotes[0].config_reader.get("url")
     r = g.replace(".git", f"/tree/{b}")
-    branch = f" `[{b}]({r})` "
+    branch = f"[{b}]({r})"
 
     await event.edit("__Reconnect.__")
     await event.edit("__Reconnect..__")
@@ -96,7 +96,7 @@ async def aliveon(event):
     await event.edit("__Connecting..__")
     await event.edit("__Connecting...__")
     await event.edit("⚡")
-    await sleep(1)
+    await asyncio.sleep(1)
 
     text = (
         f"`{__botname__}`\n"
@@ -115,12 +115,12 @@ async def aliveon(event):
 
     buttons = [
         [
-            Button.url("REPO", "https://github.com/notudope/notubot"),
-            Button.url("Channel", "https://t.me/notudope"),
+            custom.Button.url("REPO", "https://github.com/notudope/notubot"),
+            custom.Button.url("Channel", "https://t.me/notudope"),
         ],
         [
-            Button.url("Support", "https://t.me/NOTUBOTS"),
-            Button.url("Mutualan", "https://t.me/CariTeman_Asik"),
+            custom.Button.url("Support", "https://t.me/NOTUBOTS"),
+            custom.Button.url("Mutualan", "https://t.me/CariTeman_Asik"),
         ],
     ]
 
@@ -185,7 +185,7 @@ async def ping(event):
     end = round((time() - start) * 1000)
     uptime = time_formatter((time() - start_time) * 1000)
     await x.edit("**Pong !!** `{}ms`\n**Uptime** - `{}`".format(end, uptime))
-    await sleep(15)
+    await asyncio.sleep(15)
     await x.delete()
     await event.delete()
 
