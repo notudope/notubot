@@ -126,20 +126,20 @@ async def aliveon(event):
 
     if ALIVE_LOGO:
         try:
-            await event.delete()
             await event.client.send_file(event.chat_id, ALIVE_LOGO, caption=text, buttons=buttons)
+            await event.delete()
         except MediaEmptyError:
             await event.edit(
                 text + "\n\n `ALIVE_LOGO tidak valid.`",
             )
     else:
-        await event.delete()
         await event.client.send_message(
             event.chat_id,
             text,
             buttons=buttons,
             link_preview=False,
         )
+        await event.delete()
 
 
 @bot_cmd(outgoing=True, pattern="^.aliveu")

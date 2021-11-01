@@ -57,7 +57,7 @@ jobs:
         with:
           commit_user_name: notudope
           commit_user_email: notudope@gmail.com
-          commit_author: illvart <notudope@gmail.com>
+          commit_author: notudope <notudope@gmail.com>
           commit_message: '[auto] ci: apply changes'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
