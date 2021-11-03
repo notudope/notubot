@@ -45,7 +45,7 @@ async def aliveon(event):
     await event.edit("__Connecting..__")
     await event.edit("__Connecting...__")
     await event.edit("⚡")
-    await asyncio.sleep(0.3)
+    await asyncio.sleep(2)
 
     text = (
         f"`{__botname__}`\n"

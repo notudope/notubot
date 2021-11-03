@@ -44,7 +44,7 @@ Daftar semua plugin beserta perintah tersedia dibawah ini:
 📌 **Gunakan perintah dengan bijak dan seperlunya, resiko ditanggung pengguna!**"""
 
         await event.edit("⚡")
-        await asyncio.sleep(0.3)
+        await asyncio.sleep(2)
         await event.delete()
         helper = await event.client.send_message(
             event.chat_id,
