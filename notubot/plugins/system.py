@@ -162,6 +162,20 @@ async def aliveonreset(event):
     await event.edit("`Berhasil mengatur ulang ALIVE_NAME.`")
 
 
+@bot_cmd(outgoing=True, pattern=r"^\.ping$")
+async def ping(event):
+    if event.out:
+        await event.delete()
+
+    start = time()
+    x = await event.respond("Pong !")
+    end = round((time() - start) * 1000)
+    uptime = time_formatter((time() - start_time) * 1000)
+    await x.edit("**Pong !!** `{}ms`\n**Uptime** - `{}`".format(end, uptime))
+    await asyncio.sleep(20)
+    await x.delete()
+
+
 CMD_HELP.update(
     {
         "system": [
@@ -173,22 +187,6 @@ CMD_HELP.update(
         ]
     }
 )
-
-
-@bot_cmd(outgoing=True, pattern=r"^\.ping$")
-async def ping(event):
-    if event.out:
-        await event.delete()
-
-    start = time()
-    x = await event.respond("Pong !")
-    end = round((time() - start) * 1000)
-    uptime = time_formatter((time() - start_time) * 1000)
-    await x.edit("**Pong !!** `{}ms`\n**Uptime** - `{}`".format(end, uptime))
-    await asyncio.sleep(15)
-    await x.delete()
-    await event.delete()
-
 
 CMD_HELP.update(
     {

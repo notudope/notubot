@@ -30,7 +30,8 @@ async def fakeaction(event):
         except BaseException:
             return await event.edit("`Format tidak valid.`")
 
-    await event.edit(f'`Memulai "Fake {action.capitalize()}" selama {seconds} detik.`')
+    act = event.pattern_match.group(1).capitalize()
+    await event.edit(f'`Memulai "Fake {act}" selama {seconds} detik.`')
     await asyncio.sleep(5)
     await event.delete()
 

@@ -30,7 +30,7 @@ async def total(event):
 
 CMD_HELP.update(
     {
-        "totalmsg": [
+        "total": [
             "Total Message",
             ">`.total [username]/<reply>`\n" "↳ : Melihat total pesan pengguna dalam obrolan saat ini.",
         ]

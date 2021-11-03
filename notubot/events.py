@@ -98,7 +98,7 @@ def bot_cmd(**args):
                 gchat = await chat.get_chat()
                 if not (gchat.admin_rights or gchat.creator):
                     await chat.delete()
-                    return await chat.respond("`Lo bukan admin disini!`")
+                    return await chat.respond("`Bukan admin disini!`")
 
             if groups_only and not chat.is_group:
                 return await chat.respond("`Gunakan perintah itu dalam grup!`")
