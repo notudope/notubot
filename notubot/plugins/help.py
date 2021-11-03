@@ -7,18 +7,16 @@
 
 import asyncio
 
-from notubot import (
-    CMD_HELP,
-    __botversion__,
-    ALIVE_NAME,
-    __botname__,
-)
+from telethon.utils import get_display_name
+
+from notubot import CMD_HELP, __botversion__, __botname__
 from notubot.events import bot_cmd
 
 
 @bot_cmd(outgoing=True, pattern=r"^\.help(?: |$)(.*)")
 async def help(event):
     args = event.pattern_match.group(1).lower()
+    me = await event.client.get_entity("me")
 
     if args:
         if args in CMD_HELP:
@@ -34,7 +32,7 @@ async def help(event):
         text = f"""`{__botname__}`
 [REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Grup](https://t.me/NOTUBOTS)
 
-😎 **Owner** - {ALIVE_NAME}
+😎 **Owner** - `{get_display_name(me)}`
 🤖 **Version** - `v{__botversion__}`
 📦 **Plugin** - `{len(CMD_HELP)}`
 👨‍💻 **Usage** - `.help <nama plugin>`

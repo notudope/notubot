@@ -50,7 +50,7 @@ async def vcstart(event):
                 await event.client(DeleteMessagesRequest(event.chat_id, [_group.updates[1].id]))
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.stopvc(?: |$)(.*)")
+@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.(stopvc|endvc)(?: |$)(.*)")
 async def vcstop(event):
     opts = event.pattern_match.group(1).strip()
     silent = ["s", "silent"]
@@ -99,11 +99,11 @@ async def vcinvite(event):
 
 CMD_HELP.update(
     {
-        "vctools": [
-            "VC Tools",
+        "voice_chat": [
+            "Voice Chat",
             ">`.startvc <silent/s> <judul obrolan>`\n"
             "↳ : Memulai Obrolan Video.\n\n"
-            ">`.stopvc <silent/s>`\n"
+            ">`.stopvc|.endvc <silent/s>`\n"
             "↳ : Mematikan Obrolan Video.\n\n"
             ">`.vcinvite`\n"
             "↳ : Mengundang semua anggota grup ke Obrolan Video.",

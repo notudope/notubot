@@ -17,7 +17,7 @@ from os import (
     remove,
 )
 from pathlib import Path
-from platform import python_version, uname
+from platform import python_version
 from time import sleep, time
 
 from dotenv import dotenv_values, load_dotenv
@@ -73,10 +73,10 @@ if CONFIG_CHECK:
 
 # Telegram App KEY and HASH
 API_ID = int(getenv("API_ID", default=0))
-API_HASH = getenv("API_HASH", default="")
+API_HASH = getenv("API_HASH", default=None)
 
 # Userbot Session String
-STRING_SESSION = getenv("STRING_SESSION", default="")
+STRING_SESSION = getenv("STRING_SESSION", default=None)
 
 # Logging channel/group ID configuration.
 BOTLOG_CHATID = int(getenv("BOTLOG_CHATID", default=0))
@@ -91,9 +91,8 @@ BLACKLIST_GROUP = list(map(int, getenv("BLACKLIST_GROUP", default="").split()))
 # Bleep Blop, this is a bot ;)
 PM_AUTO_BAN = strtobool(getenv("PM_AUTO_BAN", default="False"))
 
-# Default .alive name and logo
-ALIVE_NAME = getenv("ALIVE_NAME", default=uname().node)
-ALIVE_LOGO = getenv("ALIVE_LOGO", default="")
+# Default .alive logo
+ALIVE_LOGO = getenv("ALIVE_LOGO", default=None)
 
 # Default .alive Instagram
 IG_ALIVE = getenv("IG_ALIVE", default="https://www.instagram.com/notudope")
@@ -296,7 +295,6 @@ async def update_restart_msg(chat_id: int, msg_id: int) -> bool:
     message = (
         f"`{__botname__}`\n"
         f"[REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Support](https://t.me/NOTUBOTS)  /  [Mutualan](https://t.me/CariTeman_Asik)\n\n"
-        f"**Owner** - {ALIVE_NAME}\n"
         f"**Version** - `v{__botversion__}`\n"
         f"**Python** - `{python_version()}`\n"
         f"**Telethon** - `{version.__version__}`"

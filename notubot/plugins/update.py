@@ -27,6 +27,7 @@ from notubot import (
     UPSTREAM_REPO_BRANCH,
     UPSTREAM_REPO_URL,
     __botname__,
+    LOGS,
 )
 from notubot.events import bot_cmd
 
@@ -101,16 +102,17 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
             break
 
     if heroku_app is None:
-        await event.edit(f"{txt}\n" "`Variabel Heroku tidak valid untuk deploy UserBot dyno.`")
+        await event.edit(f"{txt}\n" "`Variabel Heroku tidak valid untuk deploy UserBot Dyno.`")
         return repo.__del__()
 
-    await event.edit(f"`{__botname__} dyno sedang memperbarui, perkiraan waktu 2-7 menit...`")
+    await event.edit(f"`{__botname__} Dyno sedang memperbarui, perkiraan waktu bisa sampai 5 menit...`")
 
     try:
         from notubot.plugins.sql_helper.globals import addgvar, delgvar
 
         delgvar("restartstatus")
-        addgvar("restartstatus", f"{event.chat_id}\n{event.id}")
+        chat_id = event.chat_id or event.from_id
+        addgvar("restartstatus", f"{chat_id}\n{event.id}")
     except AttributeError:
         pass
 
@@ -163,7 +165,9 @@ async def update(event, repo, ups_rem, ac_br):
         from notubot.plugins.sql_helper.globals import addgvar, delgvar
 
         delgvar("restartstatus")
-        addgvar("restartstatus", f"{event.chat_id}\n{event.id}")
+        chat_id = event.chat_id or event.from_id
+        LOGS.info(chat_id)
+        addgvar("restartstatus", f"{chat_id}\n{event.id}")
     except AttributeError:
         pass
 
@@ -227,7 +231,7 @@ async def upstream(event):
     changelog = await gen_chlog(repo, f"HEAD..upstream/{ac_br}")
 
     if opts == "deploy" or opts == "push" or opts == "all":
-        await event.edit(f"`Proses Deploy {__botname__} Harap Tunggu...`")
+        await event.edit(f"`{__botname__} Proses Deploy, Harap Tunggu...`")
         await deploy(event, repo, ups_rem, ac_br, txt)
 
     if changelog == "" and force_update is False:
@@ -244,15 +248,15 @@ async def upstream(event):
     if force_update:
         await event.edit("`Memaksa sinkronisasi ke kode UserBot stabil terbaru, harap tunggu...`")
     else:
-        await event.edit(f"`Proses Update {__botname__} Loading....1%`")
-        await event.edit(f"`Proses Update {__botname__} Loading....20%`")
-        await event.edit(f"`Proses Update {__botname__} Loading....35%`")
-        await event.edit(f"`Proses Update {__botname__} Loading....77%`")
-        await event.edit(f"`Proses Update {__botname__} Updating...90%`")
-        await event.edit(f"`Proses Update {__botname__} Mohon Tunggu Sebentar...100%`")
+        await event.edit(f"`{__botname__} Proses Update, Loading....1%`")
+        await event.edit(f"`{__botname__} Proses Update, Loading....20%`")
+        await event.edit(f"`{__botname__} Proses Update, Loading....35%`")
+        await event.edit(f"`{__botname__} Proses Update, Loading....77%`")
+        await event.edit(f"`{__botname__} Proses Update, Updating...90%`")
+        await event.edit(f"`{__botname__} Proses Update, Mohon Tunggu Sebentar...100%`")
 
     if opts == "now" or opts == "pull" or opts == "one":
-        await event.edit(f"`Memperbarui {__botname__} Harap Tunggu...`")
+        await event.edit(f"`{__botname__} Memperbarui, Harap Tunggu...`")
         await update(event, repo, ups_rem, ac_br)
 
 
