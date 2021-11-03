@@ -32,7 +32,6 @@ from notubot import (
     __botversion__,
     __botname__,
     BOTLOG,
-    LOGSPAMMER,
     LOGS,
 )
 from notubot.utils.tools import time_formatter
@@ -81,52 +80,49 @@ def bot_cmd(**args):
             args["pattern"] = pattern.replace("^.", unsafe_pattern, 1)
 
     def decorator(func):
-        async def wrapper(chat):
-            if chat.edit_date and chat.is_channel and not chat.is_group:
+        async def wrapper(event):
+            if event.edit_date and event.is_channel and not event.is_group:
                 return
-            if not LOGSPAMMER:
-                send_to = chat.chat_id or chat.from_id
-            else:
-                send_to = BOTLOG_CHATID
+            send_to = BOTLOG_CHATID if BOTLOG else event.chat_id or event.from_id
 
-            if not trigger_on_fwd and chat.fwd_from:
+            if not trigger_on_fwd and event.fwd_from:
                 return
 
             if admins_only:
-                if not chat.is_group:
-                    return await chat.respond("`Gunakan perintah itu dalam grup!`")
-                gchat = await chat.get_chat()
+                if not event.is_group:
+                    return await event.respond("`Gunakan perintah itu dalam grup!`")
+                gchat = await event.get_chat()
                 if not (gchat.admin_rights or gchat.creator):
-                    await chat.delete()
-                    return await chat.respond("`Bukan admin disini!`")
+                    await event.delete()
+                    return await event.respond("`Bukan admin disini!`")
 
-            if groups_only and not chat.is_group:
-                return await chat.respond("`Gunakan perintah itu dalam grup!`")
+            if groups_only and not event.is_group:
+                return await event.respond("`Gunakan perintah itu dalam grup!`")
 
             try:
                 from notubot.plugins.sql_helper.blacklist_sql import get_blacklist
 
                 for blacklisted in get_blacklist():
-                    if str(chat.chat_id or chat.from_id) == blacklisted.chat_id:
+                    if str(event.chat_id or event.from_id) == blacklisted.chat_id:
                         return
             except Exception:
                 pass
 
-            if chat.via_bot_id and not insecure and chat.out:
+            if event.via_bot_id and not insecure and event.out:
                 return
 
             try:
-                await func(chat)
+                await func(event)
             except FloodWaitError as e:
                 FLOOD_WAIT = e.seconds
                 FLOOD_WAIT_HUMAN = time_formatter((FLOOD_WAIT + 10) * 1000)
                 LOGS.error(
                     "A FloodWaitError of {}. Sleeping for {} and try again.".format(FLOOD_WAIT, FLOOD_WAIT_HUMAN)
                 )
-                await chat.delete()
+                await event.delete()
                 await asyncio.sleep(FLOOD_WAIT + 10)
                 if BOTLOG:
-                    await chat.client.send_message(
+                    await event.client.send_message(
                         BOTLOG_CHATID,
                         "`{} sudah bisa digunakan, setelah terkena FloodWaitError selama {}`".format(
                             __botname__, FLOOD_WAIT_HUMAN
@@ -154,7 +150,7 @@ def bot_cmd(**args):
                 LOGS.exception(e)
                 if not disable_errors:
                     date = (datetime.now()).strftime("%m/%d/%Y, %H:%M:%S")
-                    title = get_display_name(chat.chat)
+                    title = get_display_name(event.chat)
                     text = "**NOTUBOT ERROR REPORT**\n"
                     text += "Laporkan kesalahan **teruskan pesan ini ke** @NOTUBOTS"
                     ftext = "NOTUBOT ERROR REPORT: Laporkan ini ke @NOTUBOTS\n\n"
@@ -164,11 +160,11 @@ def bot_cmd(**args):
                     ftext += "\nPython Version: " + str(python_version())
                     ftext += "\nTelethon Version: " + str(version.__version__)
                     ftext += "\nDate: " + date
-                    ftext += "\nChat: " + str(chat.chat_id or chat.from_id) + " " + str(title)
-                    ftext += "\nSender ID: " + str(chat.sender_id)
-                    ftext += "\nReplied: " + str(chat.is_reply)
+                    ftext += "\nChat: " + str(event.chat_id or event.from_id) + " " + str(title)
+                    ftext += "\nSender ID: " + str(event.sender_id)
+                    ftext += "\nReplied: " + str(event.is_reply)
                     ftext += "\n\nEvent Trigger:\n"
-                    ftext += str(chat.text)
+                    ftext += str(event.text)
                     ftext += "\n\nTraceback info:\n"
                     ftext += str(format_exc())
                     ftext += "\n\nError text:\n"
@@ -189,11 +185,13 @@ def bot_cmd(**args):
 
                     with open("error.log", "w+") as file:
                         file.write(ftext)
-
-                    if LOGSPAMMER:
-                        await chat.respond("`NOTUBOT-UserBot ERROR! Catatan disimpan pada BOTLOG.`")
-                        await chat.client.send_file(send_to, "error.log", caption=text)
-                        remove("error.log")
+                    if BOTLOG:
+                        await event.respond("`NOTUBOT-UserBot ERROR! Catatan disimpan pada BOTLOG.`")
+                    try:
+                        await event.client.send_file(send_to, "error.log", caption=text)
+                    except Exception:
+                        pass
+                    remove("error.log")
             else:
                 pass
 

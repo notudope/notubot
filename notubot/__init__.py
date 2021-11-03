@@ -83,7 +83,6 @@ BOTLOG_CHATID = int(getenv("BOTLOG_CHATID", default=0))
 
 # Userbot logging feature switch.
 BOTLOG = strtobool(getenv("BOTLOG", default="True"))
-LOGSPAMMER = strtobool(getenv("LOGSPAMMER", default="True"))
 
 # Blacklist group
 BLACKLIST_GROUP = list(map(int, getenv("BLACKLIST_GROUP", default="").split()))
@@ -246,23 +245,18 @@ bot = client_connection()
 
 
 async def check_botlog_chatid() -> None:
-    if not BOTLOG_CHATID and LOGSPAMMER:
-        LOGS.warning(
-            "Wajib mengatur variabel BOTLOG_CHATID di config.env atau environment variabel, supaya penyimpanan log kesalahan pribadi berfungsi."
-        )
-        sys.exit(1)
-    elif not BOTLOG_CHATID and BOTLOG:
+    if not BOTLOG_CHATID and BOTLOG:
         LOGS.warning(
             "Wajib mengatur variabel BOTLOG_CHATID di config.env atau environment variabel, supaya fitur logging berfungsi."
         )
         sys.exit(1)
-    elif not BOTLOG or not LOGSPAMMER:
+    elif not BOTLOG:
         return
 
     entity = await bot.get_entity(BOTLOG_CHATID)
     if entity.default_banned_rights.send_messages:
         LOGS.warning(
-            "Akun tidak memiliki hak/akses untuk mengirim pesan ke grup BOTLOG_CHATID. Periksa apakah ID Obrolan sudah benar."
+            "Akun tidak memiliki hak/akses untuk mengirim pesan ke grup/channel BOTLOG_CHATID. Periksa apakah ID sudah benar."
         )
         sys.exit(1)
 
@@ -272,7 +266,7 @@ with bot:
         bot.loop.run_until_complete(check_botlog_chatid())
     except BaseException:
         LOGS.warning(
-            "Environment variable BOTLOG_CHATID tidak valid. Periksa environment variable atau config.env file."
+            "Environment variable BOTLOG_CHATID tidak valid. Periksa environment variable atau file config.env."
         )
         sys.exit(1)
 
