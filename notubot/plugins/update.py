@@ -27,7 +27,6 @@ from notubot import (
     UPSTREAM_REPO_BRANCH,
     UPSTREAM_REPO_URL,
     __botname__,
-    LOGS,
 )
 from notubot.events import bot_cmd
 
@@ -57,7 +56,8 @@ async def gen_chlog(repo, diff):
 
 
 async def print_changelogs(event, ac_br, changelog):
-    changelog_str = f"🔥 **Pembaruan Tersedia Untuk [{ac_br}]:\n\nCHANGELOG:**\n`{changelog}`"
+    changelog_str = f"`{__botname__}` **Pembaruan Tersedia Untuk [{ac_br}]:\n\nCHANGELOG:**\n`{changelog}`"
+    chat_id = event.chat_id or event.from_id
 
     if len(changelog_str) > 4096:
         await event.edit("`Data CHANGELOG terlalu besar, buka file untuk melihatnya.`")
@@ -66,14 +66,14 @@ async def print_changelogs(event, ac_br, changelog):
         file.close()
 
         await event.client.send_file(
-            event.chat_id,
+            chat_id,
             "output.txt",
             reply_to=event.id,
         )
         remove("output.txt")
     else:
         await event.client.send_message(
-            event.chat_id,
+            chat_id,
             changelog_str,
             reply_to=event.id,
         )
@@ -105,7 +105,7 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
         await event.edit(f"{txt}\n" "`Variabel Heroku tidak valid untuk deploy UserBot Dyno.`")
         return repo.__del__()
 
-    await event.edit(f"`{__botname__} Dyno sedang memperbarui, perkiraan waktu bisa sampai 5 menit...`")
+    await event.edit(f"`{__botname__} Dyno sedang memperbarui, perkiraan waktu sampai 5 menit...`")
 
     try:
         from notubot.plugins.sql_helper.globals import addgvar, delgvar
@@ -166,7 +166,6 @@ async def update(event, repo, ups_rem, ac_br):
 
         delgvar("restartstatus")
         chat_id = event.chat_id or event.from_id
-        LOGS.info(chat_id)
         addgvar("restartstatus", f"{chat_id}\n{event.id}")
     except AttributeError:
         pass

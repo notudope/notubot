@@ -85,7 +85,7 @@ def bot_cmd(**args):
             if chat.edit_date and chat.is_channel and not chat.is_group:
                 return
             if not LOGSPAMMER:
-                send_to = chat.chat_id
+                send_to = chat.chat_id or chat.from_id
             else:
                 send_to = BOTLOG_CHATID
 
@@ -107,7 +107,7 @@ def bot_cmd(**args):
                 from notubot.plugins.sql_helper.blacklist_sql import get_blacklist
 
                 for blacklisted in get_blacklist():
-                    if str(chat.chat_id) == blacklisted.chat_id:
+                    if str(chat.chat_id or chat.from_id) == blacklisted.chat_id:
                         return
             except Exception:
                 pass
@@ -164,7 +164,7 @@ def bot_cmd(**args):
                     ftext += "\nPython Version: " + str(python_version())
                     ftext += "\nTelethon Version: " + str(version.__version__)
                     ftext += "\nDate: " + date
-                    ftext += "\nGroup: " + str(chat.chat_id) + " " + str(title)
+                    ftext += "\nChat: " + str(chat.chat_id or chat.from_id) + " " + str(title)
                     ftext += "\nSender ID: " + str(chat.sender_id)
                     ftext += "\nReplied: " + str(chat.is_reply)
                     ftext += "\n\nEvent Trigger:\n"
