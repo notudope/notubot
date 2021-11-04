@@ -24,7 +24,7 @@ async def delete(event):
     await event.delete()
 
 
-@bot_cmd(outgoing=True, disable_errors=True, pattern=r"^\.purge(?: |$)(.*)")
+@bot_cmd(outgoing=True, disable_errors=True, pattern="purge ?(.*)")
 async def purge(event):
     match = event.pattern_match.group(1)
     try:
@@ -68,7 +68,7 @@ async def purge(event):
     await procs.delete()
 
 
-@bot_cmd(outgoing=True, disable_errors=True, pattern=r"^\.purgeme(?: |$)(.*)")
+@bot_cmd(outgoing=True, disable_errors=True, pattern="purgeme ?(.*)")
 async def purgeme(event):
     opts = event.pattern_match.group(1)
     if opts and not event.is_reply:
@@ -119,7 +119,7 @@ async def purgeme(event):
     await procs.delete()
 
 
-@bot_cmd(outgoing=True, disable_errors=True, groups_only=True, pattern=r"^\.purgeall$")
+@bot_cmd(outgoing=True, disable_errors=True, groups_only=True, pattern="purgeall$")
 async def purgeall(event):
     if not event.is_reply:
         await event.edit("`Balas pesan seseorang untuk menghapusnya.`")
@@ -136,7 +136,7 @@ async def purgeall(event):
     await event.delete()
 
 
-@bot_cmd(outgoing=True, disable_errors=True, pattern=r"^\.copy$")
+@bot_cmd(outgoing=True, disable_errors=True, pattern="copy$")
 async def copy(event):
     reply = await event.get_reply_message()
     if reply:
@@ -147,7 +147,7 @@ async def copy(event):
     await event.delete()
 
 
-@bot_cmd(outgoing=True, disable_errors=True, pattern=r"^\.edit")
+@bot_cmd(outgoing=True, disable_errors=True, pattern="edit")
 async def edit(event):
     message = event.text
     chat = await event.get_input_chat()
@@ -163,7 +163,7 @@ async def edit(event):
         index = index + 1
 
 
-@bot_cmd(outgoing=True, disable_errors=True, pattern=r"^\.sd")
+@bot_cmd(outgoing=True, disable_errors=True, pattern="sd")
 async def selfd(event):
     message = event.text
     counter = int(message[4:6])

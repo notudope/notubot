@@ -26,7 +26,7 @@ from notubot.events import bot_cmd
 from notubot.utils.tools import time_formatter
 
 
-@bot_cmd(outgoing=True, pattern=r"^\.(alive|on)$")
+@bot_cmd(outgoing=True, pattern="(alive|on)$")
 async def aliveon(event):
     # [Instagram]({IG_ALIVE})
     me = await event.client.get_me()
@@ -78,37 +78,37 @@ async def aliveon(event):
         await event.delete()
 
 
-@bot_cmd(outgoing=True, pattern=r"^\.botver$")
+@bot_cmd(outgoing=True, pattern="botver$")
 async def botver(event):
-    if which("git") is not None:
-        ver = await asyncio.create_subprocess_exec(
-            "git",
-            "describe",
-            "--all",
-            "--long",
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-        )
-        stdout, stderr = await ver.communicate()
-        verout = str(stdout.decode().strip()) + str(stderr.decode().strip())
+    if which("git") is None:
+        return await event.delete()
 
-        rev = await asyncio.create_subprocess_exec(
-            "git",
-            "rev-list",
-            "--all",
-            "--count",
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-        )
-        stdout, stderr = await rev.communicate()
-        revout = str(stdout.decode().strip()) + str(stderr.decode().strip())
+    ver = await asyncio.create_subprocess_exec(
+        "git",
+        "describe",
+        "--all",
+        "--long",
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+    stdout, stderr = await ver.communicate()
+    verout = str(stdout.decode().strip()) + str(stderr.decode().strip())
 
-        await event.edit("`Version: " f"{verout}" "` \n" "`Revision: " f"{revout}" "`")
-    else:
-        await event.delete()
+    rev = await asyncio.create_subprocess_exec(
+        "git",
+        "rev-list",
+        "--all",
+        "--count",
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+    stdout, stderr = await rev.communicate()
+    revout = str(stdout.decode().strip()) + str(stderr.decode().strip())
+
+    await event.edit("`Version: " f"{verout}" "` \n" "`Revision: " f"{revout}" "`")
 
 
-@bot_cmd(outgoing=True, pattern=r"^\.sysd$")
+@bot_cmd(outgoing=True, pattern="sysd$")
 async def sysd(event):
     try:
         neofetch = await asyncio.create_subprocess_exec(
@@ -125,7 +125,7 @@ async def sysd(event):
         await event.edit("`neofetch tidak terinstall!`")
 
 
-@bot_cmd(outgoing=True, pattern=r"^\.ping$")
+@bot_cmd(outgoing=True, pattern="ping$")
 async def ping(event):
     if event.out:
         await event.delete()

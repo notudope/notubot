@@ -19,7 +19,7 @@ def user_list(ls, n):
         yield ls[i : i + n]
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.startvc(?: |$)(.*)")
+@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="startvc ?(.*)")
 async def vcstart(event):
     opts = event.pattern_match.group(1).strip()
     args = opts.split(" ")
@@ -50,7 +50,7 @@ async def vcstart(event):
                 await event.client(DeleteMessagesRequest(event.chat_id, [_group.updates[1].id]))
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.(stopvc|endvc)(?: |$)(.*)")
+@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="(stopvc|endvc) ?(.*)")
 async def vcstop(event):
     opts = event.pattern_match.group(1).strip()
     silent = ["s", "silent"]
@@ -72,7 +72,7 @@ async def vcstop(event):
                 await event.client(DeleteMessagesRequest(event.chat_id, [_group.updates[1].id]))
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.vcinvite$")
+@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="vcinvite$")
 async def vcinvite(event):
     await event.edit("`Mengundang semua anggota grup ke Obrolan Video...`")
     users = []

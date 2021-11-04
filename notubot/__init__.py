@@ -84,6 +84,9 @@ BOTLOG_CHATID = int(getenv("BOTLOG_CHATID", default=0))
 # Userbot logging feature switch.
 BOTLOG = strtobool(getenv("BOTLOG", default="True"))
 
+# Command handler
+HANDLER = getenv("HANDLER", default=".")
+
 # Blacklist group
 BLACKLIST_GROUP = list(map(int, getenv("BLACKLIST_GROUP", default="").split()))
 
@@ -311,11 +314,11 @@ except AttributeError:
     pass
 
 # Global Variables
+CMD_HELP = {}
+CMD_LIST = {}
 COUNT_MSG = 0
 USERS = {}
 COUNT_PM = {}
 LASTMSG = {}
-CMD_HELP = {}
 ISAFK = False
 AFKREASON = None
-LIST = {}

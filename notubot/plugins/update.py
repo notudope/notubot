@@ -175,7 +175,7 @@ async def update(event, repo, ups_rem, ac_br):
     return
 
 
-@bot_cmd(outgoing=True, pattern=r"^.update(?: |$)(now|deploy|pull|push|one|all)?")
+@bot_cmd(outgoing=True, pattern="update(?: |$)(now|deploy|pull|push|one|all)?")
 async def upstream(event):
     opts = event.pattern_match.group(1)
     off_repo = UPSTREAM_REPO_URL
@@ -259,7 +259,7 @@ async def upstream(event):
         await update(event, repo, ups_rem, ac_br)
 
 
-@bot_cmd(outgoing=True, pattern=r"^\.repo$")
+@bot_cmd(outgoing=True, pattern="repo$")
 async def repo(event):
     await event.edit(f"📦 **[Disini REPO](https://github.com/notudope/notubot)** `{__botname__}`", link_preview=False)
 

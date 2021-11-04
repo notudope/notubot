@@ -6,8 +6,11 @@
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
 import asyncio
+import inspect
+import re
 from datetime import datetime
 from os import remove
+from pathlib import Path
 from platform import python_version
 from sys import exc_info
 from traceback import format_exc
@@ -33,32 +36,66 @@ from notubot import (
     __botname__,
     BOTLOG,
     LOGS,
+    CMD_LIST,
+    HANDLER,
 )
 from notubot.utils.tools import time_formatter
 
 FLOOD_WAIT = 0
 
 
+def compile_pattern(data, handler):
+    if HANDLER == " ":
+        return re.compile("^" + data.replace("^", "").replace(".", ""))
+    return (
+        re.compile(handler + data.replace("^", "").replace(".", ""))
+        if data.startswith("^")
+        else re.compile(handler + data)
+    )
+
+
 def bot_cmd(**args):
     args["func"] = lambda e: not e.fwd_from and not e.via_bot_id
+    stack = inspect.stack()
+    previous_stack_frame = stack[1]
+    file_test = Path(previous_stack_frame.filename)
+    file_test = file_test.stem.replace(".py", "")
     pattern = args.get("pattern", None)
     disable_edited = args.get("disable_edited", False)
-    ignore_unsafe = args.get("ignore_unsafe", False)
-    unsafe_pattern = r"^[^/!#@\$A-Za-z]"
     groups_only = args.get("groups_only", False)
     admins_only = args.get("admins_only", False)
     trigger_on_fwd = args.get("trigger_on_fwd", False)
     disable_errors = args.get("disable_errors", False)
     insecure = args.get("insecure", False)
 
-    if pattern is not None and not pattern.startswith("(?i)"):
-        args["pattern"] = "(?i)" + pattern
+    if pattern:
+        args["pattern"] = compile_pattern(pattern, "\\" + HANDLER)
+        reg = re.compile("(.*)")
+        try:
+            cmd = re.search(reg, pattern)
+            try:
+                cmd = (
+                    cmd.group(1)
+                    .replace("$", "")
+                    .replace("?(.*)", "")
+                    .replace("(.*)", "")
+                    .replace("(?: |)", "")
+                    .replace("| ", "")
+                    .replace("( |)", "")
+                    .replace("?((.|//)*)", "")
+                    .replace("?P<shortname>\\w+", "")
+                )
+            except BaseException:
+                pass
+            try:
+                CMD_LIST[file_test].append(cmd)
+            except BaseException:
+                CMD_LIST.update({file_test: [cmd]})
+        except BaseException:
+            pass
 
     if "disable_edited" in args:
         del args["disable_edited"]
-
-    if "ignore_unsafe" in args:
-        del args["ignore_unsafe"]
 
     if "groups_only" in args:
         del args["groups_only"]
@@ -74,10 +111,6 @@ def bot_cmd(**args):
 
     if "insecure" in args:
         del args["insecure"]
-
-    if pattern:
-        if not ignore_unsafe:
-            args["pattern"] = pattern.replace("^.", unsafe_pattern, 1)
 
     def decorator(func):
         async def wrapper(event):
