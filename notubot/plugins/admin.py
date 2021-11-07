@@ -327,7 +327,7 @@ async def muters(event):
         from notubot.plugins.sql_helper.spam_mute_sql import is_muted
     except AttributeError:
         return
-        
+
     muted = is_muted(event.chat_id)
     gmuted = is_gmuted(event.sender_id)
     rights = ChatBannedRights(

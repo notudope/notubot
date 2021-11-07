@@ -6,18 +6,10 @@
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
 import io
-import os
-import sys
 from random import randint
 from time import sleep
 
-from notubot import (
-    BOTLOG,
-    BOTLOG_CHATID,
-    CMD_HELP,
-    HEROKU_API_KEY,
-    __botname__,
-)
+from notubot import BOTLOG, BOTLOG_CHATID, CMD_HELP
 from notubot.events import bot_cmd
 from notubot.utils import time_formatter, parse_pre, yaml_format
 
@@ -79,15 +71,16 @@ async def json(event):
     else:
         await event.edit(raw, parse_mode=parse_pre)
 
+
 @bot_cmd(outgoing=True, pattern="(yaml|yml)$")
-async def json(event):
+async def yaml(event):
     chat_id = event.chat_id or event.from_id
 
     reply = await event.get_reply_message() if event.reply_to_msg_id else event
-    yaml = yaml_format(reply)
+    raw = yaml_format(reply)
 
-    if len(yaml) > 4096:
-        with io.BytesIO(str.encode(yaml)) as file:
+    if len(raw) > 4096:
+        with io.BytesIO(str.encode(raw)) as file:
             await event.client.send_file(
                 chat_id,
                 file,
@@ -97,7 +90,8 @@ async def json(event):
             )
             await event.delete()
     else:
-        await event.edit(yaml, parse_mode=parse_pre)
+        await event.edit(raw, parse_mode=parse_pre)
+
 
 CMD_HELP.update(
     {
@@ -112,8 +106,7 @@ CMD_HELP.update(
             ">`.json|raw`\n"
             "↳ : Mengambil raw data format json dari sebuah pesan, \n"
             "Balas pesan tersebut untuk menampilkannya!\n\n",
-            ">`.yaml|yml`\n"
-            "↳ : Mengambil raw data format yaml dari sebuah pesan",
+            ">`.yaml|yml`\n" "↳ : Mengambil raw data format yaml dari sebuah pesan",
         ]
     }
 )

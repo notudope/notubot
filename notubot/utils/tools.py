@@ -1,19 +1,20 @@
 import asyncio
 import hashlib
+import os
+import re
+import sys
 import time
 from datetime import datetime
-import re
-import os
-import sys
+
 import heroku3
-from notubot import HEROKU_API_KEY, HEROKU_APP_NAME
 from html_telegraph_poster import TelegraphPoster
+
+from notubot import HEROKU_API_KEY, HEROKU_APP_NAME
+
 
 def utc_to_local(utc_datetime):
     now_timestamp = time.time()
-    offset = datetime.fromtimestamp(now_timestamp) - datetime.utcfromtimestamp(
-        now_timestamp
-    )
+    offset = datetime.fromtimestamp(now_timestamp) - datetime.utcfromtimestamp(now_timestamp)
     return utc_datetime + offset
 
 
@@ -36,6 +37,7 @@ def humanbytes(size: int) -> str:
         size /= power
         raised_to_pow += 1
     return str(round(size, 2)) + " " + dict_power_n[raised_to_pow] + "B"
+
 
 def time_formatter(milliseconds):
     minutes, seconds = divmod(int(milliseconds / 1000), 60)
@@ -88,6 +90,7 @@ def post_to_telegraph(title, html_format_content):
     )
     return post_page["url"]
 
+
 async def run_cmd(cmd: str) -> (bytes, bytes):
     process = await asyncio.create_subprocess_shell(
         cmd,
@@ -98,7 +101,8 @@ async def run_cmd(cmd: str) -> (bytes, bytes):
     err = stderr.decode().strip()
     out = stdout.decode().strip()
     return out, err
-    
+
+
 async def restart(event):
     if HEROKU_APP_NAME and HEROKU_API_KEY:
         try:

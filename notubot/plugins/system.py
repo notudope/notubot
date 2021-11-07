@@ -6,11 +6,12 @@
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
 import asyncio
-from platform import python_version
-from shutil import which
-from time import time, sleep
 import os
 import sys
+from platform import python_version
+from shutil import which
+from time import time
+
 from git import Repo
 from telethon import version
 from telethon.errors.rpcerrorlist import MediaEmptyError
@@ -22,12 +23,12 @@ from notubot import (
     __botversion__,
     __botname__,
     start_time,
+    BOTLOG,
+    BOTLOG_CHATID,
+    HEROKU_API_KEY,
 )
 from notubot.events import bot_cmd
 from notubot.utils import time_formatter, restart, run_cmd
-
-
-
 
 
 @bot_cmd(outgoing=True, pattern="(alive|on)$")
@@ -76,8 +77,8 @@ async def aliveon(event):
             link_preview=False,
         )
         await event.delete()
-        
-        
+
+
 @bot_cmd(outgoing=True, pattern="restart$")
 async def restartbot(event):
     await event.edit("`Restarting {} ...`".format(__botname__))
@@ -162,7 +163,7 @@ async def sysd(event):
 async def ping(event):
     if event.out:
         await event.delete()
-        
+
     start = time()
     x = await event.respond("Pong !")
     end = round((time() - start) * 1000)
