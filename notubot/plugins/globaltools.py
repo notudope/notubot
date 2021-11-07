@@ -101,7 +101,7 @@ async def handler(event):
                     return
 
 
-@bot_cmd(outgoing=True, pattern="^.gban(?: |$)(.*)")
+@bot_cmd(outgoing=True, pattern="gban ?(.*)")
 async def gban(event):
     sender = await event.get_sender()
     me = await event.client.get_me()
@@ -174,7 +174,7 @@ async def gban(event):
     return await procs.edit(text)
 
 
-@bot_cmd(outgoing=True, pattern="^.ungban(?: |$)(.*)")
+@bot_cmd(outgoing=True, pattern="ungban ?(.*)")
 async def ungban(event):
     sender = await event.get_sender()
     me = await event.client.get_me()
@@ -245,7 +245,7 @@ async def ungban(event):
     return await procs.edit(text)
 
 
-@bot_cmd(outgoing=True, pattern=r"^\.gcast ?(.*)")
+@bot_cmd(outgoing=True, pattern="gcast ?(.*)")
 async def gcast(event):
     xx = event.pattern_match.group(1)
     if xx:
@@ -255,7 +255,7 @@ async def gcast(event):
     else:
         return await event.edit("`Berikan sebuah pesan atau balas pesan tersebut...`")
 
-    procs = await event.edit("`Sedang mengirim Pesan Grup secara global... 📢`")
+    procs = await event.edit("`Mengirim Pesan Grup secara global 📢`")
     success = failed = 0
 
     async for x in event.client.iter_dialogs():
@@ -268,12 +268,12 @@ async def gcast(event):
                 await event.client.send_message(chat, msg)
             except BaseException:
                 failed += 1
-        await asyncio.sleep(0.3)
+        await asyncio.sleep(2)
 
     await procs.edit(f"Berhasil mengirim Pesan Grup ke `{success}` obrolan, gagal mengirim ke `{failed}` obrolan.")
 
 
-@bot_cmd(outgoing=True, pattern=r"^\.gucast ?(.*)")
+@bot_cmd(outgoing=True, pattern="gucast ?(.*)")
 async def gucast(event):
     xx = event.pattern_match.group(1)
     if xx:
@@ -283,7 +283,7 @@ async def gucast(event):
     else:
         return await event.edit("`Berikan sebuah pesan atau balas pesan tersebut...`")
 
-    procs = await event.edit("`Sedang mengirim Pesan Pribadi secara global... 📢`")
+    procs = await event.edit("`Mengirim Pesan Pribadi secara global 📢`")
     success = failed = 0
 
     async for x in event.client.iter_dialogs():
@@ -294,29 +294,33 @@ async def gucast(event):
                 await event.client.send_message(chat, msg)
             except BaseException:
                 failed += 1
-        await asyncio.sleep(0.3)
+        await asyncio.sleep(2)
 
     await procs.edit(f"Berhasil mengirim Pesan Pribadi ke `{success}` obrolan, gagal mengirim ke `{failed}` obrolan.")
 
 
-@bot_cmd(outgoing=True, pattern="^.gsend ?(.*)")
+@bot_cmd(outgoing=True, pattern="gsend ?(.*)")
 async def gsend(event):
     opts = event.pattern_match.group(1)
     args = opts.split(" ")
     chat_id = args[0]
+
     try:
         chat_id = int(chat_id)
     except BaseException:
         pass
+
     msg = ""
     reply = await event.get_reply_message()
     if event.reply_to_msg_id:
         await event.client.send_message(chat_id, reply)
         await event.edit("`Pesan diteruskan ke grup tujuan, coba cek!`")
+
     for index in args[1:]:
         msg += index + " "
     if msg == "":
         return
+
     try:
         await event.client.send_message(chat_id, msg)
         await event.edit("`Pesan diteruskan ke grup tujuan, coba cek!`")

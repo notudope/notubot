@@ -22,6 +22,8 @@ from telethon.tl.functions.messages import UpdatePinnedMessageRequest
 from telethon.tl.types import (
     ChannelParticipantsAdmins,
     ChannelParticipantsBots,
+    ChannelParticipantCreator,
+    ChannelParticipantAdmin,
     ChatAdminRights,
     ChatBannedRights,
     MessageEntityMentionName,
@@ -29,8 +31,6 @@ from telethon.tl.types import (
     PeerChat,
     ChannelParticipantsKicked,
 )
-from telethon.tl.types import ChannelParticipantCreator as owner
-from telethon.tl.types import ChannelParticipantAdmin as admin
 from telethon.utils import get_display_name
 
 from notubot import BOTLOG, BOTLOG_CHATID, CMD_HELP
@@ -81,7 +81,7 @@ def user_list(ls, n):
         yield ls[i : i + n]
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern=r"^\.setgpic$")
+@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern="setgpic$")
 async def set_group_photo(event):
     if not event.is_group:
         await event.edit("`I don't think this is a group.`")
@@ -108,7 +108,7 @@ async def set_group_photo(event):
             await event.edit(PP_ERROR)
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern=r"^\.promote(?: |$)(.*)")
+@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern="promote ?(.*)")
 async def promote(event):
     new_rights = ChatAdminRights(
         add_admins=False,
@@ -122,25 +122,20 @@ async def promote(event):
     await event.edit("`Promoting...`")
     user, rank = await get_user_from_event(event)
     if not rank:
-        rank = "Administrator"  # Just in case.
+        rank = "Administrator"
     if user:
         pass
     else:
         return
 
-    # Try to promote if current user is admin or creator
     try:
         await event.client(EditAdminRequest(event.chat_id, user.id, new_rights, rank))
         await event.edit("`Promoted Successfully!`")
     except RightForbiddenError:
         return await event.edit(NO_PERM)
-
-    # If Telethon spit BadRequestError, assume
-    # we don't have Promote permission
     except BadRequestError:
         return await event.edit(NO_PERM)
 
-    # Announce to the logging group if we have promoted successfully
     if BOTLOG:
         await event.client.send_message(
             BOTLOG_CHATID,
@@ -150,11 +145,10 @@ async def promote(event):
         )
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern=r"^\.demote(?: |$)(.*)")
+@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern="demote ?(.*)")
 async def demote(event):
-    # If passing, declare that we're going to demote
     await event.edit("`Demoting...`")
-    rank = "admeme"  # dummy rank, lol.
+    rank = "admeme"
     user = await get_user_from_event(event)
     user = user[0]
     if user:
@@ -162,7 +156,6 @@ async def demote(event):
     else:
         return
 
-    # New rights after demotion
     newrights = ChatAdminRights(
         add_admins=None,
         invite_users=None,
@@ -171,17 +164,12 @@ async def demote(event):
         delete_messages=None,
         pin_messages=None,
     )
-    # Edit Admin Permission
     try:
         await event.client(EditAdminRequest(event.chat_id, user.id, newrights, rank))
-
-    # If we catch BadRequestError from Telethon
-    # Assume we don't have permission to demote
     except BadRequestError:
         return await event.edit(NO_PERM)
     await event.edit("`Demoted Successfully!`")
 
-    # Announce to the logging group if we have demoted successfully
     if BOTLOG:
         await event.client.send_message(
             BOTLOG_CHATID,
@@ -191,7 +179,7 @@ async def demote(event):
         )
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern=r"^\.ban(?: |$)(.*)")
+@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern="ban ?(.*)")
 async def ban(event):
     user, reason = await get_user_from_event(event)
     if user:
@@ -199,29 +187,25 @@ async def ban(event):
     else:
         return
 
-    # Announce that we're going to whack the pest
     await event.edit("`Whacking the pest!`")
 
     try:
         await event.client(EditBannedRequest(event.chat_id, user.id, BANNED_RIGHTS))
     except BadRequestError:
         return await event.edit(NO_PERM)
-    # Helps ban group join spammers more easily
+
     try:
         reply = await event.get_reply_message()
         if reply:
             await reply.delete()
     except BadRequestError:
         return await event.edit("`I dont have message nuking rights! But still he was banned!`")
-    # Delete message and then tell that the command
-    # is done gracefully
-    # Shout out the ID, so that fedadmins can fban later
+
     if reason:
         await event.edit(f"`{str(user.id)}` was banned !!\nReason: {reason}")
     else:
         await event.edit(f"`{str(user.id)}` was banned !!")
-    # Announce to the logging group if we have banned the person
-    # successfully!
+
     if BOTLOG:
         await event.client.send_message(
             BOTLOG_CHATID,
@@ -231,9 +215,8 @@ async def ban(event):
         )
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern=r"^\.unban(?: |$)(.*)")
+@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern="unban ?(.*)")
 async def unban(event):
-    # If everything goes well...
     await event.edit("`Unbanning...`")
 
     user = await get_user_from_event(event)
@@ -258,9 +241,8 @@ async def unban(event):
         await event.edit("`Uh oh my unban logic broke!`")
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.mute(?: |$)(.*)")
+@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="mute ?(.*)")
 async def muter(event):
-    # Check if the function running under SQL mode
     try:
         from notubot.plugins.sql_helper.spam_mute_sql import mute
     except AttributeError:
@@ -277,7 +259,6 @@ async def muter(event):
     if user.id == self_user.id:
         return await event.edit("`Hands too short, can't duct tape myself...\n(ヘ･_･)ヘ┳━┳`")
 
-    # If everything goes well, do announcing and mute
     await event.edit("`Gets a tape!`")
     if mute(event.chat_id, user.id) is False:
         return await event.edit("`Error! User probably already muted.`")
@@ -285,13 +266,11 @@ async def muter(event):
         try:
             await event.client(EditBannedRequest(event.chat_id, user.id, MUTE_RIGHTS))
 
-            # Announce that the function is done
             if reason:
                 await event.edit(f"`Safely taped !!`\nReason: {reason}")
             else:
                 await event.edit("`Safely taped !!`")
 
-            # Announce to logging group
             if BOTLOG:
                 await event.client.send_message(
                     BOTLOG_CHATID,
@@ -305,15 +284,13 @@ async def muter(event):
             pass
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern=r"^\.unmute(?: |$)(.*)")
+@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern="unmute ?(.*)")
 async def unmuter(event):
-    # Check if the function running under SQL mode
     try:
         from notubot.plugins.sql_helper.spam_mute_sql import unmute
     except AttributeError:
         return await event.edit(NO_SQL)
 
-    # If admin or creator, inform the user and start unmuting
     await event.edit("```Unmuting...```")
     user = await get_user_from_event(event)
     user = user[0]
@@ -380,9 +357,8 @@ async def muters(event):
             await event.delete()
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern=r"^\.ungmute(?: |$)(.*)")
+@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern="ungmute ?(.*)")
 async def ungmuter(event):
-    # Check if the function running under SQL mode
     try:
         from notubot.plugins.sql_helper.gmute_sql import ungmute
     except AttributeError:
@@ -394,13 +370,11 @@ async def ungmuter(event):
     if not user:
         return
 
-    # If pass, inform and start ungmuting
     await event.edit("```Ungmuting...```")
 
     if ungmute(user.id) is False:
         await event.edit("`Error! User probably not gmuted.`")
     else:
-        # Inform about success
         await event.edit("```Ungmuted Successfully```")
         await sleep(3)
         await event.delete()
@@ -414,9 +388,8 @@ async def ungmuter(event):
             )
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern=r"^\.gmute(?: |$)(.*)")
+@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern="gmute ?(.*)")
 async def gmuter(event):
-    # Check if the function running under SQL mode
     try:
         from notubot.plugins.sql_helper.gmute_sql import gmute
     except AttributeError:
@@ -427,7 +400,6 @@ async def gmuter(event):
     if not user:
         return
 
-    # If pass, inform and start gmuting
     await event.edit("`Grabs a huge, sticky duct tape!`")
     if gmute(user.id) is False:
         await event.edit("`Error! User probably already gmuted.\nRe-rolls the tape.`")
@@ -446,44 +418,7 @@ async def gmuter(event):
             )
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.all($| (.*))")
-async def all(event):
-    text = (event.pattern_match.group(1)).strip()
-    users = []
-    limit = 0
-
-    if event.fwd_from:
-        return
-
-    async for x in event.client.iter_participants(event.chat_id):
-        if not (x.bot or x.deleted):
-            if not (isinstance(x.participant, admin) or isinstance(x.participant, owner)):
-                users.append(f"[{get_display_name(x)}](tg://user?id={x.id})")
-            if isinstance(x.participant, admin):
-                users.append(f"👮 [{get_display_name(x)}](tg://user?id={x.id})")
-            if isinstance(x.participant, owner):
-                users.append(f"🤴 [{get_display_name(x)}](tg://user?id={x.id})")
-
-    mentions = list(user_list(users, 6))
-    for mention in mentions:
-        try:
-            mention = " | ".join(map(str, mention))
-            if text:
-                mention = f"{text}\n{mention}"
-            if event.reply_to_msg_id:
-                await event.client.send_message(event.chat_id, mention, reply_to=event.message.reply_to_msg_id)
-            else:
-                await event.client.send_message(event.chat_id, mention)
-
-            limit += 6
-            await sleep(2)
-        except BaseException:
-            pass
-
-    await event.delete()
-
-
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.zombies(?: |$)(.*)")
+@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="zombies ?(.*)")
 async def rm_deletedacc(event):
     con = event.pattern_match.group(1).lower()
     del_u = 0
@@ -535,7 +470,7 @@ async def rm_deletedacc(event):
         )
 
 
-@bot_cmd(outgoing=True, groups_only=True, disable_errors=True, pattern=r"^\.admins$")
+@bot_cmd(outgoing=True, groups_only=True, disable_errors=True, pattern="admins$")
 async def get_admin(event):
     info = await event.client.get_entity(event.chat_id)
     title = info.title if info.title else "this chat"
@@ -552,7 +487,7 @@ async def get_admin(event):
     await event.edit(mentions, parse_mode="html")
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern=r"^\.pin(?: |$)(.*)")
+@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern="pin ?(.*)")
 async def pin(event):
     to_pin = event.reply_to_msg_id
 
@@ -585,7 +520,7 @@ async def pin(event):
         )
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern=r"^\.kick(?: |$)(.*)")
+@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern="(kick|k) ?(.*)")
 async def kick(event):
     user, reason = await get_user_from_event(event)
     if not user:
@@ -613,7 +548,7 @@ async def kick(event):
         )
 
 
-@bot_cmd(outgoing=True, groups_only=True, disable_errors=True, pattern=r"^\.users ?(.*)")
+@bot_cmd(outgoing=True, groups_only=True, disable_errors=True, pattern="users ?(.*)")
 async def get_users(event):
     info = await event.client.get_entity(event.chat_id)
     title = info.title if info.title else "this chat"
@@ -695,7 +630,7 @@ async def get_user_from_id(user, event):
     return user_obj
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern=r"^\.usersdel ?(.*)")
+@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern="usersdel ?(.*)")
 async def get_usersdel(event):
     info = await event.client.get_entity(event.chat_id)
     title = info.title if info.title else "this chat"
@@ -777,7 +712,7 @@ async def get_userdel_from_id(user, event):
     return user_obj
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.bots$")
+@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="bots$")
 async def get_bots(event):
     info = await event.client.get_entity(event.chat_id)
     title = info.title if info.title else "this chat"
@@ -811,23 +746,59 @@ async def get_bots(event):
         remove("botlist.txt")
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.(allunban|unbanall)(?: |$)(.*)")
+@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="(allunban|unbanall)$")
 async def allunban(event):
     await event.edit("`Mencari daftar blokir...`")
-    p = 0
-    (await event.get_chat()).title
-    async for i in event.client.iter_participants(
+    success = 0
+    async for user in event.client.iter_participants(
         event.chat_id,
         filter=ChannelParticipantsKicked,
         aggressive=True,
     ):
         try:
-            await event.client.edit_permissions(event.chat_id, i, view_messages=True)
-            p += 1
+            await event.client.edit_permissions(event.chat_id, user, view_messages=True)
+            success += 1
         except BaseException:
             pass
 
     await event.edit("`Berhasil unbanned semua daftar blokir.`")
+
+
+@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="all ?(.*)")
+async def all(event):
+    text = (event.pattern_match.group(1)).strip()
+    users = []
+    limit = 0
+
+    async for user in event.client.iter_participants(event.chat_id):
+        if not (user.bot or user.deleted):
+            if not (
+                isinstance(user.participant, ChannelParticipantAdmin)
+                or isinstance(user.participant, ChannelParticipantCreator)
+            ):
+                users.append(f"[{get_display_name(user)}](tg://user?id={user.id})")
+            if isinstance(user.participant, ChannelParticipantAdmin):
+                users.append(f"👮 [{get_display_name(user)}](tg://user?id={user.id})")
+            if isinstance(user.participant, ChannelParticipantCreator):
+                users.append(f"🤴 [{get_display_name(user)}](tg://user?id={user.id})")
+
+    mentions = list(user_list(users, 6))
+    for mention in mentions:
+        try:
+            mention = " | ".join(map(str, mention))
+            if text:
+                mention = f"{text}\n{mention}"
+            if event.reply_to_msg_id:
+                await event.client.send_message(event.chat_id, mention, reply_to=event.message.reply_to_msg_id)
+            else:
+                await event.client.send_message(event.chat_id, mention)
+
+            limit += 6
+            await sleep(5)
+        except BaseException:
+            pass
+
+    await event.delete()
 
 
 CMD_HELP.update(

@@ -26,7 +26,7 @@ BANNED_RIGHTS = ChatBannedRights(
 )
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.rocker(?: |$)(.*)")
+@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="rocker ?(.*)")
 async def rocker(event):
     me = await event.client.get_me()
 
@@ -57,13 +57,13 @@ async def rocker(event):
             pass
         except FloodWaitError as e:
             await asyncio.sleep(e.seconds + 10)
-        await asyncio.sleep(1)
+        await asyncio.sleep(5)
 
     if rockers is False:
         await event.edit("👏 Congratulations\nFrom now, you have no friends!")
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern=r"^\.gohell(?: |$)(.*)")
+@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="gohell ?(.*)")
 async def gohell(event):
     me = await event.client.get_me()
 
@@ -92,7 +92,7 @@ async def gohell(event):
             pass
         except FloodWaitError as e:
             await asyncio.sleep(e.seconds + 10)
-        await asyncio.sleep(1)
+        await asyncio.sleep(5)
 
     if lucifer is False:
         await event.edit("You're Lucifer 👁️")

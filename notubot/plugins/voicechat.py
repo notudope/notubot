@@ -45,9 +45,8 @@ async def vcstart(event):
         await asyncio.sleep(15)
     else:
         await event.delete()
-        if _group is not None:
-            if _group.updates[1].id is not None:
-                await event.client(DeleteMessagesRequest(event.chat_id, [_group.updates[1].id]))
+        if _group and _group.updates[1].id is not None:
+            await event.client(DeleteMessagesRequest(event.chat_id, [_group.updates[1].id]))
 
 
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="(stopvc|endvc) ?(.*)")
@@ -67,9 +66,8 @@ async def vcstop(event):
         await event.delete()
     else:
         await event.delete()
-        if _group is not None:
-            if _group.updates[1].id is not None:
-                await event.client(DeleteMessagesRequest(event.chat_id, [_group.updates[1].id]))
+        if _group and _group.updates[1].id is not None:
+            await event.client(DeleteMessagesRequest(event.chat_id, [_group.updates[1].id]))
 
 
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="vcinvite$")
@@ -81,16 +79,18 @@ async def vcinvite(event):
     async for x in event.client.iter_participants(event.chat_id):
         if not x.bot:
             users.append(x.id)
-    limit = list(user_list(users, 6))
 
-    call = (await event.client(GetFullChannelRequest(event.chat.id))).full_chat.call
-    if call:
-        for user in limit:
-            try:
-                await event.client(InviteToGroupCallRequest(call=call, users=user))
-                invited += 6
-            except BaseException:
-                pass
+    limit = list(user_list(users, 6))
+    for user in limit:
+        try:
+            await event.client(
+                InviteToGroupCallRequest(
+                    call=(await event.client(GetFullChannelRequest(event.chat.id))).full_chat.call, users=user
+                )
+            )
+            invited += 6
+        except BaseException:
+            pass
 
     await event.edit(f"`Diundang {invited} anggota`")
     await asyncio.sleep(20)
@@ -99,7 +99,7 @@ async def vcinvite(event):
 
 CMD_HELP.update(
     {
-        "voice_chat": [
+        "voicechat": [
             "Voice Chat",
             ">`.startvc <silent/s> <judul obrolan>`\n"
             "↳ : Memulai Obrolan Video.\n\n"

@@ -19,7 +19,7 @@ from telethon.errors.rpcerrorlist import (
 )
 from telethon.tl.functions.channels import InviteToChannelRequest, GetFullChannelRequest
 from telethon.tl.functions.messages import GetFullChatRequest
-from telethon.tl.types import InputPeerUser
+from telethon.tl.types import InputPeerUser, ChannelParticipantCreator, ChannelParticipantAdmin
 
 from notubot import CMD_HELP
 from notubot.events import bot_cmd
@@ -63,7 +63,7 @@ async def get_chatinfo(event):
     return chat_info
 
 
-@bot_cmd(outgoing=True, groups_only=True, pattern=r"^\.inviteall(?: |$)(.*)")
+@bot_cmd(outgoing=True, groups_only=True, pattern="inviteall ?(.*)")
 async def inviteall(event):
     sender = await event.get_sender()
     me = await event.client.get_me()
@@ -73,43 +73,48 @@ async def inviteall(event):
     else:
         procs = await event.edit("`...`")
 
-    chat_id = await get_chatinfo(event)
+    chatinfo = await get_chatinfo(event)
     chat = await event.get_chat()
 
     success = failed = 0
     error = "None"
 
-    if not chat_id:
+    if not chatinfo:
         await procs.delete()
         await event.delete()
         return
 
     await procs.edit("`Mengumpulkan member...`")
-    async for user in event.client.iter_participants(chat_id.full_chat.id):
-        try:
-            if error.startswith("Too"):
-                return await procs.edit(
-                    f"""**Selesai Menculik Dengan Kesalahan**
-(`mungkin akun terkena limit atau kesalahan dari Telethon, coba lagi nanti`)
+    async for user in event.client.iter_participants(chatinfo.full_chat.id):
+        if not (
+            user.bot
+            or user.deleted
+            or isinstance(user.participant, ChannelParticipantAdmin)
+            or isinstance(user.participant, ChannelParticipantCreator)
+        ):
+            try:
+                if error.startswith("Too"):
+                    return await procs.edit(
+                        f"""**Selesai Menculik Dengan Kesalahan** (`mungkin akun terkena limit atau kesalahan dari Telethon, coba lagi nanti`)
 **Kesalahan:**
 `{error}`
 
 • Diculik `{success}` orang.
 • Gagal menculik `{failed}` orang."""
-                )
-            await event.client(InviteToChannelRequest(channel=chat, users=[user.id]))
-            success = success + 1
-            await procs.edit(
-                f"""**Sedang Menculik...**
+                    )
+
+                await event.client(InviteToChannelRequest(channel=chat, users=[user.id]))
+                success = success + 1
+                await procs.edit(
+                    f"""**Sedang Menculik...**
 • Diculik `{success}` orang.
 • Gagal menculik `{failed}` orang.
 
 **Kesalahan:** `{error}`"""
-            )
-        except Exception as e:
-            error = str(e)
-            failed = failed + 1
-        await asyncio.sleep(0.1)
+                )
+            except Exception as e:
+                error = str(e)
+                failed = failed + 1
 
     return await procs.edit(
         f"""**Selesai Menculik**
@@ -118,23 +123,21 @@ async def inviteall(event):
     )
 
 
-@bot_cmd(outgoing=True, groups_only=True, pattern=r"^\.getmemb$")
+@bot_cmd(outgoing=True, groups_only=True, pattern="getmemb$")
 async def getmemb(event):
-    chat = event.chat_id
     await event.edit("`...`")
-
-    members = await event.client.get_participants(chat, aggressive=True)
+    members = await event.client.get_participants(event.chat_id, aggressive=True)
     with open("members.csv", "w", encoding="UTF-8") as f:
         writer = csv.writer(f, delimiter=",", lineterminator="\n")
         writer.writerow(["user_id", "hash"])
         for member in members:
             writer.writerow([member.id, member.access_hash])
 
-    await event.edit("`Berhasil mengumpulkan member..`")
+    await event.edit("`Berhasil mengumpulkan member.`")
     await event.delete()
 
 
-@bot_cmd(outgoing=True, groups_only=True, pattern=r"^\.addmemb$")
+@bot_cmd(outgoing=True, groups_only=True, pattern="addmemb$")
 async def addmemb(event):
     await event.edit("`Proses menambahkan 0 member...`")
     chat = await event.get_chat()
@@ -147,35 +150,34 @@ async def addmemb(event):
             user = {"id": int(row[0]), "hash": int(row[1])}
             users.append(user)
 
-    n = 0
+    success = 0
     for user in users:
-        n += 1
-        if n % 30 == 0:
+        success += 1
+        if success % 30 == 0:
             await event.edit(f"`Mencapai 30 member, tunggu selama {900/60} menit.`")
             await asyncio.sleep(900)
         try:
             userin = InputPeerUser(user["id"], user["hash"])
             await event.client(InviteToChannelRequest(chat, [userin]))
             await asyncio.sleep(random.randrange(5, 7))
-            await event.edit(f"`Prosess menambahkan {n} member...`")
+            await event.edit(f"`Prosess menambahkan {success} member...`")
         except TypeError:
-            n -= 1
+            success -= 1
             continue
         except UserAlreadyParticipantError:
-            n -= 1
+            success -= 1
             continue
         except UserPrivacyRestrictedError:
-            n -= 1
+            success -= 1
             continue
         except UserNotMutualContactError:
-            n -= 1
+            success -= 1
             continue
 
 
-@bot_cmd(outgoing=True, disable_errors=True, pattern=r"^\.limit(?: |$)(.*)")
+@bot_cmd(outgoing=True, disable_errors=True, pattern="limit$")
 async def limit(event):
-    await event.edit("`Mengecek apakah akun kena limit...`")
-
+    await event.edit("`...`")
     async with event.client.conversation("@SpamBot") as cov:
         try:
             res = cov.wait_event(events.NewMessage(incoming=True, from_users=178220800))
@@ -183,7 +185,7 @@ async def limit(event):
             res = await res
             await event.client.send_read_acknowledge(cov.chat_id)
         except YouBlockedUserError:
-            await event.edit("`Unblock dulu @SpamBot`")
+            await event.edit("`Unblock @SpamBot !!`")
             return
         await event.edit(f"~ {res.message.message}")
 

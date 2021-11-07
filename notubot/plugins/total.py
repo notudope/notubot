@@ -11,9 +11,9 @@ from notubot import CMD_HELP
 from notubot.events import bot_cmd
 
 
-@bot_cmd(outgoing=True, pattern=r"^\.total(?: |$)(.*)")
+@bot_cmd(outgoing=True, pattern="total ?(.*)")
 async def total(event):
-    match = event.pattern_match.group(1)
+    match = event.pattern_match.group(1).strip()
     await event.edit("`...`")
 
     if match:

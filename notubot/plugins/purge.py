@@ -13,7 +13,7 @@ from notubot import CMD_HELP, LOGS
 from notubot.events import bot_cmd
 
 
-@bot_cmd(outgoing=True, disable_errors=True, pattern=r"^(\.del|del|Del)$")
+@bot_cmd(outgoing=True, disable_errors=True, pattern="del|(del|Del)$")
 async def delete(event):
     reply = await event.get_reply_message()
     if reply:
@@ -149,15 +149,13 @@ async def copy(event):
 
 @bot_cmd(outgoing=True, disable_errors=True, pattern="edit")
 async def edit(event):
-    message = event.text
     chat = await event.get_input_chat()
     me = await event.client.get_peer_id("me")
-    new_message = str(message[6:])
+    new_message = str(event.text[6:])
     index = 1
-
-    async for msg in event.client.iter_messages(chat, me):
+    async for m in event.client.iter_messages(chat, me):
         if index == 2:
-            await msg.edit(new_message)
+            await m.edit(new_message)
             await event.delete()
             break
         index = index + 1
@@ -165,11 +163,9 @@ async def edit(event):
 
 @bot_cmd(outgoing=True, disable_errors=True, pattern="sd")
 async def selfd(event):
-    message = event.text
-    counter = int(message[4:6])
+    counter = int(event.text[4:6])
     text = str(event.text[6:])
     await event.delete()
-
     procs = await event.client.send_message(event.chat_id, text)
     await asyncio.sleep(counter)
     await procs.delete()

@@ -37,13 +37,9 @@ async def aliveon(event):
     r = g.replace(".git", f"/tree/{b}")
     branch = f"[{b}]({r})"
 
-    await event.edit("__Reconnect.__")
-    await event.edit("__Reconnect..__")
-    await event.edit("__Reconnect.__")
-    await event.edit("__Reconnect..__")
-    await event.edit("__Connecting...__")
-    await event.edit("__Connecting..__")
-    await event.edit("__Connecting...__")
+    await event.edit(".")
+    await event.edit("..")
+    await event.edit("...")
     await event.edit("⚡")
     await asyncio.sleep(2)
 
@@ -55,7 +51,7 @@ async def aliveon(event):
         f"**ID** - `{me.id}`\n"
         f"**Version** - `v{__botversion__}`\n"
         f"**Plugin** - `{len(CMD_HELP)}`\n"
-        f"**UpTime** - `{uptime}`\n"
+        f"**Uptime** - `{uptime}`\n"
         f"**Python** - `{python_version()}`\n"
         f"**Telethon** - `{version.__version__}\n`"
         f"**Branch** - {branch}"
@@ -125,11 +121,8 @@ async def sysd(event):
         await event.edit("`neofetch tidak terinstall!`")
 
 
-@bot_cmd(outgoing=True, pattern="ping$")
+@bot_cmd(outgoing=True, disable_errors=True, pattern="ping$")
 async def ping(event):
-    if event.out:
-        await event.delete()
-
     start = time()
     x = await event.respond("Pong !")
     end = round((time() - start) * 1000)
