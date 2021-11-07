@@ -327,6 +327,7 @@ async def muters(event):
         from notubot.plugins.sql_helper.spam_mute_sql import is_muted
     except AttributeError:
         return
+        
     muted = is_muted(event.chat_id)
     gmuted = is_gmuted(event.sender_id)
     rights = ChatBannedRights(
@@ -351,7 +352,7 @@ async def muters(event):
                     ChatAdminRequiredError,
                     UserIdInvalidError,
                 ):
-                    await event.client.send_read_acknowledge(event.chat_id, event.id)
+                    await event.client.send_read_acknowledge(event.chat_id, event.message.id)
     for i in gmuted:
         if i.sender == str(event.sender_id):
             await event.delete()
