@@ -85,7 +85,7 @@ BOTLOG_CHATID = int(getenv("BOTLOG_CHATID", default=0))
 BOTLOG = strtobool(getenv("BOTLOG", default="True"))
 
 # Command handler
-HANDLER = getenv("HANDLER", default=";;")
+HANDLER = getenv("HANDLER", default="-")
 
 # Blacklist group
 BLACKLIST_GROUP = list(map(int, getenv("BLACKLIST_GROUP", default="").split()))
