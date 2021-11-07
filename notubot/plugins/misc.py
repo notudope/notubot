@@ -19,42 +19,7 @@ from notubot import (
     __botname__,
 )
 from notubot.events import bot_cmd
-from notubot.utils import time_formatter
-from notubot.utils.format import parse_pre
-from notubot.utils.helper import bash, restart
-
-
-@bot_cmd(outgoing=True, pattern="restart$")
-async def restartbot(event):
-    await event.edit("`Restarting {} ...`".format(__botname__))
-
-    if BOTLOG:
-        await event.client.send_message(BOTLOG_CHATID, "#bot #restart \n" "Restarting UserBot...")
-
-    try:
-        from notubot.plugins.sql_helper.globals import addgvar, delgvar
-
-        delgvar("restartstatus")
-        addgvar("restartstatus", f"{event.chat_id}\n{event.id}")
-    except AttributeError:
-        pass
-
-    await event.client.disconnect()
-    if HEROKU_API_KEY:
-        return await restart(event)
-
-    await bash("git pull && pip3 install -r requirements.txt")
-    os.execl(sys.executable, sys.executable, "-m", "notubot")
-
-
-@bot_cmd(outgoing=True, pattern="shutdown$")
-async def shutdown(event):
-    await event.edit("`Shutting down {} ...`".format(__botname__))
-
-    if BOTLOG:
-        await event.client.send_message(BOTLOG_CHATID, "#bot #shutdown \n" "Shutting down UserBot...")
-
-    await event.client.disconnect()
+from notubot.utils import time_formatter, parse_pre, yaml_format
 
 
 @bot_cmd(outgoing=True, pattern="sleep ([0-9]+)$")
@@ -101,7 +66,7 @@ async def json(event):
     reply = await event.get_reply_message() if event.reply_to_msg_id else event
     raw = reply.stringify()
 
-    if len(json) > 4096:
+    if len(raw) > 4096:
         with io.BytesIO(str.encode(raw)) as file:
             await event.client.send_file(
                 chat_id,
@@ -114,15 +79,30 @@ async def json(event):
     else:
         await event.edit(raw, parse_mode=parse_pre)
 
+@bot_cmd(outgoing=True, pattern="(yaml|yml)$")
+async def json(event):
+    chat_id = event.chat_id or event.from_id
+
+    reply = await event.get_reply_message() if event.reply_to_msg_id else event
+    yaml = yaml_format(reply)
+
+    if len(yaml) > 4096:
+        with io.BytesIO(str.encode(yaml)) as file:
+            await event.client.send_file(
+                chat_id,
+                file,
+                force_document=True,
+                allow_cache=False,
+                reply_to=event.id,
+            )
+            await event.delete()
+    else:
+        await event.edit(yaml, parse_mode=parse_pre)
 
 CMD_HELP.update(
     {
         "misc": [
             "Misc",
-            ">`.restart`\n"
-            "↳ : Muat ulang UserBot.\n\n"
-            ">`.shutdown`\n"
-            "↳ : Mematikan UserBot.\n\n"
             ">`.sleep <detik>`\n"
             "↳ : Menidurkan beberapa detik.\n\n"
             ">`.random <item1> <item2> ... <itemN>`\n"
@@ -130,8 +110,10 @@ CMD_HELP.update(
             ">`.repeat <nomor> <teks>`\n"
             "↳ : Mengulang teks untuk beberapa kali.\n\n"
             ">`.json|raw`\n"
-            "↳ : Mengambil data json dari sebuah pesan, \n"
-            "Balas pesan tersebut untuk menampilkannya!",
+            "↳ : Mengambil raw data format json dari sebuah pesan, \n"
+            "Balas pesan tersebut untuk menampilkannya!\n\n",
+            ">`.yaml|yml`\n"
+            "↳ : Mengambil raw data format yaml dari sebuah pesan",
         ]
     }
 )

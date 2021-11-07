@@ -8,8 +8,9 @@
 import asyncio
 from platform import python_version
 from shutil import which
-from time import time
-
+from time import time, sleep
+import os
+import sys
 from git import Repo
 from telethon import version
 from telethon.errors.rpcerrorlist import MediaEmptyError
@@ -23,7 +24,10 @@ from notubot import (
     start_time,
 )
 from notubot.events import bot_cmd
-from notubot.utils.tools import time_formatter
+from notubot.utils import time_formatter, restart, run_cmd
+
+
+
 
 
 @bot_cmd(outgoing=True, pattern="(alive|on)$")
@@ -72,6 +76,39 @@ async def aliveon(event):
             link_preview=False,
         )
         await event.delete()
+        
+        
+@bot_cmd(outgoing=True, pattern="restart$")
+async def restartbot(event):
+    await event.edit("`Restarting {} ...`".format(__botname__))
+
+    if BOTLOG:
+        await event.client.send_message(BOTLOG_CHATID, "#bot #restart \n" "Restarting UserBot...")
+
+    try:
+        from notubot.plugins.sql_helper.globals import addgvar, delgvar
+
+        delgvar("restartstatus")
+        addgvar("restartstatus", f"{event.chat_id}\n{event.id}")
+    except AttributeError:
+        pass
+
+    await event.client.disconnect()
+    if HEROKU_API_KEY:
+        return await restart(event)
+
+    await run_cmd("git pull && pip3 install -r requirements.txt")
+    os.execl(sys.executable, sys.executable, "-m", "notubot")
+
+
+@bot_cmd(outgoing=True, pattern="shutdown$")
+async def shutdown(event):
+    await event.edit("`Shutting down {} ...`".format(__botname__))
+
+    if BOTLOG:
+        await event.client.send_message(BOTLOG_CHATID, "#bot #shutdown \n" "Shutting down UserBot...")
+
+    await event.client.disconnect()
 
 
 @bot_cmd(outgoing=True, pattern="botver$")
@@ -123,6 +160,9 @@ async def sysd(event):
 
 @bot_cmd(outgoing=True, disable_errors=True, pattern="ping$")
 async def ping(event):
+    if event.out:
+        await event.delete()
+        
     start = time()
     x = await event.respond("Pong !")
     end = round((time() - start) * 1000)
@@ -138,6 +178,10 @@ CMD_HELP.update(
             "System",
             ">`.alive`\n"
             "↳ : Mengecek UserBot berjalan atau tidak.\n\n"
+            ">`.restart`\n"
+            "↳ : Muat ulang UserBot.\n\n"
+            ">`.shutdown`\n"
+            "↳ : Mematikan UserBot.\n\n"
             ">`.botver`\n"
             "↳ : Menampilkan versi UserBot dari git.\n\n"
             ">`.sysd`\n"

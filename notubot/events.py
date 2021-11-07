@@ -39,7 +39,7 @@ from notubot import (
     CMD_LIST,
     HANDLER,
 )
-from notubot.utils.tools import time_formatter
+from notubot.utils import time_formatter
 
 FLOOD_WAIT = 0
 

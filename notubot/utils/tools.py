@@ -1,8 +1,20 @@
 import asyncio
 import hashlib
+import time
+from datetime import datetime
 import re
-
+import os
+import sys
+import heroku3
+from notubot import HEROKU_API_KEY, HEROKU_APP_NAME
 from html_telegraph_poster import TelegraphPoster
+
+def utc_to_local(utc_datetime):
+    now_timestamp = time.time()
+    offset = datetime.fromtimestamp(now_timestamp) - datetime.utcfromtimestamp(
+        now_timestamp
+    )
+    return utc_datetime + offset
 
 
 async def md5(fname: str) -> str:
@@ -24,7 +36,6 @@ def humanbytes(size: int) -> str:
         size /= power
         raised_to_pow += 1
     return str(round(size, 2)) + " " + dict_power_n[raised_to_pow] + "B"
-
 
 def time_formatter(milliseconds):
     minutes, seconds = divmod(int(milliseconds / 1000), 60)
@@ -64,18 +75,6 @@ def human_to_bytes(size: str) -> int:
     return int(float(number) * units[unit])
 
 
-async def run_cmd(cmd: list) -> (bytes, bytes):
-    process = await asyncio.create_subprocess_exec(
-        *cmd,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-    )
-    out, err = await process.communicate()
-    t_resp = out.strip()
-    e_resp = err.strip()
-    return t_resp, e_resp
-
-
 def post_to_telegraph(title, html_format_content):
     post_client = TelegraphPoster(use_api=True)
     auth_name = "notubot"
@@ -88,3 +87,28 @@ def post_to_telegraph(title, html_format_content):
         text=html_format_content,
     )
     return post_page["url"]
+
+async def run_cmd(cmd: str) -> (bytes, bytes):
+    process = await asyncio.create_subprocess_shell(
+        cmd,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+    stdout, stderr = await process.communicate()
+    err = stderr.decode().strip()
+    out = stdout.decode().strip()
+    return out, err
+    
+async def restart(event):
+    if HEROKU_APP_NAME and HEROKU_API_KEY:
+        try:
+            Heroku = heroku3.from_key(HEROKU_API_KEY)
+            app = Heroku.apps()[HEROKU_APP_NAME]
+            await event.edit("`Restarting... Tunggu beberapa menit.`")
+            app.restart()
+        except BaseException:
+            return await event.edit(
+                "`HEROKU_API_KEY` atau `HEROKU_APP_NAME` salah! Cek ulang config var.",
+            )
+    else:
+        os.execl(sys.executable, sys.executable, "-m", "notubot")
