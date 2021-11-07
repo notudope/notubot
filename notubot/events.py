@@ -122,15 +122,15 @@ def bot_cmd(**args):
                 return
 
             if admins_only:
-                if not event.is_group:
+                if event.is_private:
                     return await event.respond("`Gunakan perintah itu dalam grup!`")
                 gchat = await event.get_chat()
                 if not (gchat.admin_rights or gchat.creator):
                     await event.delete()
                     return await event.respond("`Bukan admin disini!`")
 
-            if groups_only and not event.is_group:
-                return await event.respond("`Gunakan perintah itu dalam grup!`")
+            if groups_only and event.is_private:
+                return await event.respond("`Gunakan perintah itu dalam grup/channel!`")
 
             try:
                 from notubot.plugins.sql_helper.blacklist_sql import get_blacklist
