@@ -19,7 +19,6 @@ async def sleepy(event):
     counter = int(event.pattern_match.group(1))
     await event.edit("`😴 Tidur...`")
 
-    sleep(2)
     if BOTLOG:
         await event.client.send_message(
             BOTLOG_CHATID,
@@ -59,15 +58,18 @@ async def json(event):
     raw = reply.stringify()
 
     if len(raw) > 4096:
-        with io.BytesIO(str.encode(raw)) as file:
-            await event.client.send_file(
-                chat_id,
-                file,
-                force_document=True,
-                allow_cache=False,
-                reply_to=event.id,
-            )
-            await event.delete()
+        try:
+            with io.BytesIO(str.encode(raw)) as file:
+                await event.client.send_file(
+                    chat_id,
+                    file,
+                    force_document=True,
+                    allow_cache=False,
+                    reply_to=event.id,
+                )
+        except Exception:
+            pass
+        await event.delete()
     else:
         await event.edit(raw, parse_mode=parse_pre)
 
@@ -80,15 +82,18 @@ async def yaml(event):
     raw = yaml_format(reply)
 
     if len(raw) > 4096:
-        with io.BytesIO(str.encode(raw)) as file:
-            await event.client.send_file(
-                chat_id,
-                file,
-                force_document=True,
-                allow_cache=False,
-                reply_to=event.id,
-            )
-            await event.delete()
+        try:
+            with io.BytesIO(str.encode(raw)) as file:
+                await event.client.send_file(
+                    chat_id,
+                    file,
+                    force_document=True,
+                    allow_cache=False,
+                    reply_to=event.id,
+                )
+        except Exception:
+            pass
+        await event.delete()
     else:
         await event.edit(raw, parse_mode=parse_pre)
 
@@ -105,8 +110,9 @@ CMD_HELP.update(
             "↳ : Mengulang teks untuk beberapa kali.\n\n"
             ">`.json|raw`\n"
             "↳ : Mengambil raw data format json dari sebuah pesan, \n"
-            "Balas pesan tersebut untuk menampilkannya!\n\n",
-            ">`.yaml|yml`\n" "↳ : Mengambil raw data format yaml dari sebuah pesan",
+            "Balas pesan tersebut untuk menampilkannya!\n\n"
+            ">`.yaml|yml`\n"
+            "↳ : Mengambil raw data format yaml dari sebuah pesan",
         ]
     }
 )

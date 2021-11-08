@@ -10,7 +10,7 @@ import asyncio
 from telethon.tl.functions.channels import GetFullChannelRequest, DeleteMessagesRequest
 from telethon.tl.functions.phone import CreateGroupCallRequest, DiscardGroupCallRequest, InviteToGroupCallRequest
 
-from notubot import CMD_HELP
+from notubot import CMD_HELP, bot
 from notubot.events import bot_cmd
 
 
@@ -55,10 +55,9 @@ async def vcstop(event):
     silent = ["s", "silent"]
     stfu = True if opts in silent else False
 
-    call = (await event.client(GetFullChannelRequest(event.chat.id))).full_chat.call
-    _group = None
-    if call:
-        _group = await event.client(DiscardGroupCallRequest(call))
+    _group = await bot(
+        DiscardGroupCallRequest((await event.client(GetFullChannelRequest(event.chat.id))).full_chat.call)
+    )
 
     if stfu is not True:
         await event.edit("`Obrolan Video dimatikan...`")
@@ -79,11 +78,10 @@ async def vcinvite(event):
     async for x in event.client.iter_participants(event.chat_id):
         if not x.bot:
             users.append(x.id)
-
     limit = list(user_list(users, 6))
     for user in limit:
         try:
-            await event.client(
+            await bot(
                 InviteToGroupCallRequest(
                     call=(await event.client(GetFullChannelRequest(event.chat.id))).full_chat.call, users=user
                 )

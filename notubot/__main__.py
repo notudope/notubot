@@ -20,7 +20,7 @@ from notubot import (
     start_time,
 )
 from notubot.plugins import ALL_PLUGINS
-from notubot.utils.tools import time_formatter
+from notubot.utils import time_formatter
 
 
 async def shutdown_bot(signum: str) -> None:

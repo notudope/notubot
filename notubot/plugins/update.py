@@ -6,13 +6,10 @@
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
 import asyncio
+import io
+import os
 import sys
-from os import (
-    environ,
-    execle,
-    remove,
-    path,
-)
+from pathlib import Path
 
 import heroku3
 from git import Repo
@@ -30,7 +27,8 @@ from notubot import (
 )
 from notubot.events import bot_cmd
 
-requirements_path = path.join(path.dirname(path.dirname(path.dirname(__file__))), "requirements.txt")
+app_dir: Path = Path(__file__).parent.parent
+requirements_path = app_dir / "requirements.txt"
 
 
 async def update_requirements():
@@ -61,16 +59,17 @@ async def print_changelogs(event, ac_br, changelog):
 
     if len(changelog_str) > 4096:
         await event.edit("`Data CHANGELOG terlalu besar, buka file untuk melihatnya.`")
-        file = open("output.txt", "w+")
-        file.write(changelog_str)
-        file.close()
-
-        await event.client.send_file(
-            chat_id,
-            "output.txt",
-            reply_to=event.id,
-        )
-        remove("output.txt")
+        try:
+            with io.BytesIO(str.encode(changelog_str)) as file:
+                await event.client.send_file(
+                    chat_id,
+                    file,
+                    force_document=True,
+                    allow_cache=False,
+                    reply_to=event.id,
+                )
+        except Exception:
+            pass
     else:
         await event.client.send_message(
             chat_id,
@@ -170,8 +169,7 @@ async def update(event, repo, ups_rem, ac_br):
     except AttributeError:
         pass
 
-    args = [sys.executable, "-m", "notubot"]
-    execle(sys.executable, *args, environ)
+    os.execl(sys.executable, sys.executable, "-m", "notubot")
     return
 
 
@@ -229,7 +227,7 @@ async def upstream(event):
 
     changelog = await gen_chlog(repo, f"HEAD..upstream/{ac_br}")
 
-    if opts == "deploy" or opts == "push" or opts == "all":
+    if opts in ["deploy", "push", "all"]:
         await event.edit(f"`{__botname__} Proses Deploy, Harap Tunggu...`")
         await deploy(event, repo, ups_rem, ac_br, txt)
 
@@ -254,7 +252,7 @@ async def upstream(event):
         await event.edit(f"`{__botname__} Proses Update, Updating...90%`")
         await event.edit(f"`{__botname__} Proses Update, Mohon Tunggu Sebentar...100%`")
 
-    if opts == "now" or opts == "pull" or opts == "one":
+    if opts in ["now", "pull", "one"]:
         await event.edit(f"`{__botname__} Memperbarui, Harap Tunggu...`")
         await update(event, repo, ups_rem, ac_br)
 

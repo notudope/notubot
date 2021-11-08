@@ -7,9 +7,9 @@
 
 import asyncio
 import inspect
+import io
 import re
 from datetime import datetime
-from os import remove
 from pathlib import Path
 from platform import python_version
 from sys import exc_info
@@ -203,9 +203,7 @@ def bot_cmd(**args):
                     ftext += "\n\nError text:\n"
                     ftext += str(exc_info()[1])
                     ftext += "\n\n--------END NOTUBOT CRASH LOG--------"
-
                     command = 'git log --pretty=format:"%an: %s" -5'
-
                     ftext += "\n\n\nLast 5 commits:\n"
 
                     # NotImplementedError
@@ -214,17 +212,22 @@ def bot_cmd(**args):
                     )
                     stdout, stderr = await process.communicate()
                     result = str(stdout.decode().strip()) + str(stderr.decode().strip())
+
                     ftext += result
 
-                    with open("error.log", "w+") as file:
-                        file.write(ftext)
                     if BOTLOG:
                         await event.respond("`NOTUBOT-UserBot ERROR! Catatan disimpan pada BOTLOG.`")
                     try:
-                        await event.client.send_file(send_to, "error.log", caption=text)
+                        with io.BytesIO(str.encode(ftext)) as file:
+                            await event.client.send_file(
+                                send_to,
+                                file,
+                                caption=text,
+                                force_document=True,
+                                allow_cache=False,
+                            )
                     except Exception:
                         pass
-                    remove("error.log")
             else:
                 pass
 

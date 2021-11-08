@@ -330,8 +330,8 @@ async def gsend(event):
 
 CMD_HELP.update(
     {
-        "globaltools": [
-            "Global Tools",
+        "global": [
+            "Global",
             ">`.gban`\n"
             "↳ : Global Banned ke semua grup yang menjadi admin,\n"
             "Gunakan perintah ini dengan bijak.\n\n"
