@@ -87,8 +87,28 @@ BOTLOG = strtobool(getenv("BOTLOG", default="True"))
 # Command handler
 HANDLER = getenv("HANDLER", default="-")
 
+# Developer the UserBot
+DEVLIST = list(map(int, getenv("DEVLIST", default="2006788653 2003361410").split()))
+
 # Blacklist group
 BLACKLIST_GROUP = list(map(int, getenv("BLACKLIST_GROUP", default="").split()))
+
+# Special group blacklist
+NOSPAM_CHAT = [
+    -1001327032795,  # UltroidSupport
+    -1001387666944,  # PyrogramChat
+    -1001109500936,  # TelethonChat
+    -1001050982793,  # Python
+    -1001256902287,  # DurovsChat
+    -1001235155926,  # RoseSupportChat
+    -1001341570295,  # tgbetachat
+    -1001336679475,  # tgandroidtests
+    -1001311056733,  # BotTalk
+    -1001294181499,  # userbotindo
+    -1001625295806,  # NOTUBOTS
+    -1001596433756,  # MFIChat
+    -1001307868573,  # CariTemanOK
+]
 
 # Bleep Blop, this is a bot ;)
 PM_AUTO_BAN = strtobool(getenv("PM_AUTO_BAN", default="False"))

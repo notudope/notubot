@@ -36,7 +36,6 @@ from telethon.utils import get_display_name
 from notubot import BOTLOG, BOTLOG_CHATID, CMD_HELP
 from notubot.events import bot_cmd
 
-# =================== CONSTANT ===================
 PP_TOO_SMOL = "`The image is too small`"
 PP_ERROR = "`Failure while processing the image`"
 NO_ADMIN = "`I am not an admin!`"
@@ -73,7 +72,6 @@ UNBAN_RIGHTS = ChatBannedRights(
 MUTE_RIGHTS = ChatBannedRights(until_date=None, send_messages=True)
 
 UNMUTE_RIGHTS = ChatBannedRights(until_date=None, send_messages=False)
-# ================================================
 
 
 def user_list(ls, n):
@@ -323,13 +321,11 @@ async def unmuter(event):
 @bot_cmd(incoming=True, disable_errors=True)
 async def muters(event):
     try:
-        from notubot.plugins.sql_helper.gmute_sql import is_gmuted
         from notubot.plugins.sql_helper.spam_mute_sql import is_muted
     except AttributeError:
         return
 
     muted = is_muted(event.chat_id)
-    gmuted = is_gmuted(event.sender_id)
     rights = ChatBannedRights(
         until_date=None,
         send_messages=True,
@@ -353,70 +349,6 @@ async def muters(event):
                     UserIdInvalidError,
                 ):
                     await event.client.send_read_acknowledge(event.chat_id, event.message.id)
-    for i in gmuted:
-        if i.sender == str(event.sender_id):
-            await event.delete()
-
-
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern="ungmute ?(.*)")
-async def ungmuter(event):
-    try:
-        from notubot.plugins.sql_helper.gmute_sql import ungmute
-    except AttributeError:
-        await event.edit(NO_SQL)
-        return
-
-    user = await get_user_from_event(event)
-    user = user[0]
-    if not user:
-        return
-
-    await event.edit("```Ungmuting...```")
-
-    if ungmute(user.id) is False:
-        await event.edit("`Error! User probably not gmuted.`")
-    else:
-        await event.edit("```Ungmuted Successfully```")
-        await sleep(3)
-        await event.delete()
-
-        if BOTLOG:
-            await event.client.send_message(
-                BOTLOG_CHATID,
-                "#UNGMUTE\n"
-                f"USER: [{user.first_name}](tg://user?id={user.id})\n"
-                f"CHAT: {event.chat.title}(`{event.chat_id}`)",
-            )
-
-
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern="gmute ?(.*)")
-async def gmuter(event):
-    try:
-        from notubot.plugins.sql_helper.gmute_sql import gmute
-    except AttributeError:
-        await event.edit(NO_SQL)
-        return
-
-    user, reason = await get_user_from_event(event)
-    if not user:
-        return
-
-    await event.edit("`Grabs a huge, sticky duct tape!`")
-    if gmute(user.id) is False:
-        await event.edit("`Error! User probably already gmuted.\nRe-rolls the tape.`")
-    else:
-        if reason:
-            await event.edit(f"`Globally taped!`\nReason: {reason}")
-        else:
-            await event.edit("`Globally taped!`")
-
-        if BOTLOG:
-            await event.client.send_message(
-                BOTLOG_CHATID,
-                "#GMUTE\n"
-                f"USER: [{user.first_name}](tg://user?id={user.id})\n"
-                f"CHAT: {event.chat.title}(`{event.chat_id}`)",
-            )
 
 
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="zombies ?(.*)")
@@ -818,10 +750,6 @@ CMD_HELP.update(
             "↳ : Mutes the person in the chat, works on admins too.\n\n"
             ">`.unmute <username/reply>`\n"
             "↳ : Removes the person from the muted list.\n\n"
-            ">`.gmute <username/reply> <reason (optional)>`\n"
-            "↳ : Mutes the person in all groups you have in common with them.\n\n"
-            ">`.ungmute <username/reply>`\n"
-            "↳ : Reply someone's message with .ungmute to remove them from the gmuted list.\n\n"
             ">`.zombies`\n"
             "↳ : Searches for deleted accounts in a group.\n"
             "Use .zombies clean to remove deleted accounts from the group.\n\n"

@@ -1,10 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 
-from notubot import DB_URI
-
-BASE = declarative_base()
+from notubot import DB_URI, LOGS
 
 
 def start() -> scoped_session:
@@ -14,4 +12,9 @@ def start() -> scoped_session:
     return scoped_session(sessionmaker(bind=engine, autoflush=False))
 
 
-SESSION = start()
+try:
+    BASE = declarative_base()
+    SESSION = start()
+except AttributeError as e:
+    LOGS.error("DB_URI config var dibutuhkan!")
+    LOGS.exception(str(e))

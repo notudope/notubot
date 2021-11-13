@@ -8,32 +8,28 @@ from sqlalchemy import Column, String
 
 class GMute(BASE):
     __tablename__ = "gmute"
-    sender = Column(String(14), primary_key=True)
+    user_id = Column(String(14), primary_key=True)
 
-    def __init__(self, sender):
-        self.sender = str(sender)
+    def __init__(self, user_id):
+        self.user_id = str(user_id)
 
 
 GMute.__table__.create(checkfirst=True)
 
 
-def is_gmuted(sender_id):
-    try:
-        return SESSION.query(GMute).all()
-    except BaseException:
-        return None
-    finally:
-        SESSION.close()
+def is_gmuted(user_id):
+    user = SESSION.query(GMute).get(str(user_id))
+    return bool(user)
 
 
-def gmute(sender):
-    adder = GMute(str(sender))
+def gmute(user_id):
+    adder = GMute(str(user_id))
     SESSION.add(adder)
     SESSION.commit()
 
 
-def ungmute(sender):
-    rem = SESSION.query(GMute).get(str(sender))
+def ungmute(user_id):
+    rem = SESSION.query(GMute).get(str(user_id))
     if rem:
         SESSION.delete(rem)
         SESSION.commit()

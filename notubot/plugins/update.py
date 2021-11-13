@@ -259,7 +259,13 @@ async def upstream(event):
 
 @bot_cmd(outgoing=True, pattern="repo$")
 async def repo(event):
-    await event.edit(f"📦 **[Disini REPO](https://github.com/notudope/notubot)** `{__botname__}`", link_preview=False)
+    await event.edit(
+        f"""**{__botname__}**
+  •  [📦 Repo](https://github.com/notudope/notubot)
+  •  [🚀 Deploy](https://dashboard.heroku.com/new?button-url=https%3A%2F%2Fgithub.com%2Fnotudope%2Fnotubot&template=https%3A%2F%2Fgithub.com%2Fnotudope%2Fnotubot)
+""",
+        link_preview=False,
+    )
 
 
 CMD_HELP.update(

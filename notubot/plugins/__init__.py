@@ -32,4 +32,5 @@ def __list_all_plugins():
 
 
 ALL_PLUGINS = __list_all_plugins()
+
 __all__ = ALL_PLUGINS + ["ALL_PLUGINS"]
