@@ -36,6 +36,9 @@ from telethon.utils import get_display_name
 from notubot import BOTLOG, BOTLOG_CHATID, CMD_HELP
 from notubot.events import bot_cmd
 
+# from notubot.plugins.sql_helper.gmute_sql import is_gmuted, gmute, ungmute
+# from notubot.plugins.sql_helper.mute_sql import is_muted, mute, unmute
+
 PP_TOO_SMOL = "`The image is too small`"
 PP_ERROR = "`Failure while processing the image`"
 NO_ADMIN = "`I am not an admin!`"
@@ -79,6 +82,73 @@ def user_list(ls, n):
         yield ls[i : i + n]
 
 
+async def get_uinfo(event):
+    user, data = None, None
+    if event.reply_to:
+        reply = await event.get_reply_message()
+        user = reply.sender
+        data = event.pattern_match.group(1)
+    else:
+        ok = event.pattern_match.group(1).split(maxsplit=1)
+        if len(ok) >= 1:
+            usr = ok[0]
+            if usr.isdigit():
+                usr = int(usr)
+            try:
+                user = await event.get_entity(usr)
+            except BaseException:
+                pass
+            if len(ok) == 2:
+                data = ok[1]
+    return user, data
+
+
+async def get_user_from_event(event):
+    args = event.pattern_match.group(1).split(" ", 1)
+    extra = None
+
+    if event.reply_to_msg_id and not len(args) == 2:
+        previous_message = await event.get_reply_message()
+        user_obj = await event.client.get_entity(previous_message.sender_id)
+        extra = event.pattern_match.group(1)
+    elif args:
+        user = args[0]
+        if len(args) == 2:
+            extra = args[1]
+
+        if user.isnumeric():
+            user = int(user)
+
+        if not user:
+            return await event.edit("`Wajib menyertakan ID User atau balas pesan tersebut.`")
+
+        if event.message.entities is not None:
+            probable_user_mention_entity = event.message.entities[0]
+
+            if isinstance(probable_user_mention_entity, MessageEntityMentionName):
+                user_id = probable_user_mention_entity.user_id
+                user_obj = await event.client.get_entity(user_id)
+                return user_obj
+        try:
+            user_obj = await event.client.get_entity(user)
+        except (TypeError, ValueError) as err:
+            return await event.edit(str(err))
+
+    return user_obj, extra
+
+
+async def get_user_from_id(user, event):
+    if isinstance(user, str):
+        user = int(user)
+
+    try:
+        user_obj = await event.client.get_entity(user)
+    except (TypeError, ValueError) as err:
+        return await event.edit(str(err))
+
+    return user_obj
+
+
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern="setgpic$")
 async def set_group_photo(event):
     if not event.is_group:
@@ -108,27 +178,27 @@ async def set_group_photo(event):
 
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern="promote ?(.*)")
 async def promote(event):
-    new_rights = ChatAdminRights(
-        add_admins=False,
-        invite_users=True,
-        change_info=False,
-        ban_users=True,
-        delete_messages=True,
-        pin_messages=True,
-    )
-
     await event.edit("`Promoting...`")
-    user, rank = await get_user_from_event(event)
-    if not rank:
-        rank = "Administrator"
-    if user:
-        pass
-    else:
-        return
+    await event.get_chat()
+    user, rank = await get_uinfo(event)
+    rank = rank or "Admin"
+    if not user:
+        return await event.edit("`Wajib menyertakan ID User atau balas pesan tersebut.`")
 
     try:
+        new_rights = ChatAdminRights(
+            add_admins=False,
+            invite_users=True,
+            change_info=False,
+            ban_users=True,
+            delete_messages=True,
+            pin_messages=False,
+            anonymous=False,
+            manage_call=True,
+        )
+
         await event.client(EditAdminRequest(event.chat_id, user.id, new_rights, rank))
-        await event.edit("`Promoted Successfully!`")
+        await event.edit("`promoted`")
     except RightForbiddenError:
         return await event.edit(NO_PERM)
     except BadRequestError:
@@ -146,28 +216,29 @@ async def promote(event):
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern="demote ?(.*)")
 async def demote(event):
     await event.edit("`Demoting...`")
-    rank = "admeme"
-    user = await get_user_from_event(event)
-    user = user[0]
-    if user:
-        pass
-    else:
-        return
+    await event.get_chat()
+    user, rank = await get_uinfo(event)
+    if not rank:
+        rank = "Not Admin"
+    if not user:
+        return await event.edit("`Wajib menyertakan ID User atau balas pesan tersebut.`")
 
-    newrights = ChatAdminRights(
-        add_admins=None,
-        invite_users=None,
-        change_info=None,
-        ban_users=None,
-        delete_messages=None,
-        pin_messages=None,
-    )
     try:
-        await event.client(EditAdminRequest(event.chat_id, user.id, newrights, rank))
+        new_rights = ChatAdminRights(
+            add_admins=None,
+            invite_users=None,
+            change_info=None,
+            ban_users=None,
+            delete_messages=None,
+            pin_messages=None,
+            anonymous=None,
+            manage_call=None,
+        )
+        await event.client(EditAdminRequest(event.chat_id, user.id, new_rights, rank))
     except BadRequestError:
         return await event.edit(NO_PERM)
-    await event.edit("`Demoted Successfully!`")
 
+    await event.edit("`demoted`")
     if BOTLOG:
         await event.client.send_message(
             BOTLOG_CHATID,
@@ -516,51 +587,6 @@ async def get_users(event):
             reply_to=event.id,
         )
         remove("userslist.txt")
-
-
-async def get_user_from_event(event):
-    args = event.pattern_match.group(1).split(" ", 1)
-    extra = None
-    if event.reply_to_msg_id and not len(args) == 2:
-        previous_message = await event.get_reply_message()
-        user_obj = await event.client.get_entity(previous_message.sender_id)
-        extra = event.pattern_match.group(1)
-    elif args:
-        user = args[0]
-        if len(args) == 2:
-            extra = args[1]
-
-        if user.isnumeric():
-            user = int(user)
-
-        if not user:
-            return await event.edit("`Pass the user's username, id or reply!`")
-
-        if event.message.entities is not None:
-            probable_user_mention_entity = event.message.entities[0]
-
-            if isinstance(probable_user_mention_entity, MessageEntityMentionName):
-                user_id = probable_user_mention_entity.user_id
-                user_obj = await event.client.get_entity(user_id)
-                return user_obj
-        try:
-            user_obj = await event.client.get_entity(user)
-        except (TypeError, ValueError) as err:
-            return await event.edit(str(err))
-
-    return user_obj, extra
-
-
-async def get_user_from_id(user, event):
-    if isinstance(user, str):
-        user = int(user)
-
-    try:
-        user_obj = await event.client.get_entity(user)
-    except (TypeError, ValueError) as err:
-        return await event.edit(str(err))
-
-    return user_obj
 
 
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern="usersdel ?(.*)")

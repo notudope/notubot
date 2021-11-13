@@ -13,7 +13,7 @@ from notubot import CMD_HELP, LOGS
 from notubot.events import bot_cmd
 
 
-@bot_cmd(outgoing=True, disable_errors=True, pattern="del|(del|Del)$")
+@bot_cmd(outgoing=True, disable_errors=True, pattern="del|(d|D|del|Del)$")
 async def delete(event):
     reply = await event.get_reply_message()
     if reply:
@@ -63,7 +63,7 @@ async def purge(event):
     except Exception as e:
         LOGS.exception(e)
 
-    procs = await event.client.send_message(event.chat_id, "`Purged`")
+    procs = await event.client.send_message(event.chat_id, "`purged`")
     await asyncio.sleep(1)
     await procs.delete()
 
@@ -175,7 +175,7 @@ CMD_HELP.update(
     {
         "purge": [
             "Purge",
-            ">`.del|del|Del`\n"
+            ">`.del|d|D|del|Del`\n"
             "↳ : Menghapus pesan yang dibalas.\n\n"
             ">`.purge`\n"
             "↳ : Menghapus semua pesan dari balasan.\n\n"
