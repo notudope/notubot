@@ -89,7 +89,7 @@ async def vcinvite(event):
                 )
             )
             invited += 6
-            await asyncio.sleep(5)
+            await asyncio.sleep(10)
         except BaseException:
             pass
 
