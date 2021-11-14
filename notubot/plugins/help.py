@@ -9,7 +9,12 @@ import asyncio
 
 from telethon.utils import get_display_name
 
-from notubot import CMD_HELP, __botversion__, __botname__
+from notubot import (
+    CMD_HELP,
+    __botversion__,
+    __botname__,
+    HANDLER,
+)
 from notubot.events import bot_cmd
 
 
@@ -20,9 +25,14 @@ async def help(event):
 
     if args:
         if args in CMD_HELP:
-            await event.edit(f"📦 Plugin **{CMD_HELP[args][0]}** <`.help {args}`>\n\n" + str(CMD_HELP[args][1]))
+            await event.edit(
+                f"📦 Plugin **{CMD_HELP[args][0]}** <`{HANDLER}help {args}`>\n\n"
+                + str(CMD_HELP[args][1]).replace(">`.", f">`{HANDLER}")
+            )
         else:
-            await event.edit(f"😡 Plugin [`{args}`] tidak ada! Ketik <`.help`> untuk melihat nama plugin yang benar.")
+            await event.edit(
+                f"😡 Plugin [`{args}`] tidak ada! Ketik <`{HANDLER}help`> untuk melihat nama plugin yang benar."
+            )
     else:
         plugins = ""
         for p in CMD_HELP:
@@ -30,12 +40,12 @@ async def help(event):
         plugins = plugins[:-3]
 
         text = f"""`{__botname__}`
-[REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Grup](https://t.me/NOTUBOTS)
+[REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Support](https://t.me/NOTUBOTS)  /  [Mutualan](https://t.me/CariTemanOK)
 
 😎 **Owner** - `{get_display_name(me)}`
 🤖 **Version** - `v{__botversion__}`
 📦 **Plugin** - `{len(CMD_HELP)}`
-👨‍💻 **Usage** - `.help <nama plugin>`
+👨‍💻 **Usage** - `{HANDLER}help <plugin>`
 
 Daftar semua plugin beserta perintah tersedia dibawah ini:
 
@@ -51,4 +61,4 @@ Daftar semua plugin beserta perintah tersedia dibawah ini:
             text,
             link_preview=False,
         )
-        await helper.reply("**Contoh :** Ketik <`.help admin`> Untuk informasi pengunaan.")
+        await helper.reply(f"**Contoh :** Ketik <`{HANDLER}help admin`> Untuk informasi pengunaan.")

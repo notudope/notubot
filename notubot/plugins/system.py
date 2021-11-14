@@ -50,7 +50,7 @@ async def aliveon(event):
 
     text = (
         f"`{__botname__}`\n"
-        f"[REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Support](https://t.me/NOTUBOTS)  /  [Mutualan](https://t.me/CariTeman_Asik)\n\n"
+        f"[REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Support](https://t.me/NOTUBOTS)  /  [Mutualan](https://t.me/CariTemanOK)\n\n"
         f"**Owner** - `{get_display_name(user)}`\n"
         f"**Username** - @{me.username}\n"
         f"**ID** - `{me.id}`\n"

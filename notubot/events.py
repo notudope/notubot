@@ -60,13 +60,13 @@ def bot_cmd(**args):
     previous_stack_frame = stack[1]
     file_test = Path(previous_stack_frame.filename)
     file_test = file_test.stem.replace(".py", "")
-    pattern = args.get("pattern", None)
-    disable_edited = args.get("disable_edited", False)
-    groups_only = args.get("groups_only", False)
-    admins_only = args.get("admins_only", False)
-    trigger_on_fwd = args.get("trigger_on_fwd", False)
-    disable_errors = args.get("disable_errors", False)
-    insecure = args.get("insecure", False)
+    pattern: str = args.get("pattern", None)
+    disable_edited: bool = args.get("disable_edited", False)
+    groups_only: bool = args.get("groups_only", False)
+    admins_only: bool = args.get("admins_only", False)
+    trigger_on_fwd: bool = args.get("trigger_on_fwd", False)
+    disable_errors: bool = args.get("disable_errors", False)
+    insecure: bool = args.get("insecure", False)
 
     if pattern:
         args["pattern"] = compile_pattern(pattern, "\\" + HANDLER)
@@ -152,7 +152,6 @@ def bot_cmd(**args):
                 LOGS.error(
                     "A FloodWaitError of {}. Sleeping for {} and try again.".format(FLOOD_WAIT, FLOOD_WAIT_HUMAN)
                 )
-                await event.delete()
                 await asyncio.sleep(FLOOD_WAIT + 10)
                 if BOTLOG:
                     await event.client.send_message(

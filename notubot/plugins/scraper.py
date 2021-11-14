@@ -69,9 +69,9 @@ async def inviteall(event):
     me = await event.client.get_me()
 
     if not sender.id == me.id:
-        procs = await event.reply("`...`")
+        NotUBot = await event.reply("`...`")
     else:
-        procs = await event.edit("`...`")
+        NotUBot = await event.edit("`...`")
 
     chatinfo = await get_chatinfo(event)
     chat = await event.get_chat()
@@ -80,11 +80,11 @@ async def inviteall(event):
     error = "None"
 
     if not chatinfo:
-        await procs.delete()
+        await NotUBot.delete()
         await event.delete()
         return
 
-    await procs.edit("`Mengumpulkan member...`")
+    await NotUBot.edit("`Mengumpulkan member...`")
     async for user in event.client.iter_participants(chatinfo.full_chat.id):
         if not (
             user.bot
@@ -94,21 +94,21 @@ async def inviteall(event):
         ):
             try:
                 if error.startswith("Too"):
-                    return await procs.edit(
-                        f"""**Selesai Menculik Dengan Kesalahan** (`mungkin akun terkena limit atau kesalahan dari Telethon, coba lagi nanti`)
+                    return await NotUBot.edit(
+                        f"""**Selesai Dengan Kesalahan** (`mungkin akun terkena limit atau kesalahan dari Telethon, coba lagi nanti`)
 **Kesalahan:**
 `{error}`
 
 • Diculik `{success}` orang.
-• Gagal menculik `{failed}` orang."""
+• Gagal mengundang `{failed}` orang."""
                     )
 
                 await event.client(InviteToChannelRequest(channel=chat, users=[user.id]))
                 success = success + 1
-                await procs.edit(
-                    f"""**Sedang Menculik...**
+                await NotUBot.edit(
+                    f"""**Sedang Mengundang...**
 • Diculik `{success}` orang.
-• Gagal menculik `{failed}` orang.
+• Gagal mengundang `{failed}` orang.
 
 **Kesalahan:** `{error}`"""
                 )
@@ -116,10 +116,10 @@ async def inviteall(event):
                 error = str(e)
                 failed = failed + 1
 
-    return await procs.edit(
-        f"""**Selesai Menculik**
-• Berhasil menculik `{success}` orang.
-• Gagal menculik `{failed}` orang."""
+    return await NotUBot.edit(
+        f"""**Selesai Mengundang**
+• Berhasil mengundang `{success}` orang.
+• Gagal mengundang `{failed}` orang."""
     )
 
 
@@ -195,7 +195,7 @@ CMD_HELP.update(
         "scraper": [
             "Scraper",
             ">`.inviteall <id/username>`\n"
-            "↳ : Menculik orang dari grup dan ditambahkan ke grup.\n\n"
+            "↳ : Mengundang orang dari grup dan ditambahkan ke grup.\n\n"
             ">`.getmemb`\n"
             "↳ : Mendapatkan semua member dalam grup.\n\n"
             ">`.addmemb`\n"

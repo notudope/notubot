@@ -76,8 +76,9 @@ async def vcinvite(event):
     invited = 0
 
     async for x in event.client.iter_participants(event.chat_id):
-        if not x.bot:
+        if not (x.bot or x.deleted):
             users.append(x.id)
+
     limit = list(user_list(users, 6))
     for user in limit:
         try:
@@ -87,10 +88,11 @@ async def vcinvite(event):
                 )
             )
             invited += 6
+            await asyncio.sleep(5)
         except BaseException:
             pass
 
-    await event.edit(f"`Diundang {invited} anggota`")
+    await event.edit(f"`Diundang {invited} anggota.`")
     await asyncio.sleep(20)
     await event.delete()
 

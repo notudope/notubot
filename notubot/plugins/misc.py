@@ -5,13 +5,12 @@
 # PLease read the GNU General Public License v3.0 in
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
-import io
 from random import randint
 from time import sleep
 
 from notubot import BOTLOG, BOTLOG_CHATID, CMD_HELP
 from notubot.events import bot_cmd
-from notubot.utils import time_formatter, parse_pre, yaml_format
+from notubot.utils import time_formatter
 
 
 @bot_cmd(outgoing=True, pattern="sleep ([0-9]+)$")
@@ -50,54 +49,6 @@ async def repeat(event):
     await event.edit(replyText)
 
 
-@bot_cmd(outgoing=True, pattern="(json|raw)$")
-async def json(event):
-    chat_id = event.chat_id or event.from_id
-
-    reply = await event.get_reply_message() if event.reply_to_msg_id else event
-    raw = reply.stringify()
-
-    if len(raw) > 4096:
-        try:
-            with io.BytesIO(str.encode(raw)) as file:
-                await event.client.send_file(
-                    chat_id,
-                    file,
-                    force_document=True,
-                    allow_cache=False,
-                    reply_to=event.id,
-                )
-        except Exception:
-            pass
-        await event.delete()
-    else:
-        await event.edit(raw, parse_mode=parse_pre)
-
-
-@bot_cmd(outgoing=True, pattern="(yaml|yml)$")
-async def yaml(event):
-    chat_id = event.chat_id or event.from_id
-
-    reply = await event.get_reply_message() if event.reply_to_msg_id else event
-    raw = yaml_format(reply)
-
-    if len(raw) > 4096:
-        try:
-            with io.BytesIO(str.encode(raw)) as file:
-                await event.client.send_file(
-                    chat_id,
-                    file,
-                    force_document=True,
-                    allow_cache=False,
-                    reply_to=event.id,
-                )
-        except Exception:
-            pass
-        await event.delete()
-    else:
-        await event.edit(raw, parse_mode=parse_pre)
-
-
 CMD_HELP.update(
     {
         "misc": [
@@ -107,12 +58,7 @@ CMD_HELP.update(
             ">`.random <item1> <item2> ... <itemN>`\n"
             "↳ : Mengambil item acak dari daftar item.\n\n"
             ">`.repeat <nomor> <teks>`\n"
-            "↳ : Mengulang teks untuk beberapa kali.\n\n"
-            ">`.json|raw`\n"
-            "↳ : Mengambil raw data format json dari sebuah pesan, \n"
-            "Balas pesan tersebut untuk menampilkannya!\n\n"
-            ">`.yaml|yml`\n"
-            "↳ : Mengambil raw data format yaml dari sebuah pesan",
+            "↳ : Mengulang teks untuk beberapa kali.",
         ]
     }
 )

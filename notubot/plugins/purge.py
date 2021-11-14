@@ -44,12 +44,12 @@ async def purge(event):
         ):
             await msg.delete()
             count += 1
-        procs = await event.client.send_message(
+        NotUBot = await event.client.send_message(
             event.chat_id,
             f"`Purged {count}`",
         )
         await asyncio.sleep(1)
-        await procs.delete()
+        await NotUBot.delete()
         return
 
     if not event.reply_to_msg_id:
@@ -63,9 +63,9 @@ async def purge(event):
     except Exception as e:
         LOGS.exception(e)
 
-    procs = await event.client.send_message(event.chat_id, "`purged`")
+    NotUBot = await event.client.send_message(event.chat_id, "`purged`")
     await asyncio.sleep(1)
-    await procs.delete()
+    await NotUBot.delete()
 
 
 @bot_cmd(outgoing=True, disable_errors=True, pattern="purgeme ?(.*)")
@@ -82,13 +82,13 @@ async def purgeme(event):
         async for m in event.client.iter_messages(event.chat_id, limit=num, from_user="me"):
             await m.delete()
             done += 1
-        procs = await event.client.send_message(
+        NotUBot = await event.client.send_message(
             event.chat_id,
             f"`Purged {done}`",
         )
         await asyncio.sleep(1)
         await event.delete()
-        await procs.delete()
+        await NotUBot.delete()
         return
 
     chat = await event.get_input_chat()
@@ -110,13 +110,13 @@ async def purgeme(event):
             msgs = []
     if msgs:
         await event.client.delete_messages(chat, msgs)
-    procs = await event.client.send_message(
+    NotUBot = await event.client.send_message(
         event.chat_id,
         f"`Purged {str(count)}`",
     )
     await asyncio.sleep(1)
     await event.delete()
-    await procs.delete()
+    await NotUBot.delete()
 
 
 @bot_cmd(outgoing=True, disable_errors=True, groups_only=True, pattern="purgeall$")
@@ -166,9 +166,9 @@ async def selfd(event):
     counter = int(event.text[4:6])
     text = str(event.text[6:])
     await event.delete()
-    procs = await event.client.send_message(event.chat_id, text)
+    NotUBot = await event.client.send_message(event.chat_id, text)
     await asyncio.sleep(counter)
-    await procs.delete()
+    await NotUBot.delete()
 
 
 CMD_HELP.update(
