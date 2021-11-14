@@ -7,7 +7,6 @@
 
 import asyncio
 
-from telethon.errors.rpcerrorlist import FloodWaitError
 from telethon.tl.functions.channels import EditBannedRequest, DeleteMessagesRequest
 from telethon.tl.types import ChannelParticipantCreator, ChannelParticipantAdmin, ChatBannedRights
 
@@ -42,22 +41,16 @@ async def rocker(event):
     async for x in event.client.iter_participants(event.chat_id):
         if x.id == me.id:
             pass
-        try:
-            if not (
-                isinstance(x.participant, ChannelParticipantAdmin)
-                or isinstance(x.participant, ChannelParticipantCreator)
-            ):
-                crying = await event.client(
-                    EditBannedRequest(event.chat_id, int(x.id), ChatBannedRights(until_date=None, view_messages=True))
-                )
-                if rockers is True and crying:
-                    if crying.updates[0].id is not None:
-                        await event.client(DeleteMessagesRequest(event.chat_id, [crying.updates[0].id]))
-        except BaseException:
-            pass
-        except FloodWaitError as e:
-            await asyncio.sleep(e.seconds + 10)
-        await asyncio.sleep(5)
+        if not (
+            isinstance(x.participant, ChannelParticipantAdmin) or isinstance(x.participant, ChannelParticipantCreator)
+        ):
+            crying = await event.client(
+                EditBannedRequest(event.chat_id, int(x.id), ChatBannedRights(until_date=None, view_messages=True))
+            )
+            if rockers is True and crying:
+                if crying.updates[0].id is not None:
+                    await event.client(DeleteMessagesRequest(event.chat_id, [crying.updates[0].id]))
+        await asyncio.sleep(2)
 
     if rockers is False:
         await event.edit("👏 Congratulations\nFrom now, you have no friends!")
@@ -79,20 +72,14 @@ async def gohell(event):
     async for x in event.client.iter_participants(event.chat_id):
         if x.id == me.id:
             pass
-        try:
-            if not (
-                isinstance(x.participant, ChannelParticipantAdmin)
-                or isinstance(x.participant, ChannelParticipantCreator)
-            ):
-                crying = await event.client(EditBannedRequest(event.chat_id, int(x.id), BANNED_RIGHTS))
-                if lucifer is True and crying:
-                    if crying.updates[0].id is not None:
-                        await event.client(DeleteMessagesRequest(event.chat_id, [crying.updates[0].id]))
-        except BaseException:
-            pass
-        except FloodWaitError as e:
-            await asyncio.sleep(e.seconds + 10)
-        await asyncio.sleep(5)
+        if not (
+            isinstance(x.participant, ChannelParticipantAdmin) or isinstance(x.participant, ChannelParticipantCreator)
+        ):
+            crying = await event.client(EditBannedRequest(event.chat_id, int(x.id), BANNED_RIGHTS))
+            if lucifer is True and crying:
+                if crying.updates[0].id is not None:
+                    await event.client(DeleteMessagesRequest(event.chat_id, [crying.updates[0].id]))
+        await asyncio.sleep(2)
 
     if lucifer is False:
         await event.edit("You're Lucifer 👁️")

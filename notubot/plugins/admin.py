@@ -612,7 +612,7 @@ async def allunban(event):
     await event.edit("`Berhasil unbanned semua daftar blokir.`")
 
 
-@bot_cmd(groups_only=True, admins_only=True, disable_errors=True, pattern="all ?(.*)")
+@bot_cmd(groups_only=True, admins_only=True, pattern="all ?(.*)")
 async def all(event):
     text = (event.pattern_match.group(1)).strip()
     users = []
@@ -630,20 +630,13 @@ async def all(event):
             if isinstance(user.participant, ChannelParticipantCreator):
                 users.append(f"🤴 [{get_display_name(user)}](tg://user?id={user.id})")
 
-    mentions = list(user_list(users, 6))
-    for mention in mentions:
-        try:
-            mention = " | ".join(map(str, mention))
-            if text:
-                mention = f"{text}\n{mention}"
-            if event.reply_to_msg_id:
-                await event.client.send_message(event.chat_id, mention, reply_to=event.message.reply_to_msg_id)
-            else:
-                await event.client.send_message(event.chat_id, mention)
-            limit += 6
-            await sleep(5)
-        except BaseException:
-            pass
+    for mention in list(user_list(users, 6)):
+        mention = " | ".join(map(str, mention))
+        if text:
+            mention = f"{text}\n{mention}"
+        await event.client.send_message(event.chat_id, mention, reply_to=event.id)
+        limit += 6
+        await sleep(5)
 
     await event.delete()
 
