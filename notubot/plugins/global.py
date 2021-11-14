@@ -127,7 +127,8 @@ async def ungban(event):
     if event.reply_to_msg_id:
         userid = (await event.get_reply_message()).sender_id
     elif event.pattern_match.group(1):
-        userid = await get_user_id(event, event.pattern_match.group(1))
+        usr = event.pattern_match.group(1)
+        userid = await get_user_id(event, usr)
     elif event.is_private:
         userid = (await event.get_chat()).id
     else:
@@ -207,7 +208,8 @@ async def gkick(event):
     if event.reply_to_msg_id:
         userid = (await event.get_reply_message()).sender_id
     elif event.pattern_match.group(1):
-        userid = await get_user_id(event, event.pattern_match.group(1))
+        usr = event.pattern_match.group(1)
+        userid = await get_user_id(event, usr)
     elif event.is_private:
         userid = (await event.get_chat()).id
     else:
@@ -248,7 +250,8 @@ async def gmuter(event):
     if event.reply_to_msg_id:
         userid = (await event.get_reply_message()).sender_id
     elif event.pattern_match.group(1):
-        userid = await get_user_id(event, event.pattern_match.group(1))
+        usr = event.pattern_match.group(1)
+        userid = await get_user_id(event, usr)
     elif event.is_private:
         userid = (await event.get_chat()).id
     else:
@@ -293,7 +296,8 @@ async def ungmuter(event):
     if event.reply_to_msg_id:
         userid = (await event.get_reply_message()).sender_id
     elif event.pattern_match.group(1):
-        userid = await get_user_id(event, event.pattern_match.group(1))
+        usr = event.pattern_match.group(1)
+        userid = await get_user_id(event, usr)
     elif event.is_private:
         userid = (await event.get_chat()).id
     else:
