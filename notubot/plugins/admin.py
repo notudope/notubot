@@ -138,7 +138,7 @@ async def promote(event):
     await event.get_chat()
     user, rank = await get_uinfo(event)
     rank = rank or "Admin"
-    if not user:
+    if user is None:
         return await NotUBot.edit(REQ_ID)
 
     try:
@@ -175,7 +175,7 @@ async def demote(event):
     await event.get_chat()
     user, rank = await get_uinfo(event)
     rank = rank or "Not Admin"
-    if not user:
+    if user is None:
         return await NotUBot.edit(REQ_ID)
 
     try:
@@ -209,7 +209,7 @@ async def fpromote(event):
     await event.get_chat()
     user, rank = await get_uinfo(event)
     rank = rank or "CoFounder"
-    if not user:
+    if user is None:
         return await NotUBot.edit(REQ_ID)
 
     try:
@@ -245,7 +245,7 @@ async def kick(event):
     NotUBot = await event.edit("`Kicking...`")
     await event.get_chat()
     user, reason = await get_uinfo(event)
-    if not user:
+    if user is None:
         return await NotUBot.edit(REQ_ID)
 
     if user.id == (await event.client.get_me()).id:
@@ -274,7 +274,7 @@ async def ban(event):
     NotUBot = await event.edit("`Banning...`")
     await event.get_chat()
     user, reason = await get_uinfo(event)
-    if not user:
+    if user is None:
         return await NotUBot.edit(REQ_ID)
 
     if user.id == (await event.client.get_me()).id:
@@ -302,7 +302,7 @@ async def unban(event):
     NotUBot = await event.edit("`Unbanning...`")
     await event.get_chat()
     user, reason = await get_uinfo(event)
-    if not user:
+    if user is None:
         return await NotUBot.edit(REQ_ID)
 
     try:
@@ -325,7 +325,7 @@ async def muter(event):
     NotUBot = await event.edit("`Muting...`")
     await event.get_chat()
     user, reason = await get_uinfo(event)
-    if not user:
+    if user is None:
         return await NotUBot.edit(REQ_ID)
 
     if user.id == (await event.client.get_me()).id:
@@ -357,7 +357,7 @@ async def unmuter(event):
     NotUBot = await event.edit("`Unmuting...`")
     await event.get_chat()
     user, reason = await get_uinfo(event)
-    if not user:
+    if user is None:
         return await NotUBot.edit(REQ_ID)
 
     if not is_muted(user.id, event.chat_id):
