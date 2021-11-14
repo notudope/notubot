@@ -5,8 +5,8 @@
 # PLease read the GNU General Public License v3.0 in
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
-import io
 import time
+from io import BytesIO
 
 from telethon.errors import ChatAdminRequiredError
 from telethon.events import NewMessage
@@ -27,7 +27,7 @@ from notubot.events import bot_cmd
 from notubot.utils import parse_pre, yaml_format
 
 
-@bot_cmd(outgoing=True, pattern="id$")
+@bot_cmd(pattern="id$")
 async def id(event):
     if event.reply_to_msg_id:
         reply = await event.get_reply_message()
@@ -45,7 +45,7 @@ async def id(event):
         await event.edit("{}`{}`".format(text, str(event.chat_id)))
 
 
-@bot_cmd(outgoing=True, groups_only=True, pattern="(getlink|link)$")
+@bot_cmd(groups_only=True, pattern="(getlink|link)$")
 async def getlink(event):
     chat = await event.get_chat()
     if chat.username:
@@ -70,7 +70,7 @@ async def getlink(event):
     await event.edit(f"Link:- {link}")
 
 
-@bot_cmd(outgoing=True, pattern="kickme$")
+@bot_cmd(pattern="kickme$")
 async def kickme(event):
     me = await event.client.get_me()
     mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
@@ -78,7 +78,7 @@ async def kickme(event):
     await event.client(LeaveChannelRequest(event.chat_id))
 
 
-@bot_cmd(outgoing=True, groups_only=True, pattern="invite ?(.*)")
+@bot_cmd(groups_only=True, pattern="invite ?(.*)")
 async def invite(event):
     NotUBot = await event.edit("`...`")
     match = event.pattern_match.group(1)
@@ -181,7 +181,7 @@ async def stats(
     await NotUBot.edit(res)
 
 
-@bot_cmd(outgoing=True, pattern="total ?(.*)")
+@bot_cmd(pattern="total ?(.*)")
 async def total(event):
     match = event.pattern_match.group(1).strip()
     await event.edit("`...`")
@@ -198,7 +198,7 @@ async def total(event):
     await event.edit(f"Total pesan dari `{get_display_name(user)}` [`{a.total}`]")
 
 
-@bot_cmd(outgoing=True, pattern="(json|raw)$")
+@bot_cmd(pattern="(json|raw)$")
 async def json(event):
     chat_id = event.chat_id or event.from_id
 
@@ -207,7 +207,8 @@ async def json(event):
 
     if len(raw) > 4096:
         try:
-            with io.BytesIO(str.encode(raw)) as file:
+            with BytesIO(str.encode(raw)) as file:
+                file.name = "raw_data.txt"
                 await event.client.send_file(
                     chat_id,
                     file,
@@ -222,7 +223,7 @@ async def json(event):
         await event.edit(raw, parse_mode=parse_pre)
 
 
-@bot_cmd(outgoing=True, pattern="(yaml|yml)$")
+@bot_cmd(pattern="(yaml|yml)$")
 async def yaml(event):
     chat_id = event.chat_id or event.from_id
 
@@ -231,7 +232,8 @@ async def yaml(event):
 
     if len(raw) > 4096:
         try:
-            with io.BytesIO(str.encode(raw)) as file:
+            with BytesIO(str.encode(raw)) as file:
+                file.name = "raw_data.yaml"
                 await event.client.send_file(
                     chat_id,
                     file,

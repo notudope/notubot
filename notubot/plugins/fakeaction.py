@@ -12,7 +12,6 @@ from notubot.events import bot_cmd
 
 
 @bot_cmd(
-    outgoing=True,
     disable_errors=True,
     pattern="f(typing|audio|contact|document|game|location|photo|round|video) ?(.*)",
 )

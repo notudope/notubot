@@ -18,7 +18,7 @@ from notubot import (
 from notubot.events import bot_cmd
 
 
-@bot_cmd(outgoing=True, pattern="help ?(.*)")
+@bot_cmd(pattern="help ?(.*)")
 async def help(event):
     args = event.pattern_match.group(1).lower()
     me = await event.client.get_entity("me")

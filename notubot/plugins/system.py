@@ -31,7 +31,7 @@ from notubot.events import bot_cmd
 from notubot.utils import time_formatter, restart, run_cmd
 
 
-@bot_cmd(outgoing=True, pattern="(alive|on)$")
+@bot_cmd(pattern="(alive|on)$")
 async def aliveon(event):
     # [Instagram]({IG_ALIVE})
     me = await event.client.get_me()
@@ -79,7 +79,7 @@ async def aliveon(event):
         await event.delete()
 
 
-@bot_cmd(outgoing=True, pattern="restart$")
+@bot_cmd(pattern="restart$")
 async def restartbot(event):
     await event.edit("`Restarting {} ...`".format(__botname__))
 
@@ -102,7 +102,7 @@ async def restartbot(event):
     os.execl(sys.executable, sys.executable, "-m", "notubot")
 
 
-@bot_cmd(outgoing=True, pattern="shutdown$")
+@bot_cmd(pattern="shutdown$")
 async def shutdown(event):
     await event.edit("`Shutting down {} ...`".format(__botname__))
 
@@ -112,7 +112,7 @@ async def shutdown(event):
     await event.client.disconnect()
 
 
-@bot_cmd(outgoing=True, pattern="botver$")
+@bot_cmd(pattern="botver$")
 async def botver(event):
     if which("git") is None:
         return await event.delete()
@@ -142,7 +142,7 @@ async def botver(event):
     await event.edit("`Version: " f"{verout}" "` \n" "`Revision: " f"{revout}" "`")
 
 
-@bot_cmd(outgoing=True, pattern="sysd$")
+@bot_cmd(pattern="sysd$")
 async def sysd(event):
     try:
         neofetch = await asyncio.create_subprocess_exec(
@@ -159,7 +159,7 @@ async def sysd(event):
         await event.edit("`neofetch tidak terinstall!`")
 
 
-@bot_cmd(outgoing=True, disable_errors=True, pattern="ping$")
+@bot_cmd(disable_errors=True, pattern="ping$")
 async def ping(event):
     if event.out:
         await event.delete()

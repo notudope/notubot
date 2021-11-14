@@ -7,9 +7,9 @@
 
 import asyncio
 import inspect
-import io
 import re
 from datetime import datetime
+from io import BytesIO
 from pathlib import Path
 from platform import python_version
 from sys import exc_info
@@ -67,6 +67,7 @@ def bot_cmd(**args):
     trigger_on_fwd: bool = args.get("trigger_on_fwd", False)
     disable_errors: bool = args.get("disable_errors", False)
     insecure: bool = args.get("insecure", False)
+    # allow_sudo: bool = args.get("allow_sudo", False)
 
     if pattern:
         args["pattern"] = compile_pattern(pattern, "\\" + HANDLER)
@@ -94,23 +95,17 @@ def bot_cmd(**args):
         except BaseException:
             pass
 
-    if "disable_edited" in args:
-        del args["disable_edited"]
-
-    if "groups_only" in args:
-        del args["groups_only"]
-
-    if "admins_only" in args:
-        del args["admins_only"]
-
-    if "disable_errors" in args:
-        del args["disable_errors"]
-
-    if "trigger_on_fwd" in args:
-        del args["trigger_on_fwd"]
-
-    if "insecure" in args:
-        del args["insecure"]
+    for i in [
+        "admins_only",
+        "groups_only",
+        "disable_edited",
+        "trigger_on_fwd",
+        "disable_errors",
+        "insecure",
+        "allow_sudo",
+    ]:
+        if i in args:
+            del args[i]
 
     def decorator(func):
         async def wrapper(event):
@@ -217,7 +212,8 @@ def bot_cmd(**args):
                     if BOTLOG:
                         await event.respond("`NOTUBOT-UserBot ERROR! Catatan disimpan pada BOTLOG.`")
                     try:
-                        with io.BytesIO(str.encode(ftext)) as file:
+                        with BytesIO(ftext.encode) as file:
+                            file.name = "notubot.log"
                             await event.client.send_file(
                                 send_to,
                                 file,
@@ -230,9 +226,11 @@ def bot_cmd(**args):
             else:
                 pass
 
+        args["outgoing"] = True
         if not disable_edited:
             bot.add_event_handler(wrapper, events.MessageEdited(**args))
         bot.add_event_handler(wrapper, events.NewMessage(**args))
+        del args["outgoing"]
         return wrapper
 
     return decorator

@@ -6,7 +6,7 @@
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
 import asyncio
-import os
+from io import BytesIO
 
 from telethon.tl.functions.channels import EditBannedRequest
 from telethon.tl.functions.contacts import BlockRequest, UnblockRequest
@@ -57,7 +57,7 @@ async def get_user_id(id):
     return userid
 
 
-@bot_cmd(outgoing=True, pattern="gban ?(.*)")
+@bot_cmd(pattern="gban ?(.*)")
 async def gban(event):
     NotUBot = await event.edit("`Gbanning...`")
     await event.get_chat()
@@ -127,7 +127,7 @@ async def gban(event):
     await NotUBot.edit(text)
 
 
-@bot_cmd(outgoing=True, pattern="ungban ?(.*)")
+@bot_cmd(pattern="ungban ?(.*)")
 async def ungban(event):
     NotUBot = await event.edit("`UnGbanning...`")
     await event.get_chat()
@@ -173,8 +173,9 @@ async def ungban(event):
     await NotUBot.edit(text)
 
 
-@bot_cmd(outgoing=True, pattern="listgban$")
+@bot_cmd(pattern="listgban$")
 async def listgban(event):
+    chat_id = event.chat_id or event.from_id
     me = await event.client.get_me()
     mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
     msg = f"<strong>GBanned by {get_display_name(me)}</strong>:\n\n"
@@ -185,29 +186,35 @@ async def listgban(event):
             msg += f"<strong>User</strong>: <a href=tg://user?id={user.user_id}>{name}</a>\n"
             msg += f"<strong>Reason</strong>: {user.reason}\n\n"
     else:
-        msg = "No Gbanned !!"
+        msg = "No Gbanned"
 
     if len(msg) > 4096:
-        with open("gbanned.txt", "w") as f:
-            f.write(
-                gbanned_users.replace("<strong>", "")
-                .replace("</strong>", "")
-                .replace("<a href=tg://user?id=", "")
-                .replace("</a>", "")
-            )
-
-        await event.reply(
-            file="gbanned.txt",
-            message=f"GBanned by {mention}",
-        )
-
-        os.remove("gbanned.txt")
+        try:
+            with BytesIO(
+                str.encode(
+                    msg.replace("<strong>", "")
+                    .replace("</strong>", "")
+                    .replace("<a href=tg://user?id=", "")
+                    .replace("</a>", "")
+                )
+            ) as file:
+                file.name = "gbanned.txt"
+                await event.client.send_file(
+                    chat_id,
+                    file,
+                    force_document=True,
+                    allow_cache=False,
+                    reply_to=event.id,
+                    caption=f"GBanned by {mention}",
+                )
+        except Exception:
+            pass
         await event.delete()
     else:
         await event.edit(msg, parse_mode="html")
 
 
-@bot_cmd(outgoing=True, pattern="gkick ?(.*)")
+@bot_cmd(pattern="gkick ?(.*)")
 async def gkick(event):
     NotUBot = await event.edit("`Gkicking...`")
     await event.get_chat()
@@ -249,7 +256,7 @@ async def gkick(event):
     await NotUBot.edit(text)
 
 
-@bot_cmd(outgoing=True, pattern="gmute ?(.*)")
+@bot_cmd(pattern="gmute ?(.*)")
 async def gmuter(event):
     NotUBot = await event.edit("`Gmuting...`")
     await event.get_chat()
@@ -295,7 +302,7 @@ async def gmuter(event):
     await NotUBot.edit(text)
 
 
-@bot_cmd(outgoing=True, pattern="ungmute ?(.*)")
+@bot_cmd(pattern="ungmute ?(.*)")
 async def ungmuter(event):
     NotUBot = await event.edit("`UnGmuting...`")
     await event.get_chat()
@@ -337,7 +344,7 @@ async def ungmuter(event):
     await NotUBot.edit(text)
 
 
-@bot_cmd(outgoing=True, pattern="gcast ?(.*)")
+@bot_cmd(pattern="gcast ?(.*)")
 async def gcast(event):
     match = event.pattern_match.group(1)
     if match:
@@ -367,7 +374,7 @@ async def gcast(event):
     )
 
 
-@bot_cmd(outgoing=True, pattern="gucast ?(.*)")
+@bot_cmd(pattern="gucast ?(.*)")
 async def gucast(event):
     match = event.pattern_match.group(1)
     if match:
@@ -395,7 +402,7 @@ async def gucast(event):
     )
 
 
-@bot_cmd(outgoing=True, pattern="gsend ?(.*)")
+@bot_cmd(pattern="gsend ?(.*)")
 async def gsend(event):
     opts = event.pattern_match.group(1)
     args = opts.split(" ")

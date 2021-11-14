@@ -63,7 +63,7 @@ async def get_chatinfo(event):
     return chat_info
 
 
-@bot_cmd(outgoing=True, groups_only=True, pattern="inviteall ?(.*)")
+@bot_cmd(groups_only=True, pattern="inviteall ?(.*)")
 async def inviteall(event):
     sender = await event.get_sender()
     me = await event.client.get_me()
@@ -123,7 +123,7 @@ async def inviteall(event):
     )
 
 
-@bot_cmd(outgoing=True, groups_only=True, pattern="getmemb$")
+@bot_cmd(groups_only=True, pattern="getmemb$")
 async def getmemb(event):
     await event.edit("`...`")
     members = await event.client.get_participants(event.chat_id, aggressive=True)
@@ -137,7 +137,7 @@ async def getmemb(event):
     await event.delete()
 
 
-@bot_cmd(outgoing=True, groups_only=True, pattern="addmemb$")
+@bot_cmd(groups_only=True, pattern="addmemb$")
 async def addmemb(event):
     await event.edit("`Proses menambahkan 0 member...`")
     chat = await event.get_chat()
@@ -175,7 +175,7 @@ async def addmemb(event):
             continue
 
 
-@bot_cmd(outgoing=True, disable_errors=True, pattern="limit$")
+@bot_cmd(disable_errors=True, pattern="limit$")
 async def limit(event):
     await event.edit("`...`")
     async with event.client.conversation("@SpamBot") as cov:

@@ -132,7 +132,7 @@ async def get_uinfo(event):
     return user, data
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="promote ?(.*)")
+@bot_cmd(groups_only=True, admins_only=True, pattern="promote ?(.*)")
 async def promote(event):
     NotUBot = await event.edit("`Promoting...`")
     await event.get_chat()
@@ -169,7 +169,7 @@ async def promote(event):
     await NotUBot.edit("`promoted`")
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="demote ?(.*)")
+@bot_cmd(groups_only=True, admins_only=True, pattern="demote ?(.*)")
 async def demote(event):
     NotUBot = await event.edit("`Demoting...`")
     await event.get_chat()
@@ -203,7 +203,7 @@ async def demote(event):
     await NotUBot.edit("`demoted`")
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="(fpromote|fullpromote) ?(.*)")
+@bot_cmd(groups_only=True, admins_only=True, pattern="(fpromote|fullpromote) ?(.*)")
 async def fpromote(event):
     NotUBot = await event.edit("`Promoting...`")
     await event.get_chat()
@@ -240,7 +240,7 @@ async def fpromote(event):
     await NotUBot.edit("`promoted`")
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="kick ?(.*)")
+@bot_cmd(groups_only=True, admins_only=True, pattern="kick ?(.*)")
 async def kick(event):
     NotUBot = await event.edit("`Kicking...`")
     await event.get_chat()
@@ -269,7 +269,7 @@ async def kick(event):
     await NotUBot.edit("`kicked`")
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="ban ?(.*)")
+@bot_cmd(groups_only=True, admins_only=True, pattern="ban ?(.*)")
 async def ban(event):
     NotUBot = await event.edit("`Banning...`")
     await event.get_chat()
@@ -297,7 +297,7 @@ async def ban(event):
     await NotUBot.edit("`banned`")
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="unban ?(.*)")
+@bot_cmd(groups_only=True, admins_only=True, pattern="unban ?(.*)")
 async def unban(event):
     NotUBot = await event.edit("`Unbanning...`")
     await event.get_chat()
@@ -320,7 +320,7 @@ async def unban(event):
     await NotUBot.edit("`unbanned`")
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="mute ?(.*)")
+@bot_cmd(groups_only=True, admins_only=True, pattern="mute ?(.*)")
 async def muter(event):
     NotUBot = await event.edit("`Muting...`")
     await event.get_chat()
@@ -352,7 +352,7 @@ async def muter(event):
     await NotUBot.edit("`muted`")
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="unmute ?(.*)")
+@bot_cmd(groups_only=True, admins_only=True, pattern="unmute ?(.*)")
 async def unmuter(event):
     NotUBot = await event.edit("`Unmuting...`")
     await event.get_chat()
@@ -380,7 +380,7 @@ async def unmuter(event):
     await NotUBot.edit("`unmuted`")
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="lock$")
+@bot_cmd(groups_only=True, admins_only=True, pattern="lock$")
 async def lock(event):
     NotUBot = await event.edit("`Locking...`")
     try:
@@ -393,7 +393,7 @@ async def lock(event):
     await NotUBot.edit("`locked`")
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="unlock$")
+@bot_cmd(groups_only=True, admins_only=True, pattern="unlock$")
 async def unlock(event):
     NotUBot = await event.edit("`Unlocking...`")
     try:
@@ -406,7 +406,7 @@ async def unlock(event):
     await NotUBot.edit("`unlocked`")
 
 
-@bot_cmd(outgoing=True, pattern="pin$")
+@bot_cmd(pattern="pin$")
 async def pin(event):
     if not event.is_reply:
         return await event.edit("`Balas pesan tersebut!`")
@@ -422,7 +422,7 @@ async def pin(event):
     await event.delete()
 
 
-@bot_cmd(outgoing=True, pattern="unpin($| (.*))")
+@bot_cmd(pattern="unpin($| (.*))")
 async def unpin(event):
     NotUBot = await event.edit("`...`")
     match = (event.pattern_match.group(1)).strip()
@@ -442,7 +442,7 @@ async def unpin(event):
     await NotUBot.delete()
 
 
-@bot_cmd(outgoing=True, pattern="listpinned$")
+@bot_cmd(pattern="listpinned$")
 async def get_all_pinned(event):
     NotUBot = await event.edit("`...`")
     chat_id = (str(event.chat_id)).replace("-100", "")
@@ -470,7 +470,7 @@ async def get_all_pinned(event):
     await NotUBot.edit(m + a, parse_mode="html")
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="autodelete ?(.*)")
+@bot_cmd(groups_only=True, admins_only=True, pattern="autodelete ?(.*)")
 async def autodelte(event):
     match = event.pattern_match.group(1)
     if not match or match not in ["24h", "7d", "1m", "off"]:
@@ -493,7 +493,7 @@ async def autodelte(event):
     await event.edit(f"Auto Delete `{match}`")
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern="(setgpic|setpic)$")
+@bot_cmd(groups_only=True, admins_only=True, disable_errors=True, pattern="(setgpic|setpic)$")
 async def set_group_photo(event):
     NotUBot = await event.edit("`...`")
     reply = await event.get_reply_message()
@@ -517,12 +517,12 @@ async def set_group_photo(event):
             await NotUBot.edit("`Gagal memproses gambar.`")
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="(zombies|delusers) ?(.*)")
+@bot_cmd(groups_only=True, admins_only=True, pattern="(zombies|delusers) ?(.*)")
 async def zombies(event):
     match = event.pattern_match.group(1).lower()
     deleted_user = 0
     status = "`Tidak ada akun terhapus.`"
-
+    await event.get_chat()
     if match != "clean":
         await event.edit("`Mencari akun terhapus...`")
 
@@ -570,8 +570,9 @@ async def zombies(event):
     await event.edit(status)
 
 
-@bot_cmd(outgoing=True, groups_only=True, disable_errors=True, pattern="(staff|adminlist)$")
+@bot_cmd(groups_only=True, disable_errors=True, pattern="(staff|adminlist)$")
 async def get_admin(event):
+    await event.get_chat()
     info = await event.client.get_entity(event.chat_id)
     title = info.title if info.title else "Grup"
     mentions = f"<b>Admin {title}:</b> \n"
@@ -587,11 +588,11 @@ async def get_admin(event):
     await event.edit(mentions, parse_mode="html")
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="(allunban|unbanall)$")
+@bot_cmd(groups_only=True, admins_only=True, pattern="(allunban|unbanall)$")
 async def allunban(event):
     await event.edit("`...`")
     success = 0
-
+    await event.get_chat()
     async for user in event.client.iter_participants(
         event.chat_id,
         filter=ChannelParticipantsKicked,
@@ -607,12 +608,12 @@ async def allunban(event):
     await event.edit("`Berhasil unbanned semua daftar blokir.`")
 
 
-@bot_cmd(outgoing=True, groups_only=True, admins_only=True, disable_errors=True, pattern="all ?(.*)")
+@bot_cmd(groups_only=True, admins_only=True, disable_errors=True, pattern="all ?(.*)")
 async def all(event):
     text = (event.pattern_match.group(1)).strip()
     users = []
     limit = 0
-
+    await event.get_chat()
     async for user in event.client.iter_participants(event.chat_id):
         if not (user.bot or user.deleted):
             if not (
@@ -644,7 +645,6 @@ async def all(event):
 
 
 @bot_cmd(
-    outgoing=True,
     pattern="rmusers ?(.*)",
     groups_only=True,
     admins_only=True,

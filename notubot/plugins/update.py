@@ -6,9 +6,9 @@
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
 import asyncio
-import io
 import os
 import sys
+from io import BytesIO
 from pathlib import Path
 
 import heroku3
@@ -61,7 +61,8 @@ async def print_changelogs(event, ac_br, changelog):
     if len(changelog_str) > 4096:
         await event.edit("`Data CHANGELOG terlalu besar, buka file untuk melihatnya.`")
         try:
-            with io.BytesIO(str.encode(changelog_str)) as file:
+            with BytesIO(str.encode(changelog_str)) as file:
+                file.name = "changelog.txt"
                 await event.client.send_file(
                     chat_id,
                     file,
@@ -174,7 +175,7 @@ async def update(event, repo, ups_rem, ac_br):
     return
 
 
-@bot_cmd(outgoing=True, pattern="update(?: |$)(now|deploy|pull|push|one|all)?")
+@bot_cmd(pattern="update(?: |$)(now|deploy|pull|push|one|all)?")
 async def upstream(event):
     opts = event.pattern_match.group(1)
     off_repo = UPSTREAM_REPO_URL
@@ -258,7 +259,7 @@ async def upstream(event):
         await update(event, repo, ups_rem, ac_br)
 
 
-@bot_cmd(outgoing=True, pattern="repo$")
+@bot_cmd(pattern="repo$")
 async def repo(event):
     await event.edit(
         f"""**{__botname__}**

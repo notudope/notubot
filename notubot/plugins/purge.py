@@ -13,7 +13,7 @@ from notubot import CMD_HELP, LOGS
 from notubot.events import bot_cmd
 
 
-@bot_cmd(outgoing=True, disable_errors=True, pattern="del|(d|D|del|Del)$")
+@bot_cmd(disable_errors=True, pattern="del|(d|D|del|Del)$")
 async def delete(event):
     reply = await event.get_reply_message()
     if reply:
@@ -24,7 +24,7 @@ async def delete(event):
     await event.delete()
 
 
-@bot_cmd(outgoing=True, disable_errors=True, pattern="purge ?(.*)")
+@bot_cmd(disable_errors=True, pattern="purge ?(.*)")
 async def purge(event):
     match = event.pattern_match.group(1)
     try:
@@ -68,7 +68,7 @@ async def purge(event):
     await NotUBot.delete()
 
 
-@bot_cmd(outgoing=True, disable_errors=True, pattern="purgeme ?(.*)")
+@bot_cmd(disable_errors=True, pattern="purgeme ?(.*)")
 async def purgeme(event):
     opts = event.pattern_match.group(1)
     if opts and not event.is_reply:
@@ -119,7 +119,7 @@ async def purgeme(event):
     await NotUBot.delete()
 
 
-@bot_cmd(outgoing=True, disable_errors=True, groups_only=True, pattern="purgeall$")
+@bot_cmd(disable_errors=True, groups_only=True, pattern="purgeall$")
 async def purgeall(event):
     if not event.is_reply:
         await event.edit("`Balas pesan seseorang untuk menghapusnya.`")
@@ -136,7 +136,7 @@ async def purgeall(event):
     await event.delete()
 
 
-@bot_cmd(outgoing=True, disable_errors=True, pattern="copy$")
+@bot_cmd(disable_errors=True, pattern="copy$")
 async def copy(event):
     reply = await event.get_reply_message()
     if reply:
@@ -147,7 +147,7 @@ async def copy(event):
     await event.delete()
 
 
-@bot_cmd(outgoing=True, disable_errors=True, pattern="edit")
+@bot_cmd(disable_errors=True, pattern="edit")
 async def edit(event):
     chat = await event.get_input_chat()
     me = await event.client.get_peer_id("me")
@@ -161,7 +161,7 @@ async def edit(event):
         index = index + 1
 
 
-@bot_cmd(outgoing=True, disable_errors=True, pattern="sd")
+@bot_cmd(disable_errors=True, pattern="sd")
 async def selfd(event):
     counter = int(event.text[4:6])
     text = str(event.text[6:])
