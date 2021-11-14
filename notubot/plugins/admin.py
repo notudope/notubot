@@ -122,9 +122,13 @@ async def get_uinfo(event):
                 usr = int(usr)
 
             try:
-                user = await event.client.get_entity(usr)
+                user = (await event.client.get_entity(usr)).id
             except BaseException:
-                pass
+                if usr.isnumeric():
+                    user.id = usr
+                    user.first_name = usr
+                else:
+                    pass
 
             if len(ok) == 2:
                 data = ok[1]
