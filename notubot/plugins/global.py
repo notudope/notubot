@@ -10,7 +10,7 @@ import os
 
 from telethon.tl.functions.channels import EditBannedRequest
 from telethon.tl.functions.contacts import BlockRequest, UnblockRequest
-from telethon.tl.types import ChatBannedRights, PeerUser
+from telethon.tl.types import ChatBannedRights
 from telethon.utils import get_display_name
 
 from notubot import (
@@ -53,7 +53,7 @@ async def get_user_id(event, id):
         else:
             userid = int(id)
     else:
-        userid = (await event.client.get_entity(PeerUser(id))).id
+        userid = (await event.client.get_entity(id)).id
     return userid
 
 
