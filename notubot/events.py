@@ -179,7 +179,7 @@ def bot_cmd(**args):
                     date = (datetime.now()).strftime("%m/%d/%Y, %H:%M:%S")
                     title = get_display_name(event.chat)
                     text = "**NOTUBOT ERROR REPORT**\n"
-                    text += "Laporkan kesalahan **teruskan pesan ini ke** @NOTUBOTS"
+                    text += "**Teruskan pesan ini ke** @NOTUBOTS"
                     ftext = "NOTUBOT ERROR REPORT: Laporkan ini ke @NOTUBOTS\n\n"
 
                     ftext += "--------START NOTUBOT CRASH LOG--------\n"
