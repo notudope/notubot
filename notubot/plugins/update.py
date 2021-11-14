@@ -24,6 +24,7 @@ from notubot import (
     UPSTREAM_REPO_BRANCH,
     UPSTREAM_REPO_URL,
     __botname__,
+    HANDLER,
 )
 from notubot.events import bot_cmd
 
@@ -196,7 +197,7 @@ async def upstream(event):
                 f"`Direktori {e} "
                 "sepertinya bukan repositori git.\n"
                 "Tapi bisa memperbaiki dengan memperbarui paksa UserBot menggunakan "
-                ".update now|pull|one.`"
+                "{HANDLER}update now|pull|one.`"
             )
 
         repo = Repo.init()
@@ -238,8 +239,8 @@ async def upstream(event):
     if opts is None and force_update is False:
         await print_changelogs(event, ac_br, changelog)
         await event.delete()
-        await event.respond("Jalankan `.update now|pull|one` untuk __memperbarui sementara__.")
-        await event.respond("Jalankan `.update deploy|push|all` untuk __memperbarui permanen__.")
+        await event.respond(f"Jalankan `{HANDLER}update now|pull|one` untuk __memperbarui sementara__.")
+        await event.respond(f"Jalankan `{HANDLER}update deploy|push|all` untuk __memperbarui permanen__.")
         return
 
     if force_update:
