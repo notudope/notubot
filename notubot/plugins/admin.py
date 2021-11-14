@@ -44,6 +44,7 @@ from notubot import (
     DEVLIST,
     bot,
     HANDLER,
+    LOGS,
 )
 from notubot.events import bot_cmd
 from notubot.plugins.sql_helper.mute_sql import is_muted, mute, unmute
@@ -125,6 +126,7 @@ async def get_uinfo(event):
 
             try:
                 user = await event.client.get_entity(PeerUser(usr))
+                LOGS.info(user)
             except BaseException:
                 pass
 
