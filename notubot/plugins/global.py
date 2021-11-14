@@ -44,8 +44,8 @@ UNBAN_RIGHTS = ChatBannedRights(
 )
 
 
-async def get_user_id(ids):
-    return int(ids) if str(ids).isdigit() else (await bot.get_entity(PeerUser(ids))).id
+async def get_user_id(event, id):
+    return int(id) if str(id).isdigit() else (await event.client.get_entity(PeerUser(id))).id
 
 
 @bot_cmd(outgoing=True, pattern="gban ?(.*)")
@@ -63,7 +63,7 @@ async def gban(event):
             reason = ""
     elif event.pattern_match.group(1):
         usr = event.text.split(" ", maxsplit=2)[1]
-        userid = await get_user_id(usr)
+        userid = await get_user_id(event, usr)
         try:
             reason = event.text.split(" ", maxsplit=2)[2]
         except IndexError:
@@ -127,7 +127,7 @@ async def ungban(event):
     if event.reply_to_msg_id:
         userid = (await event.get_reply_message()).sender_id
     elif event.pattern_match.group(1):
-        userid = await get_user_id(event.pattern_match.group(1))
+        userid = await get_user_id(event, event.pattern_match.group(1))
     elif event.is_private:
         userid = (await event.get_chat()).id
     else:
@@ -207,7 +207,7 @@ async def gkick(event):
     if event.reply_to_msg_id:
         userid = (await event.get_reply_message()).sender_id
     elif event.pattern_match.group(1):
-        userid = await get_user_id(event.pattern_match.group(1))
+        userid = await get_user_id(event, event.pattern_match.group(1))
     elif event.is_private:
         userid = (await event.get_chat()).id
     else:
@@ -248,7 +248,7 @@ async def gmuter(event):
     if event.reply_to_msg_id:
         userid = (await event.get_reply_message()).sender_id
     elif event.pattern_match.group(1):
-        userid = await get_user_id(event.pattern_match.group(1))
+        userid = await get_user_id(event, event.pattern_match.group(1))
     elif event.is_private:
         userid = (await event.get_chat()).id
     else:
@@ -293,7 +293,7 @@ async def ungmuter(event):
     if event.reply_to_msg_id:
         userid = (await event.get_reply_message()).sender_id
     elif event.pattern_match.group(1):
-        userid = await get_user_id(event.pattern_match.group(1))
+        userid = await get_user_id(event, event.pattern_match.group(1))
     elif event.is_private:
         userid = (await event.get_chat()).id
     else:

@@ -121,10 +121,10 @@ async def get_uinfo(event):
         ok = event.pattern_match.group(1).split(maxsplit=1)
         if len(ok) >= 1:
             usr = ok[0]
-            LOGS.info(usr)
             if usr.isdigit():
                 usr = int(usr)
             try:
+                LOGS.info(usr)
                 user = await event.get_entity(PeerUser(usr))
             except BaseException:
                 pass
