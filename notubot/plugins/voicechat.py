@@ -80,7 +80,7 @@ async def vcinvite(event):
         if not (x.bot or x.deleted):
             users.append(x.id)
 
-    limit = list(user_list(users, 6))
+    limit = list(user_list(users, 4))
     for user in limit:
         try:
             await event.client(
@@ -88,10 +88,11 @@ async def vcinvite(event):
                     call=(await event.client(GetFullChannelRequest(event.chat.id))).full_chat.call, users=user
                 )
             )
-            invited += 6
-            await asyncio.sleep(10)
+            invited += 4
         except BaseException:
             pass
+
+        await asyncio.sleep(10)
 
     await event.edit(f"`Diundang {invited} anggota.`")
     await asyncio.sleep(20)
