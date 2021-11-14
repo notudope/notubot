@@ -401,17 +401,12 @@ async def pin(event):
         return await event.edit("`Balas pesan tersebut!`")
 
     reply = await event.get_reply_message()
-    if reply.is_private:
-        text = "`pinned`"
-    else:
-        text = f"Pinned [Message]({reply.message_link})"
-
     try:
         await event.client.pin_message(event.chat_id, reply.id, notify=False)
     except BadRequestError:
         return await event.edit(NO_PERM)
 
-    await event.edit(text)
+    await event.edit("`pinned`")
 
 
 @bot_cmd(outgoing=True, pattern="unpin($| (.*))")
@@ -444,7 +439,7 @@ async def pinned(event):
 
     msg_id = FChat.full_chat.pinned_msg_id
     if not msg_id:
-        return await event.edit("`No Pinned`")
+        return await event.edit("`no pinned`")
 
     msg = await event.client.get_messages(chat.id, ids=msg_id)
     if msg:
@@ -464,7 +459,7 @@ async def get_all_pinned(event):
             t = " ".join(i.message.split()[0:4])
             txt = "{}....".format(t)
         else:
-            txt = "Pergi ke pesan."
+            txt = "Pergi ke pesan"
         a += f"{c}. <a href=https://t.me/c/{chat_id}/{i.id}>{txt}</a>\n"
         c += 1
 
@@ -474,7 +469,7 @@ async def get_all_pinned(event):
         m = f"<b>Pesan Pinned di {chat_name}:</b>\n\n"
 
     if a == "":
-        return await NotUBot.edit("`No Pinned`")
+        return await NotUBot.edit("`no pinned`")
 
     await NotUBot.edit(m + a, parse_mode="html")
 
@@ -541,7 +536,10 @@ async def zombies(event):
                 await sleep(1)
 
         if deleted_user > 0:
-            status = f"Menemukan `{deleted_user}` akun terhapus di grup ini," "\nBersihkan itu dengan `.zombies clean`"
+            status = (
+                f"Menemukan `{deleted_user}` akun terhapus di grup ini,"
+                "\nBersihkan itu dengan `{HANDLER}zombies clean`"
+            )
         return await event.edit(status)
 
     await event.edit("🧹 `Membersihkan akun terhapus...`")

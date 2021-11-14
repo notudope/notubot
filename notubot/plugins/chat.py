@@ -34,14 +34,15 @@ async def id(event):
         if reply.media:
             bot_api_file_id = pack_bot_file_id(reply.media)
             await event.edit(
-                "ID Grup: `{}`\nID Dari Pengguna: `{}`\nID Bot File API: `{}`".format(
+                "ID Grup: `{}`\nID User: `{}`\nID Bot File API: `{}`".format(
                     str(event.chat_id), str(reply.from_id), bot_api_file_id
                 )
             )
         else:
-            await event.edit("ID Grup: `{}`\nID Dari Pengguna : `{}`".format(str(event.chat_id), str(reply.from_id)))
+            await event.edit("ID Grup: `{}`\nID User: `{}`".format(str(event.chat_id), str(reply.from_id)))
     else:
-        await event.edit("ID Grup: `{}`".format(str(event.chat_id)))
+        text = "ID User: " if event.is_private else "ID Grup: "
+        await event.edit("{}`{}`".format(text, str(event.chat_id)))
 
 
 @bot_cmd(outgoing=True, groups_only=True, pattern="(getlink|link)$")
