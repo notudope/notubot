@@ -212,7 +212,7 @@ def bot_cmd(**args):
                     if BOTLOG:
                         await event.respond("`NOTUBOT-UserBot ERROR! Catatan disimpan pada BOTLOG.`")
                     try:
-                        with BytesIO(ftext.encode) as file:
+                        with BytesIO(str.encode(ftext)) as file:
                             file.name = "notubot.log"
                             await event.client.send_file(
                                 send_to,
