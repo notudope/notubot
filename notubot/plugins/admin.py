@@ -24,6 +24,7 @@ from telethon.tl.types import (
     ChannelParticipantAdmin,
     ChatAdminRights,
     ChatBannedRights,
+    PeerUser,
     MessageMediaPhoto,
     ChannelParticipantsKicked,
     InputMessagesFilterPinned,
@@ -122,7 +123,7 @@ async def get_uinfo(event):
             if usr.isdigit():
                 usr = int(usr)
             try:
-                user = await event.get_entity(usr)
+                user = await event.get_entity(PeerUser(usr))
             except BaseException:
                 pass
             if len(ok) == 2:

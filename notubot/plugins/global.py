@@ -10,7 +10,7 @@ import os
 
 from telethon.tl.functions.channels import EditBannedRequest
 from telethon.tl.functions.contacts import BlockRequest, UnblockRequest
-from telethon.tl.types import ChatBannedRights
+from telethon.tl.types import ChatBannedRights, PeerUser
 from telethon.utils import get_display_name
 
 from notubot import (
@@ -45,7 +45,7 @@ UNBAN_RIGHTS = ChatBannedRights(
 
 
 async def get_user_id(ids):
-    return int(ids) if str(ids).isdigit() else (await bot.get_entity(ids)).id
+    return int(ids) if str(ids).isdigit() else (await bot.get_entity(PeerUser(ids))).id
 
 
 @bot_cmd(outgoing=True, pattern="gban ?(.*)")
