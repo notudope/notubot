@@ -122,7 +122,7 @@ async def get_uinfo(event):
                 usr = int(usr)
 
             try:
-                user = await event.get_entity(usr)
+                user = await event.client.get_entity(usr)
             except BaseException:
                 pass
 

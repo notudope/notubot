@@ -181,7 +181,7 @@ async def listgban(event):
 
     if len(gbanned_users) > 0:
         for user in gbanned_users:
-            name = (await event.client.get_entity(int(user))).first_name
+            name = (await event.client.get_entity(int(user.user_id))).first_name
             msg += f"<strong>User</strong>: <a href=tg://user?id={user.user_id}>{name}</a>\n"
             msg += f"<strong>Reason</strong>: {user.reason}\n\n"
     else:
