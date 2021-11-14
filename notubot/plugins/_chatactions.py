@@ -37,7 +37,7 @@ async def ChatActionsHandler(event):
             except Exception:
                 pass
 
-        if is_gmuted(user.id, "gmute"):
+        if is_gmuted(user.id):
             try:
                 await event.client.edit_permissions(chat.id, user.id, until_date=None, send_messages=False)
                 text = "#GMuted_User Joined.\n\n**User** : {}\n\n`User Muted.`".format(mention)

@@ -210,7 +210,7 @@ def bot_cmd(**args):
                     ftext += result
 
                     if BOTLOG:
-                        await event.respond("`NOTUBOT-UserBot error, cek BOTLOG.`")
+                        await event.respond("`NOTUBOT-UserBot ERROR, Disimpan ke BOTLOG.`")
                     try:
                         with BytesIO(str.encode(ftext)) as file:
                             file.name = "notubot.log"
