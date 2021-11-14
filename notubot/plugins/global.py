@@ -19,6 +19,7 @@ from notubot import (
     BOTLOG,
     DEVLIST,
     NOSPAM_CHAT,
+    bot,
 )
 from notubot.events import bot_cmd
 from notubot.plugins.sql_helper.gban_sql import (
@@ -43,7 +44,7 @@ UNBAN_RIGHTS = ChatBannedRights(
 )
 
 
-async def get_user_id(event, id):
+async def get_user_id(id):
     if str(id).isdigit() or str(id).startswith("-"):
         if str(id).startswith("-100"):
             userid = int(str(id).replace("-100", ""))
@@ -52,7 +53,7 @@ async def get_user_id(event, id):
         else:
             userid = int(id)
     else:
-        userid = (await event.client.get_entity(id)).id
+        userid = (await bot.get_entity(id)).id
     return userid
 
 
@@ -69,7 +70,7 @@ async def gban(event):
             reason = ""
     elif event.pattern_match.group(1):
         usr = event.text.split(" ", maxsplit=2)[1]
-        userid = await get_user_id(event, usr)
+        userid = await get_user_id(usr)
         try:
             reason = event.text.split(" ", maxsplit=2)[2]
         except IndexError:
@@ -134,7 +135,7 @@ async def ungban(event):
         userid = (await event.get_reply_message()).sender_id
     elif event.pattern_match.group(1):
         usr = event.pattern_match.group(1)
-        userid = await get_user_id(event, usr)
+        userid = await get_user_id(usr)
     elif event.is_private:
         userid = (await event.get_chat()).id
     else:
@@ -178,10 +179,9 @@ async def listgban(event):
     mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
     msg = f"<strong>GBanned by {get_display_name(me)}</strong>:\n\n"
     gbanned_users = all_gbanned()
-    await event.get_chat()
     if len(gbanned_users) > 0:
         for user in gbanned_users:
-            name = (await event.client.get_entity(int(user.user_id))).first_name
+            name = (await bot.get_entity(int(user.user_id))).first_name
             msg += f"<strong>User</strong>: <a href=tg://user?id={user.user_id}>{name}</a>\n"
             msg += f"<strong>Reason</strong>: {user.reason}\n\n"
     else:
@@ -215,7 +215,7 @@ async def gkick(event):
         userid = (await event.get_reply_message()).sender_id
     elif event.pattern_match.group(1):
         usr = event.pattern_match.group(1)
-        userid = await get_user_id(event, usr)
+        userid = await get_user_id(usr)
     elif event.is_private:
         userid = (await event.get_chat()).id
     else:
@@ -257,7 +257,7 @@ async def gmuter(event):
         userid = (await event.get_reply_message()).sender_id
     elif event.pattern_match.group(1):
         usr = event.pattern_match.group(1)
-        userid = await get_user_id(event, usr)
+        userid = await get_user_id(usr)
     elif event.is_private:
         userid = (await event.get_chat()).id
     else:
@@ -303,7 +303,7 @@ async def ungmuter(event):
         userid = (await event.get_reply_message()).sender_id
     elif event.pattern_match.group(1):
         usr = event.pattern_match.group(1)
-        userid = await get_user_id(event, usr)
+        userid = await get_user_id(usr)
     elif event.is_private:
         userid = (await event.get_chat()).id
     else:
