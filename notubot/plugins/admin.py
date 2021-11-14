@@ -126,8 +126,8 @@ async def get_uinfo(event):
             try:
                 user = await event.client.get_entity(usr)
                 LOGS.info(user)
-            except (TypeError, ValueError) as e:
-                return await event.edit(str(e))
+            except BaseException:
+                user = usr
 
             if len(ok) == 2:
                 data = ok[1]
