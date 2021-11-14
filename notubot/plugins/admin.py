@@ -16,13 +16,8 @@ from telethon.errors import (
     UserAdminInvalidError,
     ChatNotModifiedError,
 )
-from telethon.tl.functions.channels import (
-    EditAdminRequest,
-    EditBannedRequest,
-    EditPhotoRequest,
-    GetFullChannelRequest,
-)
-from telethon.tl.functions.messages import GetFullChatRequest, SetHistoryTTLRequest, EditChatDefaultBannedRightsRequest
+from telethon.tl.functions.channels import EditAdminRequest, EditBannedRequest, EditPhotoRequest
+from telethon.tl.functions.messages import SetHistoryTTLRequest, EditChatDefaultBannedRightsRequest
 from telethon.tl.types import (
     ChannelParticipantsAdmins,
     ChannelParticipantCreator,
@@ -31,8 +26,6 @@ from telethon.tl.types import (
     ChatBannedRights,
     MessageMediaPhoto,
     ChannelParticipantsKicked,
-    Chat,
-    Channel,
     InputMessagesFilterPinned,
     UserStatusEmpty,
     UserStatusLastMonth,
@@ -407,6 +400,8 @@ async def pin(event):
         return await event.edit(NO_PERM)
 
     await event.edit("`pinned`")
+    await sleep(5)
+    await event.delete()
 
 
 @bot_cmd(outgoing=True, pattern="unpin($| (.*))")
@@ -425,25 +420,8 @@ async def unpin(event):
         return await NotUBot.edit(NO_PERM)
 
     await NotUBot.edit("`unpinned`")
-
-
-@bot_cmd(outgoing=True, groups_only=True, pattern="pinned$")
-async def pinned(event):
-    chat = await event.get_chat()
-    if isinstance(chat, Chat):
-        FChat = await event.client(GetFullChatRequest(chat.id))
-    elif isinstance(chat, Channel):
-        FChat = await event.client(GetFullChannelRequest(chat.id))
-    else:
-        return
-
-    msg_id = FChat.full_chat.pinned_msg_id
-    if not msg_id:
-        return await event.edit("`no pinned`")
-
-    msg = await event.client.get_messages(chat.id, ids=msg_id)
-    if msg:
-        await event.edit(f"Pinned [Message]({msg.message_link}).")
+    await sleep(5)
+    await NotUBot.delete()
 
 
 @bot_cmd(outgoing=True, pattern="listpinned$")
@@ -785,8 +763,6 @@ CMD_HELP.update(
             "↳ : Pin pesan pada obrolan.\n\n"
             "`.unpin <all>`\n"
             "↳ : Unpin pesan pada obrolan.\n\n"
-            "`.pinned`\n"
-            "↳ : Menampilkan pesan pinned.\n\n"
             "`.listpinned`\n"
             "↳ : Menampilkan semua pesan pinned.\n\n"
             "`.autodelete <24h/7d/1m/off>`\n"
