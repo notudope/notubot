@@ -71,7 +71,7 @@ async def vcstop(event):
 
 @bot_cmd(groups_only=True, admins_only=True, pattern="vcinvite$")
 async def vcinvite(event):
-    await event.edit("`Mengundang semua anggota grup ke Obrolan Video...`")
+    await event.edit("`Mengundang orang ke Obrolan Video...`")
     await event.get_chat()
     users = []
     invited = 0
@@ -91,8 +91,8 @@ async def vcinvite(event):
             invited += 4
         except BaseException:
             pass
-
-        await asyncio.sleep(10)
+            
+        await asyncio.sleep(5)
 
     await event.edit(f"`Diundang {invited} anggota.`")
     await asyncio.sleep(20)
