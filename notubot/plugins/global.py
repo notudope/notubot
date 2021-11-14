@@ -416,26 +416,26 @@ CMD_HELP.update(
     {
         "global": [
             "Global Tools",
-            ">`.gban`\n"
+            "`.gban`\n"
             "↳ : Global Banned ke semua grup yang menjadi admin,\n"
             "Gunakan perintah ini dengan bijak.\n\n"
-            ">`.ungban`\n"
+            "`.ungban`\n"
             "↳ : Membatalkan Global Banned.\n\n"
-            ">`.listgban`\n"
+            "`.listgban`\n"
             "↳ : Daftar semua user Global Banned.\n\n"
-            ">`.gkick`\n"
+            "`.gkick`\n"
             "↳ : Global Kick ke semua grup yang menjadi admin.\n\n"
-            ">`.gmute`\n"
+            "`.gmute`\n"
             "↳ : Global Mute ke semua grup yang menjadi admin.\n\n"
-            ">`.ungmute`\n"
+            "`.ungmute`\n"
             "↳ : Membatalkan Global Mute.\n\n"
-            ">`.gcast`\n"
+            "`.gcast`\n"
             "↳ : Mengirim Pesan Group secara global,\n"
             "Gak usah idiot, jangan berlebihan, resiko (limit, kena kick/banned/fban) ditanggung pengguna!\n\n"
-            ">`.gucast`\n"
+            "`.gucast`\n"
             "↳ : Mengirim Pesan Pribadi secara global,\n"
             "Gak usah spam, seperlunya aja!\n\n"
-            ">`.gsend <link grup> <pesan>`\n"
+            "`.gsend <link grup> <pesan>`\n"
             "↳ : Mengirim pesan jarak jauh ke grup lain.",
         ]
     }

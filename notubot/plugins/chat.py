@@ -180,6 +180,23 @@ async def stats(
     await NotUBot.edit(res)
 
 
+@bot_cmd(outgoing=True, pattern="total ?(.*)")
+async def total(event):
+    match = event.pattern_match.group(1).strip()
+    await event.edit("`...`")
+
+    if match:
+        user = match
+    elif event.is_reply:
+        user = (await event.get_reply_message()).sender_id
+    else:
+        user = "me"
+
+    a = await event.client.get_messages(event.chat_id, 0, from_user=user)
+    user = await event.client.get_entity(user)
+    await event.edit(f"Total pesan dari `{get_display_name(user)}` [`{a.total}`]")
+
+
 @bot_cmd(outgoing=True, pattern="(json|raw)$")
 async def json(event):
     chat_id = event.chat_id or event.from_id
@@ -232,20 +249,22 @@ CMD_HELP.update(
     {
         "chat": [
             "Chat",
-            ">`.id`\n"
+            "`.id`\n"
             "↳ : Mengambil ID obrolan saat ini.\n\n"
-            ">`.getlink|link`\n"
+            "`.getlink|link`\n"
             "↳ : Mengambil link obrolan saat ini.\n\n"
-            ">`.kickme`\n"
+            "`.kickme`\n"
             "↳ : Keluar dari grup sekarang.\n\n"
-            ">`.invite`\n"
+            "`.invite`\n"
             "↳ : Mengundang orang ke grup.\n\n"
-            ">`.stats`\n"
+            "`.stats`\n"
             "↳ : Stats profile user.\n\n"
-            ">`.json|raw`\n"
+            "`.total <username/reply>`\n"
+            "↳ : Melihat total pesan pengguna dalam obrolan saat ini.\n\n"
+            "`.json|raw`\n"
             "↳ : Mengambil raw data format json dari sebuah pesan, \n\n"
             "Balas pesan tersebut untuk menampilkannya!\n\n"
-            ">`.yaml|yml`\n"
+            "`.yaml|yml`\n"
             "↳ : Mengambil raw data format yaml dari sebuah pesan",
         ]
     }

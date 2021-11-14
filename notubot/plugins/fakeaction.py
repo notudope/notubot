@@ -43,23 +43,23 @@ CMD_HELP.update(
     {
         "fakeaction": [
             "Fake Action",
-            ">`.ftyping <detik>`\n"
+            "`.ftyping <detik>`\n"
             "↳ : Menampilkan aksi mengetik secara palsu.\n\n"
-            ">`.faudio <detik>`\n"
+            "`.faudio <detik>`\n"
             "↳ : Menampilkan aksi merekam secara palsu.\n\n"
-            ">`.fvideo <detik>`\n"
+            "`.fvideo <detik>`\n"
             "↳ : Menampilkan aksi video secara palsu.\n\n"
-            ">`.fgame <detik>`\n"
+            "`.fgame <detik>`\n"
             "↳ : Menampilkan aksi bermain game secara palsu.\n\n"
-            ">`.flocation <detik>`\n"
+            "`.flocation <detik>`\n"
             "↳ : Menampilkan aksi lokasi secara palsu.\n\n"
-            ">`.fcontact <detik>`\n"
+            "`.fcontact <detik>`\n"
             "↳ : Menampilkan aksi memilih kontak secara palsu.\n\n"
-            ">`.fround <detik>`\n"
+            "`.fround <detik>`\n"
             "↳ : Menampilkan aksi pesan video secara palsu.\n\n"
-            ">`.fphoto <detik>`\n"
+            "`.fphoto <detik>`\n"
             "↳ : Menampilkan mengirim foto secara palsu.\n\n"
-            ">`.fdocument <detik>`\n"
+            "`.fdocument <detik>`\n"
             "↳ : Menampilkan mengirim dokumen secara palsu.",
         ]
     }

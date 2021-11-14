@@ -272,13 +272,13 @@ CMD_HELP.update(
     {
         "update": [
             "Update",
-            ">`.update`\n"
+            "`.update`\n"
             "↳ : Mengecek apakah ada pembaruan pada repo UserBot termasuk menampilkan changelog.\n\n"
-            ">`.update now|pull|one`\n"
+            "`.update <now|pull|one>`\n"
             "↳ : Memperbarui sistem UserBot jika ada pembaruan pada repo UserBot.\n\n"
-            ">`.update deploy|push|all`\n"
+            "`.update <deploy|push|all>`\n"
             "↳ : Deploy UserBot (heroku), ini akan memaksa deploy meskipun tidak ada pembaruan pada UserBot.\n\n"
-            ">`.repo`\n"
+            "`.repo`\n"
             "↳ : Github Repository UserBot.\n\n",
         ]
     }

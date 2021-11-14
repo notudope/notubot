@@ -27,7 +27,7 @@ async def help(event):
         if args in CMD_HELP:
             await event.edit(
                 f"📦 Plugin **{CMD_HELP[args][0]}** <`{HANDLER}help {args}`>\n\n"
-                + str(CMD_HELP[args][1]).replace(">`.", f">`{HANDLER}")
+                + str(CMD_HELP[args][1]).replace("`.", f"• `{HANDLER}")
             )
         else:
             await event.edit(

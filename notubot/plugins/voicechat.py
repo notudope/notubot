@@ -101,11 +101,11 @@ CMD_HELP.update(
     {
         "voicechat": [
             "Voice Chat",
-            ">`.startvc <silent/s> <judul obrolan>`\n"
+            "`.startvc <silent/s> <judul>`\n"
             "↳ : Memulai Obrolan Video.\n\n"
-            ">`.stopvc|.endvc <silent/s>`\n"
+            "`.stopvc|endvc <silent/s>`\n"
             "↳ : Mematikan Obrolan Video.\n\n"
-            ">`.vcinvite`\n"
+            "`.vcinvite`\n"
             "↳ : Mengundang semua anggota grup ke Obrolan Video.",
         ]
     }

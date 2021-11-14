@@ -53,11 +53,11 @@ CMD_HELP.update(
     {
         "misc": [
             "Misc",
-            ">`.sleep <detik>`\n"
+            "`.sleep <detik>`\n"
             "↳ : Menidurkan beberapa detik.\n\n"
-            ">`.random <item1> <item2> ... <itemN>`\n"
+            "`.random <item1> <item2> ... <itemN>`\n"
             "↳ : Mengambil item acak dari daftar item.\n\n"
-            ">`.repeat <nomor> <teks>`\n"
+            "`.repeat <nomor> <teks>`\n"
             "↳ : Mengulang teks untuk beberapa kali.",
         ]
     }

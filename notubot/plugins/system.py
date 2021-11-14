@@ -177,15 +177,15 @@ CMD_HELP.update(
     {
         "system": [
             "System",
-            ">`.alive`\n"
+            "`.alive`\n"
             "↳ : Mengecek UserBot berjalan atau tidak.\n\n"
-            ">`.restart`\n"
+            "`.restart`\n"
             "↳ : Muat ulang UserBot.\n\n"
-            ">`.shutdown`\n"
+            "`.shutdown`\n"
             "↳ : Mematikan UserBot.\n\n"
-            ">`.botver`\n"
+            "`.botver`\n"
             "↳ : Menampilkan versi UserBot dari git.\n\n"
-            ">`.sysd`\n"
+            "`.sysd`\n"
             "↳ : Menampilkan informasi sistem menggunakan neofetch.",
         ]
     }
