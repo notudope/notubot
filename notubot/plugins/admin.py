@@ -43,7 +43,6 @@ from notubot import (
     DEVLIST,
     bot,
     HANDLER,
-    LOGS,
 )
 from notubot.events import bot_cmd
 from notubot.plugins.sql_helper.mute_sql import is_muted, mute, unmute
@@ -125,9 +124,8 @@ async def get_uinfo(event):
 
             try:
                 user = await event.client.get_entity(usr)
-                LOGS.info(user)
             except BaseException:
-                user = usr
+                pass
 
             if len(ok) == 2:
                 data = ok[1]
@@ -246,6 +244,7 @@ async def fpromote(event):
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="kick ?(.*)")
 async def kick(event):
     NotUBot = await event.edit("`Kicking...`")
+    await event.get_chat()
     user, reason = await get_uinfo(event)
     if not user:
         return await NotUBot.edit(REQ_ID)
@@ -274,6 +273,7 @@ async def kick(event):
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="ban ?(.*)")
 async def ban(event):
     NotUBot = await event.edit("`Banning...`")
+    await event.get_chat()
     user, reason = await get_uinfo(event)
     if not user:
         return await NotUBot.edit(REQ_ID)
@@ -301,6 +301,7 @@ async def ban(event):
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="unban ?(.*)")
 async def unban(event):
     NotUBot = await event.edit("`Unbanning...`")
+    await event.get_chat()
     user, reason = await get_uinfo(event)
     if not user:
         return await NotUBot.edit(REQ_ID)
@@ -323,6 +324,7 @@ async def unban(event):
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="mute ?(.*)")
 async def muter(event):
     NotUBot = await event.edit("`Muting...`")
+    await event.get_chat()
     user, reason = await get_uinfo(event)
     if not user:
         return await NotUBot.edit(REQ_ID)
@@ -354,6 +356,7 @@ async def muter(event):
 @bot_cmd(outgoing=True, groups_only=True, admins_only=True, pattern="unmute ?(.*)")
 async def unmuter(event):
     NotUBot = await event.edit("`Unmuting...`")
+    await event.get_chat()
     user, reason = await get_uinfo(event)
     if not user:
         return await NotUBot.edit(REQ_ID)

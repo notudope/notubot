@@ -59,10 +59,8 @@ async def get_user_id(event, id):
 
 @bot_cmd(outgoing=True, pattern="gban ?(.*)")
 async def gban(event):
-    me = await event.client.get_me()
-    mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
-
     NotUBot = await event.edit("`Gbanning...`")
+    await event.get_chat()
     reason = ""
     if event.reply_to_msg_id:
         userid = (await event.get_reply_message()).sender_id
@@ -86,6 +84,8 @@ async def gban(event):
     else:
         return await NotUBot.edit(REQ_ID)
 
+    me = await event.client.get_me()
+    mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
     name = (await event.client.get_entity(userid)).first_name
     success = failed = 0
 
@@ -129,10 +129,8 @@ async def gban(event):
 
 @bot_cmd(outgoing=True, pattern="ungban ?(.*)")
 async def ungban(event):
-    me = await event.client.get_me()
-    mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
-
     NotUBot = await event.edit("`UnGbanning...`")
+    await event.get_chat()
     if event.reply_to_msg_id:
         userid = (await event.get_reply_message()).sender_id
     elif event.pattern_match.group(1):
@@ -143,6 +141,8 @@ async def ungban(event):
     else:
         return await NotUBot.edit(REQ_ID)
 
+    me = await event.client.get_me()
+    mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
     name = (await event.client.get_entity(userid)).first_name
     success = failed = 0
 
@@ -210,10 +210,8 @@ async def listgban(event):
 
 @bot_cmd(outgoing=True, pattern="gkick ?(.*)")
 async def gkick(event):
-    me = await event.client.get_me()
-    mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
-
     NotUBot = await event.edit("`Gkicking...`")
+    await event.get_chat()
     if event.reply_to_msg_id:
         userid = (await event.get_reply_message()).sender_id
     elif event.pattern_match.group(1):
@@ -224,6 +222,8 @@ async def gkick(event):
     else:
         return await NotUBot.edit(REQ_ID)
 
+    me = await event.client.get_me()
+    mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
     name = (await event.client.get_entity(userid)).first_name
     success = failed = 0
 
@@ -252,10 +252,8 @@ async def gkick(event):
 
 @bot_cmd(outgoing=True, pattern="gmute ?(.*)")
 async def gmuter(event):
-    me = await event.client.get_me()
-    mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
-
     NotUBot = await event.edit("`Gmuting...`")
+    await event.get_chat()
     if event.reply_to_msg_id:
         userid = (await event.get_reply_message()).sender_id
     elif event.pattern_match.group(1):
@@ -266,6 +264,8 @@ async def gmuter(event):
     else:
         return await NotUBot.edit(REQ_ID)
 
+    me = await event.client.get_me()
+    mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
     name = (await event.client.get_entity(userid)).first_name
     success = failed = 0
 
@@ -298,10 +298,8 @@ async def gmuter(event):
 
 @bot_cmd(outgoing=True, pattern="ungmute ?(.*)")
 async def ungmuter(event):
-    me = await event.client.get_me()
-    mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
-
     NotUBot = await event.edit("`UnGmuting...`")
+    await event.get_chat()
     if event.reply_to_msg_id:
         userid = (await event.get_reply_message()).sender_id
     elif event.pattern_match.group(1):
@@ -312,6 +310,8 @@ async def ungmuter(event):
     else:
         return await NotUBot.edit(REQ_ID)
 
+    me = await event.client.get_me()
+    mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
     name = (await event.client.get_entity(userid)).first_name
     success = failed = 0
 
@@ -340,9 +340,9 @@ async def ungmuter(event):
 
 @bot_cmd(outgoing=True, pattern="gcast ?(.*)")
 async def gcast(event):
-    xx = event.pattern_match.group(1)
-    if xx:
-        msg = xx
+    match = event.pattern_match.group(1)
+    if match:
+        msg = match
     elif event.is_reply:
         msg = await event.get_reply_message()
     else:
@@ -370,9 +370,9 @@ async def gcast(event):
 
 @bot_cmd(outgoing=True, pattern="gucast ?(.*)")
 async def gucast(event):
-    xx = event.pattern_match.group(1)
-    if xx:
-        msg = xx
+    match = event.pattern_match.group(1)
+    if match:
+        msg = match
     elif event.is_reply:
         msg = await event.get_reply_message()
     else:
