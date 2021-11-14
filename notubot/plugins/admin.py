@@ -43,6 +43,7 @@ from notubot import (
     CMD_HELP,
     DEVLIST,
     bot,
+    LOGS,
     HANDLER,
 )
 from notubot.events import bot_cmd
@@ -120,6 +121,7 @@ async def get_uinfo(event):
         ok = event.pattern_match.group(1).split(maxsplit=1)
         if len(ok) >= 1:
             usr = ok[0]
+            LOGS.info(usr)
             if usr.isdigit():
                 usr = int(usr)
             try:
