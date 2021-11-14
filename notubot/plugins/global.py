@@ -15,7 +15,6 @@ from telethon.utils import get_display_name
 
 from notubot import (
     CMD_HELP,
-    bot,
     BOTLOG_CHATID,
     BOTLOG,
     DEVLIST,
@@ -89,7 +88,7 @@ async def gban(event):
     name = (await event.client.get_entity(userid)).first_name
     success = failed = 0
 
-    if userid == bot.uid:
+    if userid == me.id:
         return await NotUBot.edit("🥴 **Mabok?**")
     if int(userid) in DEVLIST:
         return await NotUBot.edit("😑 **Tidak dapat Global Banned, karena dia pembuatku!**")
@@ -227,7 +226,7 @@ async def gkick(event):
     name = (await event.client.get_entity(userid)).first_name
     success = failed = 0
 
-    if userid == bot.uid:
+    if userid == me.id:
         return await NotUBot.edit("🥴 **Mabok?**")
     if int(userid) in DEVLIST:
         return await NotUBot.edit("😑 **Tidak dapat Global Kick, karena dia pembuatku!**")
@@ -269,7 +268,7 @@ async def gmuter(event):
     name = (await event.client.get_entity(userid)).first_name
     success = failed = 0
 
-    if userid == bot.uid:
+    if userid == me.id:
         return await NotUBot.edit("🥴 **Mabok?**")
     if int(userid) in DEVLIST:
         return await NotUBot.edit("😑 **Tidak dapat Global Mute, karena dia pembuatku!**")

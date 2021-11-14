@@ -41,7 +41,6 @@ from notubot import (
     BOTLOG_CHATID,
     CMD_HELP,
     DEVLIST,
-    bot,
     HANDLER,
 )
 from notubot.events import bot_cmd
@@ -249,7 +248,7 @@ async def kick(event):
     if not user:
         return await NotUBot.edit(REQ_ID)
 
-    if user.id == bot.uid:
+    if user.id == (await event.client.get_me()).id:
         return await NotUBot.edit("🥴 **Mabok?**")
     if int(user.id) in DEVLIST:
         return await NotUBot.edit("😑 **Tidak dapat Kick, karena dia pembuatku!**")
@@ -278,7 +277,7 @@ async def ban(event):
     if not user:
         return await NotUBot.edit(REQ_ID)
 
-    if user.id == bot.uid:
+    if user.id == (await event.client.get_me()).id:
         return await NotUBot.edit("🥴 **Mabok?**")
     if int(user.id) in DEVLIST:
         return await NotUBot.edit("😑 **Tidak dapat Banned, karena dia pembuatku!**")
@@ -329,7 +328,7 @@ async def muter(event):
     if not user:
         return await NotUBot.edit(REQ_ID)
 
-    if user.id == bot.uid:
+    if user.id == (await event.client.get_me()).id:
         return await NotUBot.edit("🥴 **Mabok?**")
     if int(user.id) in DEVLIST:
         return await NotUBot.edit("😑 **Tidak dapat Mute, karena dia pembuatku!**")
