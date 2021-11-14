@@ -128,9 +128,6 @@ async def get_uinfo(event):
             if len(ok) == 2:
                 data = ok[1]
 
-    if not user:
-        return await event.edit(REQ_ID)
-
     return user, data
 
 
@@ -140,6 +137,8 @@ async def promote(event):
     await event.get_chat()
     user, rank = await get_uinfo(event)
     rank = rank or "Admin"
+    if not user:
+        return await NotUBot.edit(REQ_ID)
 
     try:
         new_rights = ChatAdminRights(
@@ -174,8 +173,9 @@ async def demote(event):
     NotUBot = await event.edit("`Demoting...`")
     await event.get_chat()
     user, rank = await get_uinfo(event)
-    if not rank:
-        rank = "Not Admin"
+    rank = rank or "Not Admin"
+    if not user:
+        return await NotUBot.edit(REQ_ID)
 
     try:
         new_rights = ChatAdminRights(
@@ -208,6 +208,8 @@ async def fpromote(event):
     await event.get_chat()
     user, rank = await get_uinfo(event)
     rank = rank or "CoFounder"
+    if not user:
+        return await NotUBot.edit(REQ_ID)
 
     try:
         new_rights = ChatAdminRights(
@@ -241,6 +243,8 @@ async def fpromote(event):
 async def kick(event):
     NotUBot = await event.edit("`Kicking...`")
     user, reason = await get_uinfo(event)
+    if not user:
+        return await NotUBot.edit(REQ_ID)
 
     if user.id == bot.uid:
         return await NotUBot.edit("🥴 **Mabok?**")
@@ -267,6 +271,8 @@ async def kick(event):
 async def ban(event):
     NotUBot = await event.edit("`Banning...`")
     user, reason = await get_uinfo(event)
+    if not user:
+        return await NotUBot.edit(REQ_ID)
 
     if user.id == bot.uid:
         return await NotUBot.edit("🥴 **Mabok?**")
@@ -292,6 +298,8 @@ async def ban(event):
 async def unban(event):
     NotUBot = await event.edit("`Unbanning...`")
     user, reason = await get_uinfo(event)
+    if not user:
+        return await NotUBot.edit(REQ_ID)
 
     try:
         await event.client.edit_permissions(event.chat_id, user.id, view_messages=True)
@@ -312,6 +320,8 @@ async def unban(event):
 async def muter(event):
     NotUBot = await event.edit("`Muting...`")
     user, reason = await get_uinfo(event)
+    if not user:
+        return await NotUBot.edit(REQ_ID)
 
     if user.id == bot.uid:
         return await NotUBot.edit("🥴 **Mabok?**")
@@ -341,6 +351,8 @@ async def muter(event):
 async def unmuter(event):
     NotUBot = await event.edit("`Unmuting...`")
     user, reason = await get_uinfo(event)
+    if not user:
+        return await NotUBot.edit(REQ_ID)
 
     if not is_muted(user.id, event.chat_id):
         return NotUBot.edit("`User tidak terkena Mute.`")
