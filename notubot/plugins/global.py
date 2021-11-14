@@ -45,7 +45,16 @@ UNBAN_RIGHTS = ChatBannedRights(
 
 
 async def get_user_id(event, id):
-    return int(id) if str(id).isdigit() else (await event.client.get_entity(PeerUser(id))).id
+    if str(id).isdigit() or str(id).startswith("-"):
+        if str(id).startswith("-100"):
+            userid = int(str(id).replace("-100", ""))
+        elif str(id).startswith("-"):
+            userid = int(str(id).replace("-", ""))
+        else:
+            userid = int(id)
+    else:
+        userid = (await event.client.get_entity(PeerUser(id))).id
+    return userid
 
 
 @bot_cmd(outgoing=True, pattern="gban ?(.*)")
@@ -173,7 +182,7 @@ async def listgban(event):
 
     if len(gbanned_users) > 0:
         for user in gbanned_users:
-            name = (await bot.get_entity(int(user))).first_name
+            name = (await event.client.get_entity(int(user))).first_name
             msg += f"<strong>User</strong>: <a href=tg://user?id={user.user_id}>{name}</a>\n"
             msg += f"<strong>Reason</strong>: {user.reason}\n\n"
     else:

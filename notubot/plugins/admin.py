@@ -43,7 +43,6 @@ from notubot import (
     CMD_HELP,
     DEVLIST,
     bot,
-    LOGS,
     HANDLER,
 )
 from notubot.events import bot_cmd
@@ -123,11 +122,12 @@ async def get_uinfo(event):
             usr = ok[0]
             if usr.isdigit():
                 usr = int(usr)
+
             try:
-                LOGS.info(usr)
-                user = await event.get_entity(PeerUser(usr))
+                user = await event.client.get_entity(PeerUser(usr))
             except BaseException:
                 pass
+
             if len(ok) == 2:
                 data = ok[1]
 
