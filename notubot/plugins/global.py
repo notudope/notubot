@@ -286,7 +286,7 @@ async def gmuter(event):
     if int(userid) in DEVLIST:
         return await NotUBot.edit("😑 **Tidak dapat Global Mute, karena dia pembuatku!**")
 
-    if is_gmuted(userid):
+    if is_gmuted(userid, "gmute"):
         return await NotUBot.edit("`User sudah terkena Global Mute.`")
 
     async for x in event.client.iter_dialogs():
@@ -297,7 +297,7 @@ async def gmuter(event):
             except BaseException:
                 failed += 1
 
-    gmute(userid)
+    gmute(userid, "gmute")
     if BOTLOG:
         await event.client.send_message(BOTLOG_CHATID, "**#Gmuted** [{}](tg://user?id={})".format(userid, userid))
 
@@ -327,7 +327,7 @@ async def ungmuter(event):
     name = (await event.client.get_entity(userid)).first_name
     success = failed = 0
 
-    if not is_gmuted(userid):
+    if not is_gmuted(userid, "gmute"):
         return await NotUBot.edit("`User tidak terkena Global Mute.`")
 
     async for x in event.client.iter_dialogs():
@@ -339,7 +339,7 @@ async def ungmuter(event):
             except BaseException:
                 failed += 1
 
-    ungmute(userid)
+    ungmute(userid, "gmute")
     if BOTLOG:
         await event.client.send_message(BOTLOG_CHATID, "**#Ungmuted** [{}](tg://user?id={})".format(userid, userid))
 
@@ -360,7 +360,7 @@ async def gcast(event):
     else:
         return await event.edit("`Berikan sebuah pesan atau balas pesan tersebut...`")
 
-    NotUBot = await event.edit("`Mengirim pesan broadcast ke grup secara global 📢`")
+    NotUBot = await event.edit("`Mengirim pesan broadcast ke grup 📢`")
     success = failed = 0
 
     async for x in event.client.iter_dialogs():
@@ -390,7 +390,7 @@ async def gucast(event):
     else:
         return await event.edit("`Berikan sebuah pesan atau balas pesan tersebut...`")
 
-    NotUBot = await event.edit("`Mengirim pesan broadcast ke pribadi secara global 📢`")
+    NotUBot = await event.edit("`Mengirim pesan broadcast ke pribadi 📢`")
     success = failed = 0
 
     async for x in event.client.iter_dialogs():
