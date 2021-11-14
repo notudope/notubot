@@ -178,7 +178,7 @@ async def listgban(event):
     mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
     msg = f"<strong>GBanned by {get_display_name(me)}</strong>:\n\n"
     gbanned_users = all_gbanned()
-
+    await event.get_chat()
     if len(gbanned_users) > 0:
         for user in gbanned_users:
             name = (await event.client.get_entity(int(user.user_id))).first_name
