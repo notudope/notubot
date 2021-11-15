@@ -657,7 +657,7 @@ async def tag(event):
     await event.client.send_message(chat, mentions, reply_to=event.message.reply_to_msg_id)
 
 
-@bot_cmd(groups_only=True, admins_only=True, pattern="all|@all(?: |$)(.*)")
+@bot_cmd(groups_only=True, admins_only=True, pattern="all(?: |$)(.*)|@all(?: |$)(.*)")
 async def all(event):
     text = event.pattern_match.group(1)
     users = []
