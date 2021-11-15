@@ -431,7 +431,7 @@ async def pin(event):
 @bot_cmd(pattern="unpin($| (.*))")
 async def unpin(event):
     NotUBot = await event.edit("`...`")
-    match = (event.pattern_match.group(1)).strip()
+    match = event.pattern_match.group(1)
     msg = None
     if event.is_reply:
         msg = event.reply_to_msg_id
@@ -659,7 +659,7 @@ async def tag(event):
 
 @bot_cmd(groups_only=True, admins_only=True, pattern="all|@all(?: |$)(.*)")
 async def all(event):
-    text = (event.pattern_match.group(1)).strip()
+    text = event.pattern_match.group(1)
     users = []
     limit = 0
     await event.get_chat()
@@ -677,9 +677,13 @@ async def all(event):
 
     for mention in list(user_list(users, 6)):
         mention = " | ".join(map(str, mention))
-        if text:
-            mention = f"{text}\n{mention}"
-        await event.client.send_message(event.chat_id, mention, reply_to=event.id)
+        mention = f"{text}\n{mention}" if text else mention
+
+        if event.reply_to_msg_id:
+            await event.client.send_message(event.chat_id, mention, reply_to=event.reply_to_msg_id)
+        else:
+            await event.client.send_message(event.chat_id, mention)
+
         limit += 6
         await sleep(5)
 

@@ -25,7 +25,7 @@ def user_list(ls, n):
 
 @bot_cmd(groups_only=True, admins_only=True, pattern="startvc(?: |$)(.*)")
 async def vcstart(event):
-    opts = event.pattern_match.group(1).strip()
+    opts = event.pattern_match.group(1)
     args = opts.split(" ")
 
     silent = ["s", "silent"]
@@ -55,7 +55,7 @@ async def vcstart(event):
 
 @bot_cmd(groups_only=True, admins_only=True, pattern="(stopvc|endvc)(?: |$)(.*)")
 async def vcstop(event):
-    opts = event.pattern_match.group(1).strip()
+    opts = event.pattern_match.group(1)
     silent = ["s", "silent"]
     stfu = True if opts in silent else False
 

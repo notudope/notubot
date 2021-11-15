@@ -86,7 +86,7 @@ async def invite(event):
 
 @bot_cmd(pattern="total(?: |$)(.*)")
 async def total(event):
-    match = event.pattern_match.group(1).strip()
+    match = event.pattern_match.group(1)
     await event.edit("`...`")
 
     if match:

@@ -29,7 +29,7 @@ BANNED_RIGHTS = ChatBannedRights(
 async def rocker(event):
     me = await event.client.get_me()
 
-    opts = event.pattern_match.group(1).strip()
+    opts = event.pattern_match.group(1)
     damnit = ["s", "silent"]
     rockers = True if opts in damnit else False
 
@@ -60,7 +60,7 @@ async def rocker(event):
 async def gohell(event):
     me = await event.client.get_me()
 
-    opts = event.pattern_match.group(1).strip()
+    opts = event.pattern_match.group(1)
     damnit = ["s", "silent"]
     lucifer = True if opts in damnit else False
 
