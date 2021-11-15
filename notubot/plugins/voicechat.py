@@ -7,18 +7,15 @@
 
 import asyncio
 
+from pytgcalls import GroupCallFactory
 from telethon.tl.functions.channels import GetFullChannelRequest, DeleteMessagesRequest
-from telethon.tl.functions.phone import (
-    CreateGroupCallRequest,
-    DiscardGroupCallRequest,
-    InviteToGroupCallRequest,
-    JoinGroupCallRequest,
-    LeaveGroupCallRequest,
-)
-from telethon.tl.types import DataJSON
+from telethon.tl.functions.phone import CreateGroupCallRequest, DiscardGroupCallRequest, InviteToGroupCallRequest
 
-from notubot import CMD_HELP
+from notubot import CMD_HELP, bot
 from notubot.events import bot_cmd
+
+group_call_factory = GroupCallFactory(bot, GroupCallFactory.MTPROTO_CLIENT_TYPE.TELETHON)
+group_call = group_call_factory.get_file_group_call(None)
 
 
 def user_list(ls, n):
@@ -88,15 +85,8 @@ async def joinvc(event):
     if not call:
         return await event.edit("`nope`")
 
-    await event.client(
-        JoinGroupCallRequest(
-            call=call,
-            join_as="me",
-            params=DataJSON(data=str(event.chat.id)),
-            muted=True,
-            video_stopped=True,
-        )
-    )
+    if not (group_call and group_call.is_connected):
+        await group_call.start(event.chat.id)
 
     await event.edit("`joined`")
     await asyncio.sleep(5)
@@ -115,11 +105,8 @@ async def leavevc(event):
     if not call:
         return await event.edit("`nope`")
 
-    await event.client(
-        LeaveGroupCallRequest(
-            call=call,
-        )
-    )
+    if group_call and group_call.is_connected:
+        await group_call.stop()
 
     await event.edit("`leaved`")
     await asyncio.sleep(5)
