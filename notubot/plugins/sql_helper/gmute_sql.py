@@ -11,7 +11,7 @@ class GMute(BASE):
     user_id = Column(String(14), primary_key=True)
 
     def __init__(self, user_id):
-        self.user_id = user_id
+        self.user_id = str(user_id)
 
 
 GMute.__table__.create(checkfirst=True)

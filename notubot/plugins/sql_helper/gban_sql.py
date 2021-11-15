@@ -12,7 +12,7 @@ class GBan(BASE):
     reason = Column(UnicodeText)
 
     def __init__(self, user_id, reason):
-        self.user_id = user_id
+        self.user_id = str(user_id)
         self.reason = reason
 
 

@@ -14,10 +14,10 @@ from notubot.plugins.sql_helper.gmute_sql import is_gmuted
 from notubot.plugins.sql_helper.mute_sql import is_muted
 
 
-@bot.on(ChatAction)
+@bot.on(ChatAction(func=lambda e: e.is_group))
 async def ChatActionsHandler(event):
     if not event.user_joined or not event.user_added or not event.added_by:
-        return
+        return ""
 
     user = await event.get_user()
     chat = await event.get_chat()

@@ -5,7 +5,7 @@
 # PLease read the GNU General Public License v3.0 in
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
-import asyncio
+from asyncio import sleep
 from io import BytesIO
 
 from telethon.tl.functions.channels import EditBannedRequest
@@ -29,7 +29,7 @@ from notubot.plugins.sql_helper.gban_sql import (
 )
 from notubot.plugins.sql_helper.gmute_sql import is_gmuted, gmute, ungmute
 
-REQ_ID = "`Wajib menyertakan ID User atau balas pesan tersebut.`"
+REQ_ID = "`Kesalahan, dibutuhkan ID atau balas pesan itu.`"
 
 UNBAN_RIGHTS = ChatBannedRights(
     until_date=None,
@@ -94,7 +94,7 @@ async def gban(event):
     if userid == me.id:
         return await NotUBot.edit("🥴 **Mabok?**")
     if int(userid) in DEVLIST:
-        return await NotUBot.edit("😑 **Tidak dapat Global Banned, karena dia pembuatku!**")
+        return await NotUBot.edit("😑 **Gagal Global Banned, dia pembuatku!**")
 
     if is_gbanned(userid):
         return await NotUBot.edit(
@@ -111,6 +111,7 @@ async def gban(event):
             try:
                 await event.client.edit_permissions(x.id, userid, view_messages=False)
                 success += 1
+                await sleep(0.5)
             except BaseException:
                 failed += 1
 
@@ -118,10 +119,10 @@ async def gban(event):
     gbaner(userid, reason)
     if BOTLOG:
         await event.client.send_message(
-            BOTLOG_CHATID, "**#Gbanned** [{}](tg://user?id={}) {}".format(userid, userid, reason)
+            BOTLOG_CHATID, "**#Gbanned** user [{}](tg://user?id={}) {}".format(userid, userid, reason)
         )
 
-    text = f"""**#Gbanned** oleh {mention}
+    text = f"""**#Gbanned** by {mention}
 **User :** [{name}](tg://user?id={userid})
 **Aksi :** `Gbanned`
 **Alasan :** `{reason}`
@@ -161,14 +162,17 @@ async def ungban(event):
             try:
                 await event.client.edit_permissions(x.id, userid, view_messages=True)
                 success += 1
+                await sleep(0.5)
             except BaseException:
                 failed += 1
 
     ungbaner(userid)
     if BOTLOG:
-        await event.client.send_message(BOTLOG_CHATID, "**#UnGbanned** [{}](tg://user?id={})".format(userid, userid))
+        await event.client.send_message(
+            BOTLOG_CHATID, "**#UnGbanned** user [{}](tg://user?id={})".format(userid, userid)
+        )
 
-    text = f"""**#UnGbanned** oleh {mention}
+    text = f"""**#UnGbanned** by {mention}
 **User :** [{name}](tg://user?id={userid})
 **Aksi :** `UnGbanned`
 **Grup/Channel :** Berhasil `{success}` Gagal `{failed}`"""
@@ -242,20 +246,21 @@ async def gkick(event):
     if userid == me.id:
         return await NotUBot.edit("🥴 **Mabok?**")
     if int(userid) in DEVLIST:
-        return await NotUBot.edit("😑 **Tidak dapat Global Kick, karena dia pembuatku!**")
+        return await NotUBot.edit("😑 **Gagal Global Kick, dia pembuatku!**")
 
     async for x in event.client.iter_dialogs():
         if x.is_group or x.is_channel:
             try:
                 await event.client.kick_participant(x.id, userid)
                 success += 1
+                await sleep(0.5)
             except BaseException:
                 failed += 1
 
     if BOTLOG:
-        await event.client.send_message(BOTLOG_CHATID, "**#Gkicked** [{}](tg://user?id={})".format(userid, userid))
+        await event.client.send_message(BOTLOG_CHATID, "**#Gkicked** user [{}](tg://user?id={})".format(userid, userid))
 
-    text = f"""**#Gkicked** oleh {mention}
+    text = f"""**#Gkicked** by {mention}
 **User :** [{name}](tg://user?id={userid})
 **Aksi :** `Gkicked`
 **Grup/Channel :** Berhasil `{success}` Gagal `{failed}`"""
@@ -284,7 +289,7 @@ async def gmuter(event):
     if userid == me.id:
         return await NotUBot.edit("🥴 **Mabok?**")
     if int(userid) in DEVLIST:
-        return await NotUBot.edit("😑 **Tidak dapat Global Mute, karena dia pembuatku!**")
+        return await NotUBot.edit("😑 **Gagal Global Mute, dia pembuatku!**")
 
     if is_gmuted(userid):
         return await NotUBot.edit("`User sudah terkena Global Mute.`")
@@ -294,14 +299,15 @@ async def gmuter(event):
             try:
                 await event.client.edit_permissions(x.id, userid, until_date=None, send_messages=False)
                 success += 1
+                await sleep(0.5)
             except BaseException:
                 failed += 1
 
     gmute(userid)
     if BOTLOG:
-        await event.client.send_message(BOTLOG_CHATID, "**#Gmuted** [{}](tg://user?id={})".format(userid, userid))
+        await event.client.send_message(BOTLOG_CHATID, "**#Gmuted** user [{}](tg://user?id={})".format(userid, userid))
 
-    text = f"""**#Gmuted** oleh {mention}
+    text = f"""**#Gmuted** by {mention}
 **User :** [{name}](tg://user?id={userid})
 **Aksi :** `Gmuted`
 **Grup/Channel :** Berhasil `{success}` Gagal `{failed}`"""
@@ -336,16 +342,19 @@ async def ungmuter(event):
                 # await event.client.edit_permissions(x.id, userid, until_date=None, send_messages=True)
                 await event.client(EditBannedRequest(x.id, userid, UNBAN_RIGHTS))
                 success += 1
+                await sleep(0.5)
             except BaseException:
                 failed += 1
 
     ungmute(userid)
     if BOTLOG:
-        await event.client.send_message(BOTLOG_CHATID, "**#Ungmuted** [{}](tg://user?id={})".format(userid, userid))
+        await event.client.send_message(
+            BOTLOG_CHATID, "**#UnGmuted** user [{}](tg://user?id={})".format(userid, userid)
+        )
 
-    text = f"""**#Ungmuted** oleh {mention}
+    text = f"""**#UnGmuted** by {mention}
 **User :** [{name}](tg://user?id={userid})
-**Aksi :** `Ungmuted`
+**Aksi :** `UnGmuted`
 **Grup/Channel :** Berhasil `{success}` Gagal `{failed}`"""
     await NotUBot.edit(text)
 
@@ -368,12 +377,11 @@ async def gcast(event):
             chat = x.entity.id
             if not int("-100" + str(chat)) in NOSPAM_CHAT:
                 try:
-                    success += 1
                     await event.client.send_message(chat, msg)
+                    success += 1
+                    await sleep(2)
                 except BaseException:
                     failed += 1
-
-        await asyncio.sleep(2)
 
     await NotUBot.edit(
         f"Berhasil mengirim pesan broadcast grup ke `{success}` obrolan, gagal mengirim ke `{failed}` obrolan."
@@ -396,12 +404,11 @@ async def gucast(event):
     async for x in event.client.iter_dialogs():
         if x.is_user and not (x.entity.bot or x.id == 777000):
             try:
-                success += 1
                 await event.client.send_message(x.id, msg)
+                success += 1
+                await sleep(2)
             except BaseException:
                 failed += 1
-
-        await asyncio.sleep(2)
 
     await NotUBot.edit(
         f"Berhasil mengirim pesan broadcast pribadi ke `{success}` obrolan, gagal mengirim ke `{failed}` obrolan."

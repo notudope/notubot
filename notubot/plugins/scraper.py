@@ -178,14 +178,14 @@ async def addmemb(event):
 @bot_cmd(disable_errors=True, pattern="limit$")
 async def limit(event):
     await event.edit("`...`")
-    async with event.client.conversation("@SpamBot") as cov:
+    async with event.client.conversation("@SpamBot") as conv:
         try:
-            res = cov.wait_event(events.NewMessage(incoming=True, from_users=178220800))
-            await cov.send_message("/start")
+            res = conv.wait_event(events.NewMessage(incoming=True, from_users=178220800))
+            await conv.send_message("/start")
             res = await res
-            await event.client.send_read_acknowledge(cov.chat_id)
+            await event.client.send_read_acknowledge(conv.chat_id)
         except YouBlockedUserError:
-            await event.edit("`Unblock @SpamBot !!`")
+            await event.edit("`Unblock @SpamBot`")
             return
         await event.edit(f"~ {res.message.message}")
 

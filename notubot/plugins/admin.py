@@ -48,7 +48,7 @@ from notubot.plugins.sql_helper.mute_sql import is_muted, mute, unmute
 
 NO_PERM = "`Tidak memiliki izin!`"
 FAILED = "`Gagal melakukan aksi!`"
-REQ_ID = "`Wajib menyertakan ID User atau balas pesan tersebut.`"
+REQ_ID = "`Kesalahan, dibutuhkan ID atau balas pesan itu.`"
 
 BANNED_RIGHTS = ChatBannedRights(
     until_date=None,
@@ -255,7 +255,7 @@ async def kick(event):
     if user.id == (await event.client.get_me()).id:
         return await NotUBot.edit("🥴 **Mabok?**")
     if int(user.id) in DEVLIST:
-        return await NotUBot.edit("😑 **Tidak dapat Kick, karena dia pembuatku!**")
+        return await NotUBot.edit("😑 **Gagal Kick, dia pembuatku!**")
 
     try:
         await event.client.kick_participant(event.chat_id, user.id)
@@ -284,7 +284,7 @@ async def ban(event):
     if user.id == (await event.client.get_me()).id:
         return await NotUBot.edit("🥴 **Mabok?**")
     if int(user.id) in DEVLIST:
-        return await NotUBot.edit("😑 **Tidak dapat Banned, karena dia pembuatku!**")
+        return await NotUBot.edit("😑 **Gagal Banned, dia pembuatku!**")
 
     try:
         await event.client.edit_permissions(event.chat_id, user.id, view_messages=False)
@@ -335,7 +335,7 @@ async def muter(event):
     if user.id == (await event.client.get_me()).id:
         return await NotUBot.edit("🥴 **Mabok?**")
     if int(user.id) in DEVLIST:
-        return await NotUBot.edit("😑 **Tidak dapat Mute, karena dia pembuatku!**")
+        return await NotUBot.edit("😑 **Gagal Mute, dia pembuatku!**")
 
     if is_muted(user.id, event.chat_id):
         return await NotUBot.edit("`User sudah terkena Mute.`")
@@ -754,21 +754,21 @@ CMD_HELP.update(
     {
         "admin": [
             "Admin",
-            "`.promote <id/username/reply> <title (optional)>`\n"
+            "`.promote <username/id/reply> <title (optional)>`\n"
             "↳ : Promote user menjadi admin.\n\n"
-            "`.demote <id/username/reply>`\n"
+            "`.demote <username/id/reply>`\n"
             "↳ : Demote seorang admin.\n\n"
-            "`.fpromote|fullpromote <id/username/reply> <title (optional)>`\n"
+            "`.fpromote|fullpromote <username/id/reply> <title (optional)>`\n"
             "↳ : Promote user menjadi cofounder.\n\n"
-            "`.kick <id/username/reply> <reason (optional)>`\n"
+            "`.kick <username/id/reply> <reason (optional)>`\n"
             "↳ : Kick user dari grup.\n\n"
-            "`.ban <id/username/reply> <reason (optional)>`\n"
+            "`.ban <username/id/reply> <reason (optional)>`\n"
             "↳ : Banned user dari grup.\n\n"
-            "`.unban <id/username/reply>`\n"
+            "`.unban <username/id/reply>`\n"
             "↳ : Unbanned user dari grup.\n\n"
-            "`.mute <id/username/reply> <reason (optional)>`\n"
+            "`.mute <username/id/reply> <reason (optional)>`\n"
             "↳ : Mute user dari grup.\n\n"
-            "`.unmute <id/username/reply>`\n"
+            "`.unmute <username/id/reply>`\n"
             "↳ : Unmute user dari grup.\n\n"
             "`.lock`\n"
             "↳ : Kunci grup, biarkan user hanya membaca.\n\n"
