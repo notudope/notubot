@@ -97,6 +97,7 @@ async def joinvc(event):
 
     if not (group_call and group_call.is_connected):
         await group_call.start(event.chat.id)
+        await group_call.set_is_mute(True)
 
     await event.edit("`joined`")
     await asyncio.sleep(3)

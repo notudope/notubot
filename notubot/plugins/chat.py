@@ -15,16 +15,17 @@ from notubot import CMD_HELP
 from notubot.events import bot_cmd
 
 
-@bot_cmd(pattern="id$")
+@bot_cmd(pattern="(getid|id)$")
 async def id(event):
     chat_id = event.chat_id or event.from_id
     if event.reply_to_msg_id:
         reply = await event.get_reply_message()
+        userid = reply.sender_id
         if reply.media:
             bot_api_file_id = pack_bot_file_id(reply.media)
-            await event.edit(f"Group: `{chat_id}`\nUser: `{reply.from_id}`\nBot File API: `{bot_api_file_id}`")
+            await event.edit(f"Group: `{chat_id}`\nUser: `{userid}`\nBot File API: `{bot_api_file_id}`")
         else:
-            text = f"User: `{reply.from_id}`" if event.is_private else f"Group: `{chat_id}`\nUser: `{reply.from_id}`"
+            text = f"User: `{userid}`" if event.is_private else f"Group: `{chat_id}`\nUser: `{userid}`"
             await event.edit(text)
     else:
         text = "User: " if event.is_private else "Group: "
@@ -104,7 +105,7 @@ CMD_HELP.update(
     {
         "chat": [
             "Chat",
-            "`.id`\n"
+            "`.getid|id`\n"
             "↳ : Mengambil ID obrolan saat ini.\n\n"
             "`.getlink|link`\n"
             "↳ : Mengambil link obrolan saat ini.\n\n"

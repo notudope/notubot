@@ -24,7 +24,7 @@ from notubot.utils import parse_pre, yaml_format
 REQ_ID = "`Kesalahan, dibutuhkan ID atau balas pesan itu.`"
 
 
-@bot_cmd(pattern="(sa|sg) ?(.*)")
+@bot_cmd(pattern="sa ?(.*)")
 async def lastname(event):
     NotUBot = await event.edit("`Searching...`")
     chat_id = event.chat_id or event.from_id
@@ -33,7 +33,7 @@ async def lastname(event):
         userid = None if reply.sender.bot else reply.sender_id
     elif event.pattern_match.group(1):
         match = event.pattern_match.group(1)
-        userid = int(match) if str(match).isdigit() else None
+        userid = int(match) if match.isdigit() else None
     elif event.is_private:
         userid = (await event.get_chat()).id
     else:
@@ -239,7 +239,7 @@ CMD_HELP.update(
     {
         "utility": [
             "Utility",
-            "`.sa|sg`\n"
+            "`.sa`\n"
             "↳ : Riwayat nama oleh sangmata.\n\n"
             "`.stats`\n"
             "↳ : Stats profile user.\n\n"
