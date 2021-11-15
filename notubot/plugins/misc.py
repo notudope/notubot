@@ -5,6 +5,7 @@
 # PLease read the GNU General Public License v3.0 in
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
+import asyncio
 from random import randint
 from time import sleep
 
@@ -53,22 +54,22 @@ async def repeat(event):
 async def typing(event):
     match = event.pattern_match.group(1)
     if not match:
-        return await event.edit("`Input tidak valid.`")
+        return await event.edit("`Ketikan sebuah pesan.`")
 
     text = "\u2060" * 602
     NotUBot = await event.edit(text)
     typing_symbol = "|"
     previous_text = ""
     await NotUBot.edit(typing_symbol)
-    await sleep(0.4)
+    await asyncio.sleep(0.4)
 
     for character in match:
         previous_text = previous_text + "" + character
         typing_text = previous_text + "" + typing_symbol
         await NotUBot.edit(typing_text)
-        await sleep(0.4)
+        await asyncio.sleep(0.4)
         await NotUBot.edit(previous_text)
-        await sleep(0.4)
+        await asyncio.sleep(0.4)
 
 
 CMD_HELP.update(
