@@ -24,8 +24,8 @@ from notubot.utils import parse_pre, yaml_format
 REQ_ID = "`Kesalahan, dibutuhkan ID atau balas pesan itu.`"
 
 
-@bot_cmd(pattern="sa ?(.*)")
-async def lastname(event):
+@bot_cmd(pattern="sa(?: |$)(.*)")
+async def sa(event):
     NotUBot = await event.edit("`Searching...`")
     chat_id = event.chat_id or event.from_id
     if event.reply_to_msg_id:

@@ -250,7 +250,7 @@ async def fstat(event):
         try:
             await conv.send_message("/start")
             await conv.get_response()
-            await conv.send_message("/fedstat " + userid)
+            await conv.send_message("/fedstat " + str(userid))
             res = await conv.get_response()
             await NotUBot.edit(res.text)
         except YouBlockedUserError:
