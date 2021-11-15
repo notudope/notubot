@@ -15,6 +15,7 @@ from telethon.tl.functions.phone import (
     JoinGroupCallRequest,
     LeaveGroupCallRequest,
 )
+from telethon.tl.types import DataJSON
 
 from notubot import CMD_HELP
 from notubot.events import bot_cmd
@@ -91,6 +92,7 @@ async def joinvc(event):
         JoinGroupCallRequest(
             call=call,
             join_as="me",
+            params=DataJSON(data=str(event.chat.id)),
             muted=True,
             video_stopped=True,
         )
