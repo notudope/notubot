@@ -26,12 +26,12 @@ async def help(event):
     if args:
         if args in CMD_HELP:
             await event.edit(
-                f"📦 Plugin **{CMD_HELP[args][0]}** <`{HANDLER}help {args}`>\n\n"
+                f"📦 Plugin **{CMD_HELP[args][0]}** `{HANDLER}help {args}`\n\n"
                 + str(CMD_HELP[args][1]).replace("`.", f"• `{HANDLER}")
             )
         else:
             await event.edit(
-                f"😡 Plugin [`{args}`] tidak ada! Ketik <`{HANDLER}help`> untuk melihat nama plugin yang benar."
+                f"😡 Plugin [`{args}`] tidak ada! Ketik `{HANDLER}help` untuk melihat nama plugin yang benar."
             )
     else:
         plugins = ""
@@ -42,10 +42,10 @@ async def help(event):
         text = f"""`{__botname__}`
 [REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Support](https://t.me/NOTUBOTS)  /  [Mutualan](https://t.me/CariTemanOK)
 
-😎 **Owner** - `{get_display_name(me)}`
-🤖 **Version** - `v{__botversion__}`
-📦 **Plugin** - `{len(CMD_HELP)}`
-👨‍💻 **Usage** - `{HANDLER}help <plugin>`
+😎 **Owner:** `{get_display_name(me)}`
+🤖 **Version:** `v{__botversion__}`
+📦 **Plugin:** `{len(CMD_HELP)}`
+👨‍💻 **Usage:** `{HANDLER}help <plugin>`
 
 Daftar semua plugin beserta perintah tersedia dibawah ini:
 
@@ -61,4 +61,4 @@ Daftar semua plugin beserta perintah tersedia dibawah ini:
             text,
             link_preview=False,
         )
-        await helper.reply(f"**Contoh :** Ketik <`{HANDLER}help admin`> Untuk informasi pengunaan.")
+        await helper.reply(f"**Contoh :** Ketik `{HANDLER}help admin` Untuk informasi pengunaan.")
