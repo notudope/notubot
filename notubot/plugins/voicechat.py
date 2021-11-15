@@ -11,7 +11,7 @@ from pytgcalls import GroupCallFactory
 from telethon.tl.functions.channels import GetFullChannelRequest, DeleteMessagesRequest
 from telethon.tl.functions.phone import CreateGroupCallRequest, DiscardGroupCallRequest, InviteToGroupCallRequest
 
-from notubot import CMD_HELP, bot
+from notubot import CMD_HELP, bot, HANDLER
 from notubot.events import bot_cmd
 
 group_call_factory = GroupCallFactory(bot, GroupCallFactory.MTPROTO_CLIENT_TYPE.TELETHON)
@@ -45,8 +45,8 @@ async def vcstart(event):
     )
 
     if stfu is not True:
-        await event.edit("`Memulai Obrolan Video...`")
-        await asyncio.sleep(15)
+        await event.edit("`Memulai Obrolan Suara...`")
+        await asyncio.sleep(3)
     else:
         await event.delete()
         if _group and _group.updates[1].id is not None:
@@ -59,13 +59,21 @@ async def vcstop(event):
     silent = ["s", "silent"]
     stfu = True if opts in silent else False
 
-    _group = await event.client(
-        DiscardGroupCallRequest((await event.client(GetFullChannelRequest(event.chat.id))).full_chat.call)
-    )
+    try:
+        call = (await event.client(GetFullChannelRequest(event.chat.id))).full_chat.call
+    except BaseException:
+        call = None
+
+    if not call:
+        await event.edit("`Tidak ada obrolan.`")
+        await asyncio.sleep(3)
+        return await event.delete()
+
+    _group = await event.client(DiscardGroupCallRequest(call))
 
     if stfu is not True:
-        await event.edit("`Obrolan Video dimatikan...`")
-        await asyncio.sleep(5)
+        await event.edit("`Obrolan Suara dimatikan...`")
+        await asyncio.sleep(3)
         await event.delete()
     else:
         await event.delete()
@@ -83,13 +91,15 @@ async def joinvc(event):
         call = None
 
     if not call:
-        return await event.edit("`nope`")
+        await event.edit(f"`Tidak ada obrolan, mulai dengan {HANDLER}startvc`")
+        await asyncio.sleep(15)
+        return await event.delete()
 
     if not (group_call and group_call.is_connected):
         await group_call.start(event.chat.id)
 
     await event.edit("`joined`")
-    await asyncio.sleep(5)
+    await asyncio.sleep(3)
     await event.delete()
 
 
@@ -103,38 +113,44 @@ async def leavevc(event):
         call = None
 
     if not call:
-        return await event.edit("`nope`")
+        await event.edit(f"`Tidak ada obrolan, mulai dengan {HANDLER}startvc`")
+        await asyncio.sleep(15)
+        return await event.delete()
 
     if group_call and group_call.is_connected:
         await group_call.stop()
 
     await event.edit("`leaved`")
-    await asyncio.sleep(5)
+    await asyncio.sleep(3)
     await event.delete()
 
 
 @bot_cmd(groups_only=True, admins_only=True, pattern="vcinvite$")
 async def vcinvite(event):
-    await event.edit("`Mengundang orang ke Obrolan Video...`")
+    await event.edit("`Mengundang orang ke Obrolan Suara...`")
     await event.get_chat()
     users = []
     invited = 0
+
+    try:
+        call = (await event.client(GetFullChannelRequest(event.chat.id))).full_chat.call
+    except BaseException:
+        call = None
+
+    if not call:
+        return await event.delete()
 
     async for x in event.client.iter_participants(event.chat_id):
         if not (x.bot or x.deleted):
             users.append(x.id)
 
     for user in list(user_list(users, 6)):
-        await event.client(
-            InviteToGroupCallRequest(
-                call=(await event.client(GetFullChannelRequest(event.chat.id))).full_chat.call, users=user
-            )
-        )
+        await event.client(InviteToGroupCallRequest(call=call, users=user))
         invited += 6
         await asyncio.sleep(5)
 
-    await event.edit(f"`Diundang {invited} anggota.`")
-    await asyncio.sleep(20)
+    await event.edit(f"`Diundang {invited} orang.`")
+    await asyncio.sleep(15)
     await event.delete()
 
 
@@ -143,15 +159,15 @@ CMD_HELP.update(
         "voicechat": [
             "Voice Chat",
             "`.startvc <silent/s> <judul>`\n"
-            "↳ : Memulai Obrolan Video.\n\n"
+            "↳ : Memulai Obrolan Suara.\n\n"
             "`.stopvc|endvc <silent/s>`\n"
-            "↳ : Mematikan Obrolan Video.\n\n"
+            "↳ : Mematikan Obrolan Suara.\n\n"
             "`.joinvc`\n"
-            "↳ : Bergabung ke Obrolan Video.\n\n"
+            "↳ : Bergabung ke Obrolan Suara.\n\n"
             "`.leavevc`\n"
-            "↳ : Keluar dari Obrolan Video.\n\n"
+            "↳ : Keluar dari Obrolan Suara.\n\n"
             "`.vcinvite`\n"
-            "↳ : Mengundang semua anggota grup ke Obrolan Video.",
+            "↳ : Mengundang semua anggota grup ke Obrolan Suara.",
         ]
     }
 )

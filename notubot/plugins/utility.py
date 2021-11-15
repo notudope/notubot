@@ -44,7 +44,7 @@ async def lastname(event):
 
     sangmata = "@SangMataInfo_bot"
     try:
-        async with event.cliet.conversation(sangmata) as conv:
+        async with event.client.conversation(sangmata) as conv:
             try:
                 msg = await conv.send_message(f"/search_id {userid}")
                 r = await conv.get_response()

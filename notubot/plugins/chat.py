@@ -22,19 +22,13 @@ async def id(event):
         reply = await event.get_reply_message()
         if reply.media:
             bot_api_file_id = pack_bot_file_id(reply.media)
-            await event.edit(
-                f"Group: `{int(chat_id)}`\nUser: `{int(reply.from_id)}`\nBot File API: `{bot_api_file_id}`"
-            )
+            await event.edit(f"Group: `{chat_id}`\nUser: `{reply.from_id}`\nBot File API: `{bot_api_file_id}`")
         else:
-            text = (
-                f"User: `{int(reply.from_id)}`"
-                if event.is_private
-                else f"Group: `{int(chat_id)}`\nUser: `{int(reply.from_id)}`"
-            )
+            text = f"User: `{reply.from_id}`" if event.is_private else f"Group: `{chat_id}`\nUser: `{reply.from_id}`"
             await event.edit(text)
     else:
         text = "User: " if event.is_private else "Group: "
-        await event.edit(f"{text}`{int(chat_id)}`")
+        await event.edit(f"{text}`{chat_id}`")
 
 
 @bot_cmd(groups_only=True, pattern="(getlink|link)$")
