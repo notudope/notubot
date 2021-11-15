@@ -278,9 +278,9 @@ CMD_HELP.update(
         "fban": [
             f"{fbot} Federation",
             "`.fban <id/username> <reason>`\n"
-            "↳ : Ban user dari federasi yang terhubung.\n\n"
+            "↳ : Fban user dari federasi yang terhubung.\n\n"
             "`.unfban <id/username> <reason>`\n"
-            "↳ : Melelas user dari fban.\n\n"
+            "↳ : Melepas user dari fban.\n\n"
             "`.addfed <name>`\n"
             "↳ : Tambahkan grup saat ini dengan <name> di federasi yang terhubung.\n\n"
             "`.delfed`\n"
