@@ -8,7 +8,13 @@
 import asyncio
 
 from telethon.tl.functions.channels import GetFullChannelRequest, DeleteMessagesRequest
-from telethon.tl.functions.phone import CreateGroupCallRequest, DiscardGroupCallRequest, InviteToGroupCallRequest
+from telethon.tl.functions.phone import (
+    CreateGroupCallRequest,
+    DiscardGroupCallRequest,
+    InviteToGroupCallRequest,
+    JoinGroupCallRequest,
+    LeaveGroupCallRequest,
+)
 
 from notubot import CMD_HELP
 from notubot.events import bot_cmd
@@ -69,6 +75,55 @@ async def vcstop(event):
             await event.client(DeleteMessagesRequest(event.chat_id, [_group.updates[1].id]))
 
 
+@bot_cmd(groups_only=True, admins_only=True, pattern="joinvc$")
+async def joinvc(event):
+    await event.edit("`...`")
+
+    try:
+        call = (await event.client(GetFullChannelRequest(event.chat.id))).full_chat.call
+    except BaseException:
+        call = None
+
+    if not call:
+        return await event.edit("`nope`")
+
+    await event.client(
+        JoinGroupCallRequest(
+            call=call,
+            join_as="me",
+            muted=True,
+            video_stopped=True,
+        )
+    )
+
+    await event.edit("`joined`")
+    await asyncio.sleep(5)
+    await event.delete()
+
+
+@bot_cmd(groups_only=True, admins_only=True, pattern="leavevc$")
+async def leavevc(event):
+    await event.edit("`...`")
+
+    try:
+        call = (await event.client(GetFullChannelRequest(event.chat.id))).full_chat.call
+    except BaseException:
+        call = None
+
+    if not call:
+        return await event.edit("`nope`")
+
+    await event.client(
+        LeaveGroupCallRequest(
+            call=call,
+        )
+    )
+
+    await event.edit("`leaved`")
+    await asyncio.sleep(5)
+    await event.delete()
+
+
 @bot_cmd(groups_only=True, admins_only=True, pattern="vcinvite$")
 async def vcinvite(event):
     await event.edit("`Mengundang orang ke Obrolan Video...`")
@@ -102,6 +157,10 @@ CMD_HELP.update(
             "↳ : Memulai Obrolan Video.\n\n"
             "`.stopvc|endvc <silent/s>`\n"
             "↳ : Mematikan Obrolan Video.\n\n"
+            "`.joinvc`\n"
+            "↳ : Bergabung ke Obrolan Video.\n\n"
+            "`.leavevc`\n"
+            "↳ : Keluar dari Obrolan Video.\n\n"
             "`.vcinvite`\n"
             "↳ : Mengundang semua anggota grup ke Obrolan Video.",
         ]

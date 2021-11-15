@@ -29,8 +29,12 @@
       "required": true
     },
     "STRING_SESSION": {
-      "description": "Get this value by running [python3 string_session.py] in Termux or local system.",
+      "description": "Get this value by running [python3 session.py] in Termux or local system.",
       "required": true
+    },
+    "HANDLER": {
+      "description": "Command initial started, example: .help (. / -) default (.)",
+      "value": "."
     },
     "HEROKU_API_KEY": {
       "description": "Your Heroku API key, get it from 'https://dashboard.heroku.com/account'",

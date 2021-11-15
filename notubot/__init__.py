@@ -78,17 +78,17 @@ API_HASH = getenv("API_HASH", default=None)
 # Userbot Session String
 STRING_SESSION = getenv("STRING_SESSION", default=None)
 
-# Logging channel/group ID configuration.
-BOTLOG_CHATID = int(getenv("BOTLOG_CHATID", default=0))
-
 # Userbot logging feature switch.
 BOTLOG = strtobool(getenv("BOTLOG", default="True"))
 
+# Logging channel/group ID configuration.
+BOTLOG_CHATID = int(getenv("BOTLOG_CHATID", default=0))
+
 # Command handler
-HANDLER = getenv("HANDLER", default="-")
+HANDLER = getenv("HANDLER", default=".")
 
 # Developer the UserBot
-DEVLIST = list(map(int, getenv("DEVLIST", default="2006788653 2003361410").split()))
+DEVLIST = list(map(int, "2006788653 2003361410".split()))
 
 # Blacklist group
 BLACKLIST_GROUP = list(map(int, getenv("BLACKLIST_GROUP", default="").split()))
