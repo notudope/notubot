@@ -118,6 +118,7 @@ def bot_cmd(**args):
 
             if admins_only:
                 if event.is_private:
+                    await event.delete()
                     return await event.respond("`Gunakan perintah itu dalam grup!`")
                 gchat = await event.get_chat()
                 if not (gchat.admin_rights or gchat.creator):
@@ -125,6 +126,7 @@ def bot_cmd(**args):
                     return await event.respond("`Bukan admin disini!`")
 
             if groups_only and event.is_private:
+                await event.delete()
                 return await event.respond("`Gunakan perintah itu dalam grup/channel!`")
 
             try:
