@@ -29,7 +29,7 @@ fbot = "@MissRose_bot"
 REQ_ID = "`Kesalahan, dibutuhkan ID atau balas pesan itu.`"
 
 
-@bot_cmd(pattern="fban ?(.*)")
+@bot_cmd(pattern="fban(?: |$)(.*)")
 async def fban(event):
     NotUBot = await event.edit("`Fbanning...`")
     reason = ""
@@ -114,7 +114,7 @@ async def fban(event):
     await NotUBot.edit(text)
 
 
-@bot_cmd(pattern="unfban ?(.*)")
+@bot_cmd(pattern="unfban(?: |$)(.*)")
 async def unfban(event):
     NotUBot = await event.edit("`UnFbanning...`")
     reason = ""
@@ -196,7 +196,7 @@ async def unfban(event):
     await NotUBot.edit(text)
 
 
-@bot_cmd(pattern="addfed ?(.*)")
+@bot_cmd(pattern="addfed(?: |$)(.*)")
 async def addfed(event):
     if not (fed_name := event.pattern_match.group(1)):
         return await event.edit("`Sertakan nama untuk menghubungkan grup ini.`")
@@ -234,7 +234,7 @@ async def clearfed(event):
     await event.edit("`unfederations`")
 
 
-@bot_cmd(pattern="fstat ?(.*)")
+@bot_cmd(pattern="fstat(?: |$)(.*)")
 async def fstat(event):
     NotUBot = await event.edit("`Fstat....`")
     if event.reply_to_msg_id:
@@ -257,7 +257,7 @@ async def fstat(event):
             await NotUBot.edit(f"`Unblock {fbot}`")
 
 
-@bot_cmd(pattern="fedinfo ?(.*)")
+@bot_cmd(pattern="fedinfo(?: |$)(.*)")
 async def fedinfo(event):
     NotUBot = await event.edit("`Fetching...`")
     match = event.pattern_match.group(1)

@@ -24,7 +24,7 @@ async def delete(event):
     await event.delete()
 
 
-@bot_cmd(disable_errors=True, pattern="purge ?(.*)")
+@bot_cmd(disable_errors=True, pattern="purge(?: |$)(.*)")
 async def purge(event):
     match = event.pattern_match.group(1)
     try:
@@ -68,7 +68,7 @@ async def purge(event):
     await NotUBot.delete()
 
 
-@bot_cmd(disable_errors=True, pattern="purgeme ?(.*)")
+@bot_cmd(disable_errors=True, pattern="purgeme(?: |$)(.*)")
 async def purgeme(event):
     opts = event.pattern_match.group(1)
     if opts and not event.is_reply:

@@ -25,7 +25,7 @@ BANNED_RIGHTS = ChatBannedRights(
 )
 
 
-@bot_cmd(groups_only=True, admins_only=True, pattern="rocker ?(.*)")
+@bot_cmd(groups_only=True, admins_only=True, pattern="rocker(?: |$)(.*)")
 async def rocker(event):
     me = await event.client.get_me()
 
@@ -56,7 +56,7 @@ async def rocker(event):
         await event.edit("👏 Congratulations\nFrom now, you have no friends!")
 
 
-@bot_cmd(groups_only=True, admins_only=True, pattern="gohell ?(.*)")
+@bot_cmd(groups_only=True, admins_only=True, pattern="gohell(?: |$)(.*)")
 async def gohell(event):
     me = await event.client.get_me()
 

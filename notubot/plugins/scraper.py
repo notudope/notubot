@@ -63,7 +63,7 @@ async def get_chatinfo(event):
     return chat_info
 
 
-@bot_cmd(groups_only=True, pattern="inviteall ?(.*)")
+@bot_cmd(groups_only=True, pattern="inviteall(?: |$)(.*)")
 async def inviteall(event):
     sender = await event.get_sender()
     me = await event.client.get_me()

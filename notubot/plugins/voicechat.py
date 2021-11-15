@@ -23,7 +23,7 @@ def user_list(ls, n):
         yield ls[i : i + n]
 
 
-@bot_cmd(groups_only=True, admins_only=True, pattern="startvc ?(.*)")
+@bot_cmd(groups_only=True, admins_only=True, pattern="startvc(?: |$)(.*)")
 async def vcstart(event):
     opts = event.pattern_match.group(1).strip()
     args = opts.split(" ")
@@ -53,7 +53,7 @@ async def vcstart(event):
             await event.client(DeleteMessagesRequest(event.chat_id, [_group.updates[1].id]))
 
 
-@bot_cmd(groups_only=True, admins_only=True, pattern="(stopvc|endvc) ?(.*)")
+@bot_cmd(groups_only=True, admins_only=True, pattern="(stopvc|endvc)(?: |$)(.*)")
 async def vcstop(event):
     opts = event.pattern_match.group(1).strip()
     silent = ["s", "silent"]

@@ -59,7 +59,7 @@ async def get_user_id(id, event):
     return userid
 
 
-@bot_cmd(pattern="gban ?(.*)")
+@bot_cmd(pattern="gban(?: |$)(.*)")
 async def gban(event):
     NotUBot = await event.edit("`Gbanning...`")
     await event.get_chat()
@@ -130,7 +130,7 @@ async def gban(event):
     await NotUBot.edit(text)
 
 
-@bot_cmd(pattern="ungban ?(.*)")
+@bot_cmd(pattern="ungban(?: |$)(.*)")
 async def ungban(event):
     NotUBot = await event.edit("`UnGbanning...`")
     await event.get_chat()
@@ -224,7 +224,7 @@ async def listgban(event):
         await event.edit(msg, parse_mode="html")
 
 
-@bot_cmd(pattern="gkick ?(.*)")
+@bot_cmd(pattern="gkick(?: |$)(.*)")
 async def gkick(event):
     NotUBot = await event.edit("`Gkicking...`")
     await event.get_chat()
@@ -267,7 +267,7 @@ async def gkick(event):
     await NotUBot.edit(text)
 
 
-@bot_cmd(pattern="gmute ?(.*)")
+@bot_cmd(pattern="gmute(?: |$)(.*)")
 async def gmuter(event):
     NotUBot = await event.edit("`Gmuting...`")
     await event.get_chat()
@@ -314,7 +314,7 @@ async def gmuter(event):
     await NotUBot.edit(text)
 
 
-@bot_cmd(pattern="ungmute ?(.*)")
+@bot_cmd(pattern="ungmute(?: |$)(.*)")
 async def ungmuter(event):
     NotUBot = await event.edit("`UnGmuting...`")
     await event.get_chat()
@@ -359,7 +359,7 @@ async def ungmuter(event):
     await NotUBot.edit(text)
 
 
-@bot_cmd(pattern="gcast ?(.*)")
+@bot_cmd(pattern="gcast(?: |$)(.*)")
 async def gcast(event):
     match = event.pattern_match.group(1)
     if match:
@@ -388,7 +388,7 @@ async def gcast(event):
     )
 
 
-@bot_cmd(pattern="gucast ?(.*)")
+@bot_cmd(pattern="gucast(?: |$)(.*)")
 async def gucast(event):
     match = event.pattern_match.group(1)
     if match:
@@ -415,7 +415,7 @@ async def gucast(event):
     )
 
 
-@bot_cmd(pattern="gsend ?(.*)")
+@bot_cmd(pattern="gsend(?: |$)(.*)")
 async def gsend(event):
     opts = event.pattern_match.group(1)
     args = opts.split(" ")

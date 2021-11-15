@@ -24,7 +24,7 @@ from notubot.utils import parse_pre, yaml_format
 REQ_ID = "`Kesalahan, dibutuhkan ID atau balas pesan itu.`"
 
 
-@bot_cmd(pattern="sa(?: |$)(.*)")
+@bot_cmd(pattern="(sa|sg)(?: |$)(.*)")
 async def sa(event):
     NotUBot = await event.edit("`Searching...`")
     chat_id = event.chat_id or event.from_id
@@ -239,7 +239,7 @@ CMD_HELP.update(
     {
         "utility": [
             "Utility",
-            "`.sa`\n"
+            "`.sa|sg`\n"
             "↳ : Riwayat nama oleh sangmata.\n\n"
             "`.stats`\n"
             "↳ : Stats profile user.\n\n"

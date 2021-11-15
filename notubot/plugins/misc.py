@@ -39,7 +39,7 @@ async def randomise(event):
     await event.edit("**Query: **\n`" + event.text[8:] + "`\n**Output: **\n`" + itemo[index] + "`")
 
 
-@bot_cmd(pattern="repeat ?(.*)")
+@bot_cmd(pattern="repeat(?: |$)(.*)")
 async def repeat(event):
     count, text = event.pattern_match.group(1).split(" ", 1)
     replyCount = int(count)
@@ -49,7 +49,7 @@ async def repeat(event):
     await event.edit(replyText)
 
 
-@bot_cmd(pattern="type ?(.*)")
+@bot_cmd(pattern="type(?: |$)(.*)")
 async def typing(event):
     match = event.pattern_match.group(1)
     if not match:

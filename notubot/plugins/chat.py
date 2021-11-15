@@ -65,7 +65,7 @@ async def kickme(event):
     await event.client(LeaveChannelRequest(event.chat_id))
 
 
-@bot_cmd(groups_only=True, pattern="invite ?(.*)")
+@bot_cmd(groups_only=True, pattern="invite(?: |$)(.*)")
 async def invite(event):
     NotUBot = await event.edit("`...`")
     match = event.pattern_match.group(1)
@@ -84,7 +84,7 @@ async def invite(event):
             await NotUBot.edit(str(e))
 
 
-@bot_cmd(pattern="total ?(.*)")
+@bot_cmd(pattern="total(?: |$)(.*)")
 async def total(event):
     match = event.pattern_match.group(1).strip()
     await event.edit("`...`")
