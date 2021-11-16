@@ -36,7 +36,7 @@ async def help(event):
     else:
         plugins = ""
         for p in CMD_HELP:
-            plugins += f"`{str(p)}`  •  "
+            plugins += f"`{str(p)}`  |  "
         plugins = plugins[:-3]
 
         text = f"""`{__botname__}`
