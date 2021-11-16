@@ -257,7 +257,7 @@ with bot:
 async def update_restart_msg(chat_id: int, msg_id: int) -> bool:
     message = (
         f"`{__botname__}`\n"
-        f"[REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Support](https://t.me/NOTUBOTS)  /  [Mutualan](https://t.me/CariTemanOK)\n\n"
+        f"[Repo](https://github.com/notudope/notubot)  •  [Channel](https://t.me/notudope)  •  [Support](https://t.me/NOTUBOTS)  •  [Mutualan](https://t.me/CariTemanOK)\n\n"
         f"**Version** - `v{__botversion__}`\n"
         f"**Python** - `{python_version()}`\n"
         f"**Telethon** - `{version.__version__}`"

@@ -36,11 +36,11 @@ async def help(event):
     else:
         plugins = ""
         for p in CMD_HELP:
-            plugins += f"`{str(p)}`  |  "
-        plugins = plugins[:-3]
+            plugins += f"`{str(p)}`   |   "
+        plugins = plugins[:-4]
 
         text = f"""`{__botname__}`
-[REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Support](https://t.me/NOTUBOTS)  /  [Mutualan](https://t.me/CariTemanOK)
+[Repo](https://github.com/notudope/notubot)  •  [Channel](https://t.me/notudope)  •  [Support](https://t.me/NOTUBOTS)  •  [Mutualan](https://t.me/CariTemanOK)
 
 😎 **Owner:** `{get_display_name(me)}`
 🤖 **Version:** `v{__botversion__}`

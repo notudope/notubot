@@ -36,19 +36,19 @@ alive_text = """<code>{}</code>
 
 <b>{}</b>
 
-━━━━━━━━━━━━━━━━━━━━━
-┣ <b>Owner</b> - <code>{}</code>
-┣ <b>Username</b> - @{}
-┣ <b>ID</b> - <code>{}</code>
-┣ <b>Instagram</b> - <a href=https://www.instagram.com/{}>{}</a>
-┣ <b>Version</b> - <code>v{}</code>
-┣ <b>Plugin</b> - <code>{}</code>
-┣ <b>Ping</b> - <code>{} ms</code>
-┣ <b>Uptime</b> - <code>{}</code>
-┣ <b>Python</b> - <code>{}</code>
-┣ <b>Telethon</b> - <code>{}</code>
-┣ <b>Branch</b> - {}
-┗━━━━━━━━━━━━━━━━━━━━━
+┏━━━━━━━━━━━━━━━━━━━━━━━━
+┣  <b>Owner</b> - <code>{}</code>
+┣  <b>Username</b> - @{}
+┣  <b>ID</b> - <code>{}</code>
+┣  <b>Instagram</b> - <a href=https://www.instagram.com/{}>{}</a>
+┣  <b>Version</b> - <code>v{}</code>
+┣  <b>Plugin</b> - <code>{}</code>
+┣  <b>Ping</b> - <code>{} ms</code>
+┣  <b>Uptime</b> - <code>{}</code>
+┣  <b>Python</b> - <code>{}</code>
+┣  <b>Telethon</b> - <code>{}</code>
+┣  <b>Branch</b> - {}
+┗━━━━━━━━━━━━━━━━━━━━━━━━
 
 <a href=https://github.com/notudope/notubot>Repo</a>  •  <a href=https://t.me/notudope>Channel</a>  •  <a href=https://t.me/NOTUBOTS>Support</a>  •  <a href=https://t.me/CariTemanOK>Mutualan</a>"""
 
