@@ -32,7 +32,7 @@ from notubot import (
 from notubot.events import bot_cmd
 from notubot.utils import time_formatter, restart, run_cmd
 
-alive_text = """<code>{}<code>
+alive_text = """<code>{}</code>
 
 <b>{}</b>
 
@@ -47,10 +47,10 @@ alive_text = """<code>{}<code>
 ┣ <b>Uptime</b> - <code>{}</code>
 ┣ <b>Python</b> - <code>{}</code>
 ┣ <b>Telethon</b> - <code>{}</code>
-┣ <b>Branch</b> - <code>{}</code>
+┣ <b>Branch</b> - {}
 ┗━━━━━━━━━━━━━━━━━━━━━
 
-<a href=https://github.com/notudope/notubot>Repo</a>  /  <a href=https://t.me/notudope>Channel</a>  /  <a href=https://t.me/NOTUBOTS>Support</a>  /  <a href=https://t.me/CariTemanOK>Mutualan</a>"""
+<a href=https://github.com/notudope/notubot>Repo</a>  •  <a href=https://t.me/notudope>Channel</a>  •  <a href=https://t.me/NOTUBOTS>Support</a>  •  <a href=https://t.me/CariTemanOK>Mutualan</a>"""
 
 
 @bot_cmd(pattern="(alive|on)$")
