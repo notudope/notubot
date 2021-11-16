@@ -37,6 +37,7 @@ from notubot import (
     BOTLOG,
     LOGS,
     CMD_LIST,
+    I_DEV,
     HANDLER,
 )
 from notubot.utils import time_formatter
@@ -56,18 +57,21 @@ def compile_pattern(data, handler):
 
 def bot_cmd(**args):
     args["func"] = lambda e: not e.fwd_from and not e.via_bot_id
+    pattern: str = args.get("pattern", None)
+    disable_edited: bool = args.get("disable_edited", False)
+    admins_only: bool = args.get("admins_only", False)
+    groups_only: bool = args.get("groups_only", False)
+    private_only: bool = args.get("private_only", False)
+    trigger_on_fwd: bool = args.get("trigger_on_fwd", False)
+    disable_errors: bool = args.get("disable_errors", False)
+    insecure: bool = args.get("insecure", False)
+    only_devs: bool = args.get("only_devs", False)
+    # allow_sudo: bool = args.get("allow_sudo", False)
+
     stack = inspect.stack()
     previous_stack_frame = stack[1]
     file_test = Path(previous_stack_frame.filename)
     file_test = file_test.stem.replace(".py", "")
-    pattern: str = args.get("pattern", None)
-    disable_edited: bool = args.get("disable_edited", False)
-    groups_only: bool = args.get("groups_only", False)
-    admins_only: bool = args.get("admins_only", False)
-    trigger_on_fwd: bool = args.get("trigger_on_fwd", False)
-    disable_errors: bool = args.get("disable_errors", False)
-    insecure: bool = args.get("insecure", False)
-    # allow_sudo: bool = args.get("allow_sudo", False)
 
     if pattern:
         args["pattern"] = compile_pattern(pattern, "\\" + HANDLER)
@@ -98,10 +102,12 @@ def bot_cmd(**args):
     for i in [
         "admins_only",
         "groups_only",
+        "private_only",
         "disable_edited",
         "trigger_on_fwd",
         "disable_errors",
         "insecure",
+        "only_devs",
         "allow_sudo",
     ]:
         if i in args:
@@ -116,10 +122,16 @@ def bot_cmd(**args):
             if not trigger_on_fwd and event.fwd_from:
                 return
 
+            if only_devs and not I_DEV:
+                return await event.respond(
+                    f"**⚠️ Developer Restricted!**\nHarap **tentukan variabel** `I_DEV` untuk mengaktifkan perintah developer.\n\nMungkin ini berbahaya."
+                )
+
             if admins_only:
                 if event.is_private:
                     await event.delete()
                     return await event.respond("`Gunakan perintah itu dalam grup!`")
+
                 gchat = await event.get_chat()
                 if not (gchat.admin_rights or gchat.creator):
                     await event.delete()
@@ -129,8 +141,12 @@ def bot_cmd(**args):
                 await event.delete()
                 return await event.respond("`Gunakan perintah itu dalam grup/channel!`")
 
+            if private_only and not event.is_private:
+                await event.delete()
+                return await event.respond("`Gunakan perintah itu dalam obrolan pribadi!`")
+
             try:
-                from notubot.plugins.sql_helper.blacklist_sql import get_blacklist
+                from notubot.database.blacklist_sql import get_blacklist
 
                 for blacklisted in get_blacklist():
                     if str(event.chat_id or event.from_id) == blacklisted.chat_id:
@@ -213,6 +229,8 @@ def bot_cmd(**args):
 
                     if BOTLOG:
                         await event.respond("`NOTUBOT-UserBot ERROR, Disimpan ke BOTLOG.`")
+                        await asyncio.sleep(15)
+                        await event.delete()
                     try:
                         with BytesIO(str.encode(ftext)) as file:
                             file.name = "notubot.log"

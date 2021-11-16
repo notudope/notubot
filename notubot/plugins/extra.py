@@ -7,10 +7,29 @@
 
 import asyncio
 
+from telethon.events import NewMessage
 from telethon.tl.functions.channels import DeleteUserHistoryRequest
 
-from notubot import CMD_HELP, LOGS
+from notubot import (
+    CMD_HELP,
+    LOGS,
+    HANDLER,
+    bot,
+)
 from notubot.events import bot_cmd
+
+_new_msgs = {}
+
+
+@bot.on(
+    NewMessage(
+        outgoing=True,
+    ),
+)
+async def newmsg(event):
+    if event.message.message == f"{HANDLER}reply":
+        return
+    _new_msgs[event.chat_id] = event.message
 
 
 @bot_cmd(disable_errors=True, pattern="del|(d|D|del|Del)$")
@@ -152,13 +171,21 @@ async def edit(event):
     chat = await event.get_input_chat()
     me = await event.client.get_peer_id("me")
     new_message = str(event.text[6:])
-    index = 1
-    async for m in event.client.iter_messages(chat, me):
-        if index == 2:
-            await m.edit(new_message)
+    reply = await event.get_reply_message()
+    if reply and reply.text:
+        try:
+            await reply.edit(new_message)
             await event.delete()
-            break
-        index = index + 1
+        except BaseException:
+            pass
+    else:
+        index = 1
+        async for m in event.client.iter_messages(chat, me):
+            if index == 2:
+                await m.edit(new_message)
+                await event.delete()
+                break
+            index = index + 1
 
 
 @bot_cmd(disable_errors=True, pattern="sd")
@@ -171,25 +198,42 @@ async def selfd(event):
     await NotUBot.delete()
 
 
+@bot_cmd(disable_errors=True, pattern="reply$")
+async def rep(event):
+    if event.reply_to_msg_id and event.chat_id in _new_msgs:
+        msg = _new_msgs[event.chat_id]
+        chat = await event.get_input_chat()
+        await asyncio.wait(
+            [
+                event.client.delete_messages(chat, [event.id, msg.id]),
+                event.client.send_message(chat, msg, reply_to=event.reply_to_msg_id),
+            ]
+        )
+    else:
+        await event.delete()
+
+
 CMD_HELP.update(
     {
-        "purge": [
-            "Purge",
-            "`.del|d|D|del|Del`\n"
+        "extra": [
+            "Extra",
+            "`.del|d|D|del|Del <reply to message>`\n"
             "↳ : Menghapus pesan yang dibalas.\n\n"
-            "`.purge`\n"
+            "`.purge <reply to message>`\n"
             "↳ : Menghapus semua pesan dari balasan.\n\n"
-            "`.purgeme <x>`\n"
+            "`.purgeme <reply to message>`\n"
             "↳ : Menghapus <x> pesan dari yang terbaru.\n\n"
             "`.purgeall`\n"
             "↳ : Menghapus semua pesan pengguna yang dibalas.\n\n"
-            "`.copy`\n"
+            "`.copy <reply to message>`\n"
             "↳ : Copy pesan yang dibalas.\n\n"
-            "`.edit <pesan baru>`\n"
-            "↳ : Mengubah pesan terbaru dengan <pesan baru>.\n\n"
-            "`.sd <x> <pesan>`\n"
+            "`.edit <new message>`\n"
+            "↳ : Mengubah pesan terbaru atau balasan pesan.\n\n"
+            "`.sd <x> <message>`\n"
             "↳ : Membuat pesan menjadi selfdestructs dalam <x> detik.\n"
-            "Usahakan tetap dibawah 100 detik, untuk mengatasi UserBot tertidur.",
+            "Usahakan tetap dibawah 100 detik, untuk mengatasi UserBot tertidur.\n\n"
+            "`.reply`\n"
+            "↳ : Balas pesan terakhir ke balasan pesan user.",
         ]
     }
 )

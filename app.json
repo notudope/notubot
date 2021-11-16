@@ -20,34 +20,45 @@
       "description": "Show Image/Logo in .alive message. Fill value of image your link image, use telegra.ph or any direct link image",
       "required": false
     },
+    "ALIVE_TEXT": {
+      "description": "Show text header .alive message",
+      "value": "Hey, I am alive.",
+      "required": false
+    },
+    "ALIVE_IG": {
+      "description": "Show your instagram account in .alive message (put username without @)",
+      "value": "notudope",
+      "required": false
+    },
     "API_ID": {
-      "description": "Get this value from my.telegram.org.",
+      "description": "Get this value from 'my.telegram.org'",
       "required": true
     },
     "API_HASH": {
-      "description": "Get this value from my.telegram.org.",
+      "description": "Get this value from 'my.telegram.org'",
       "required": true
     },
     "STRING_SESSION": {
-      "description": "Get this value by running [python3 session.py] in Termux or local system.",
+      "description": "Get this value by running [python3 session.py] in Termux or local system",
       "required": true
     },
     "HANDLER": {
-      "description": "Command initial started, example: .help (. / -) default (.)",
-      "value": "."
+      "description": "Command initial started, example: .help (. ! / -) default (.)",
+      "value": ".",
+      "required": false
     },
     "HEROKU_API_KEY": {
-      "description": "Your Heroku API key, get it from 'https://dashboard.heroku.com/account'",
+      "description": "Your Heroku API key, get it from 'dashboard.heroku.com/account'",
       "value": "",
       "required": true
     },
     "HEROKU_APP_NAME": {
-      "description": "Add the Heroku app name here. It helps with userbot updates.",
+      "description": "Add the this Heroku app name here",
       "value": "",
       "required": true
     },
     "UPSTREAM_REPO_URL": {
-      "description": "In case you maintain a fork, add your repo URL here.",
+      "description": "In case you maintain a fork, add your repo URL here",
       "value": "https://github.com/notudope/notubot",
       "required": false
     },
@@ -57,14 +68,14 @@
       "required": true
     },
     "BOTLOG_CHATID": {
-      "description": "ChatID of the Log group.",
+      "description": "Chat ID of the logging group/channel, get it from '@MissRose_bot' add the bot to your group/channel and send /id",
       "value": "0",
       "required": true
     },
-    "TERM_ALIAS": {
-      "description": "Display user for .term command",
-      "value": "notubot",
-      "required": false
+    "I_DEV": {
+      "description": "Enable a developer command by set it True",
+      "value": "False",
+      "required": true
     }
   },
   "addons": [

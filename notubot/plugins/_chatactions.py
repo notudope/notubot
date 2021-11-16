@@ -9,9 +9,9 @@ from telethon.events import ChatAction
 from telethon.utils import get_display_name
 
 from notubot import bot
-from notubot.plugins.sql_helper.gban_sql import is_gbanned
-from notubot.plugins.sql_helper.gmute_sql import is_gmuted
-from notubot.plugins.sql_helper.mute_sql import is_muted
+from notubot.database.gban_sql import is_gbanned
+from notubot.database.gmute_sql import is_gmuted
+from notubot.database.mute_sql import is_muted
 
 
 @bot.on(ChatAction(func=lambda e: e.is_group))

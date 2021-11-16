@@ -9,13 +9,24 @@ import asyncio
 
 from pytgcalls import GroupCallFactory
 from telethon.tl.functions.channels import GetFullChannelRequest, DeleteMessagesRequest
-from telethon.tl.functions.phone import CreateGroupCallRequest, DiscardGroupCallRequest, InviteToGroupCallRequest
+from telethon.tl.functions.phone import (
+    CreateGroupCallRequest,
+    DiscardGroupCallRequest,
+    InviteToGroupCallRequest,
+    GetGroupCallRequest,
+)
 
 from notubot import CMD_HELP, bot, HANDLER
 from notubot.events import bot_cmd
 
 group_call_factory = GroupCallFactory(bot, GroupCallFactory.MTPROTO_CLIENT_TYPE.TELETHON)
 group_call = group_call_factory.get_file_group_call(None)
+
+
+async def get_call(event):
+    mm = await event.client(GetFullChannelRequest(event.chat_id))
+    xx = await event.client(GetGroupCallRequest(mm.full_chat.call))
+    return xx.call
 
 
 def user_list(ls, n):
@@ -60,7 +71,7 @@ async def vcstop(event):
     stfu = True if opts in silent else False
 
     try:
-        call = (await event.client(GetFullChannelRequest(event.chat.id))).full_chat.call
+        call = await get_call(event)
     except BaseException:
         call = None
 
@@ -86,7 +97,7 @@ async def joinvc(event):
     await event.edit("`...`")
 
     try:
-        call = (await event.client(GetFullChannelRequest(event.chat.id))).full_chat.call
+        call = await get_call(event)
     except BaseException:
         call = None
 
@@ -97,6 +108,7 @@ async def joinvc(event):
 
     if not (group_call and group_call.is_connected):
         await group_call.start(event.chat.id, enable_action=False)
+        group_call.enable_action = False
 
     await event.edit("`joined`")
     await asyncio.sleep(3)
@@ -108,7 +120,7 @@ async def leavevc(event):
     await event.edit("`...`")
 
     try:
-        call = (await event.client(GetFullChannelRequest(event.chat.id))).full_chat.call
+        call = await get_call(event)
     except BaseException:
         call = None
 
@@ -133,7 +145,7 @@ async def vcinvite(event):
     invited = 0
 
     try:
-        call = (await event.client(GetFullChannelRequest(event.chat.id))).full_chat.call
+        call = await get_call(event)
     except BaseException:
         call = None
 
@@ -145,9 +157,12 @@ async def vcinvite(event):
             users.append(x.id)
 
     for user in list(user_list(users, 6)):
-        await event.client(InviteToGroupCallRequest(call=call, users=user))
-        invited += 6
-        await asyncio.sleep(5)
+        try:
+            await event.client(InviteToGroupCallRequest(call=call, users=user))
+            invited += 6
+            await asyncio.sleep(2)
+        except BaseException:
+            pass
 
     await event.edit(f"`Diundang {invited} orang.`")
     await asyncio.sleep(15)
@@ -158,16 +173,22 @@ CMD_HELP.update(
     {
         "voicechat": [
             "Voice Chat",
-            "`.startvc <silent/s> <judul>`\n"
-            "↳ : Memulai Obrolan Suara.\n\n"
-            "`.stopvc|endvc <silent/s>`\n"
-            "↳ : Mematikan Obrolan Suara.\n\n"
-            "`.joinvc`\n"
-            "↳ : Bergabung ke Obrolan Suara.\n\n"
-            "`.leavevc`\n"
-            "↳ : Keluar dari Obrolan Suara.\n\n"
-            "`.vcinvite`\n"
-            "↳ : Mengundang semua anggota grup ke Obrolan Suara.",
+            """
+`.startvc <silent/s> <judul>`
+↳ : Memulai Obrolan Suara.
+
+`.stopvc|endvc <silent/s>`
+↳ : Mematikan Obrolan Suara.
+
+`.joinvc`
+↳ : Bergabung ke Obrolan Suara.
+
+`.leavevc`
+↳ : Keluar dari Obrolan Suara.
+
+`.vcinvite`
+↳ : Mengundang semua anggota grup ke Obrolan Suara.
+""",
         ]
     }
 )

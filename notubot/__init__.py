@@ -18,12 +18,10 @@ from os import (
 )
 from pathlib import Path
 from platform import python_version
-from time import sleep, time
+from time import time
 
 from dotenv import dotenv_values, load_dotenv
-from pylast import LastFMNetwork, md5
 from pySmartDL import SmartDL
-from requests import get
 from telethon import TelegramClient, version
 from telethon.errors.rpcerrorlist import ApiIdInvalidError, AuthKeyDuplicatedError, PhoneNumberInvalidError
 from telethon.sessions import StringSession
@@ -71,29 +69,33 @@ if CONFIG_CHECK:
     LOGS.error("Hapus baris dalam hashtag pertama dari file config.env")
     sys.exit(1)
 
-# Telegram App KEY and HASH
+# Telegram API_ID and API_HASH
 API_ID = int(getenv("API_ID", default=0))
 API_HASH = getenv("API_HASH", default=None)
 
-# Userbot Session String
+# Telegram Session String
 STRING_SESSION = getenv("STRING_SESSION", default=None)
 
-# Userbot logging feature switch.
+# UserBot logging feature switch
 BOTLOG = strtobool(getenv("BOTLOG", default="True"))
 
-# Logging channel/group ID configuration.
+# Logging channel/group ID configuration
 BOTLOG_CHATID = int(getenv("BOTLOG_CHATID", default=0))
 
 # Command handler
 HANDLER = getenv("HANDLER", default=".")
 
 # Developer the UserBot
-DEVLIST = list(map(int, "2006788653 2003361410".split()))
+DEVLIST = [2006788653, 2003361410]
+
+# Running developer command
+I_DEV = strtobool(getenv("I_DEV", default="False"))
 
 # Blacklist group
 BLACKLIST_GROUP = list(map(int, getenv("BLACKLIST_GROUP", default="").split()))
 
 # Special group blacklist
+# Note include some federations
 NOSPAM_CHAT = [
     -1001327032795,  # UltroidSupport
     -1001387666944,  # PyrogramChat
@@ -116,8 +118,11 @@ PM_AUTO_BAN = strtobool(getenv("PM_AUTO_BAN", default="False"))
 # Default .alive logo
 ALIVE_LOGO = getenv("ALIVE_LOGO", default=None)
 
+# Default .alive text
+ALIVE_TEXT = getenv("ALIVE_TEXT", default="Hey, I am alive.")
+
 # Default .alive Instagram
-IG_ALIVE = getenv("IG_ALIVE", default="https://www.instagram.com/notudope")
+ALIVE_IG = getenv("ALIVE_IG", default="notudope")
 
 # Heroku Credentials for updater.
 HEROKU_APP_NAME = getenv("HEROKU_APP_NAME", default=None)
@@ -130,10 +135,6 @@ UPSTREAM_REPO_BRANCH = getenv("UPSTREAM_REPO_BRANCH", "main")
 
 # SQL Database URI
 DB_URI = getenv("DATABASE_URL", default="")
-
-# Chrome Driver and Headless Google Chrome Binaries
-CHROME_DRIVER = getenv("CHROME_DRIVER", default="/usr/bin/chromedriver")
-GOOGLE_CHROME_BIN = getenv("GOOGLE_CHROME_BIN", default="/usr/bin/google-chrome")
 
 # OpenWeatherMap API Key
 OPEN_WEATHER_MAP_APPID = getenv("OPEN_WEATHER_MAP_APPID", default="")
@@ -156,32 +157,9 @@ OCR_SPACE_API_KEY = getenv("OCR_SPACE_API_KEY", default="")
 # remove.bg API key
 REM_BG_API_KEY = getenv("REM_BG_API_KEY", default="")
 
-# Deezload Credentials
-DEEZER_ARL_TOKEN = getenv("DEEZER_ARL_TOKEN", default="")
-DEEZER_EMAIL = getenv("DEEZER_EMAIL", default="")
-DEEZER_PASSWORD = getenv("DEEZER_PASSWORD", default="")
-
-# Last.fm Plugin
-BIO_PREFIX = getenv("BIO_PREFIX", default="")
-DEFAULT_BIO = getenv("DEFAULT_BIO", default="")
-
-LASTFM_API = getenv("LASTFM_API", default="")
-LASTFM_SECRET = getenv("LASTFM_SECRET", default="")
-LASTFM_USERNAME = getenv("LASTFM_USERNAME", default="")
-LASTFM_PASSWORD_PLAIN = getenv("LASTFM_PASSWORD", default="")
-LASTFM_PASS = md5(LASTFM_PASSWORD_PLAIN)
-
-lastfm = None
-if LASTFM_API and LASTFM_SECRET and LASTFM_USERNAME and LASTFM_PASS:
-    try:
-        lastfm = LastFMNetwork(
-            api_key=LASTFM_API,
-            api_secret=LASTFM_SECRET,
-            username=LASTFM_USERNAME,
-            password_hash=LASTFM_PASS,
-        )
-    except Exception:
-        pass
+# Chrome Driver and Headless Google Chrome Binaries
+CHROME_DRIVER = getenv("CHROME_DRIVER", default="/usr/bin/chromedriver")
+GOOGLE_CHROME_BIN = getenv("GOOGLE_CHROME_BIN", default="/usr/bin/google-chrome")
 
 # Google Drive Plugin
 G_DRIVE_DATA = getenv("G_DRIVE_DATA", default="")
@@ -192,15 +170,8 @@ G_DRIVE_FOLDER_ID = getenv("G_DRIVE_FOLDER_ID", default="")
 G_DRIVE_INDEX_URL = getenv("G_DRIVE_INDEX_URL", default="")
 TEMP_DOWNLOAD_DIRECTORY = getenv("TMP_DOWNLOAD_DIRECTORY", default="./downloads/")
 
-# Terminal Alias
-TERM_ALIAS = getenv("TERM_ALIAS", default="notubot")
-
 # Genius Lyrics API
 GENIUS = getenv("GENIUS_ACCESS_TOKEN", default="")
-
-# Uptobox
-USR_TOKEN = getenv("USR_TOKEN_UPTOBOX", default="")
-
 
 # Setting Up CloudMail.ru and MEGA.nz extractor binaries,
 # and giving them correct perms to work properly.
@@ -213,31 +184,6 @@ for file, bin in binaries.items():
         downloader = SmartDL(file, bin, progress_bar=False)
         downloader.start()
         chmod(bin, 0o755)
-
-
-def migration_workaround() -> None:
-    try:
-        from notubot.plugins.sql_helper.globals import addgvar, delgvar, gvarstatus
-    except AttributeError:
-        return None
-
-    old_ip = gvarstatus("public_ip")
-    new_ip = get("https://api.ipify.org").text
-    if old_ip is None:
-        delgvar("public_ip")
-        addgvar("public_ip", new_ip)
-        return None
-    if old_ip == new_ip:
-        return None
-
-    sleep_time = 180
-    LOGS.info(f"A change in IP address is detected, waiting for {sleep_time / 60} minutes before starting the bot.")
-    sleep(sleep_time)
-    LOGS.info("Starting bot...")
-    delgvar("public_ip")
-    addgvar("public_ip", new_ip)
-    return None
-
 
 LOOP = asyncio.get_event_loop()
 
@@ -321,7 +267,7 @@ async def update_restart_msg(chat_id: int, msg_id: int) -> bool:
 
 
 try:
-    from notubot.plugins.sql_helper.globals import delgvar, gvarstatus
+    from notubot.database.globals import delgvar, gvarstatus
 
     chat_id, msg_id = gvarstatus("restartstatus").split("\n")
     try:
@@ -337,7 +283,6 @@ except AttributeError:
 CMD_HELP = {}
 CMD_LIST = {}
 COUNT_MSG = 0
-USERS = {}
 COUNT_PM = {}
 LASTMSG = {}
 ISAFK = False

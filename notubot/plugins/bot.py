@@ -25,22 +25,48 @@ from notubot import (
     start_time,
     BOTLOG,
     BOTLOG_CHATID,
+    ALIVE_TEXT,
     HEROKU_API_KEY,
+    ALIVE_IG,
 )
 from notubot.events import bot_cmd
 from notubot.utils import time_formatter, restart, run_cmd
 
+alive_text = """<code>{}<code>
+
+<b>{}</b>
+
+━━━━━━━━━━━━━━━━━━━━━
+┣ <b>Owner</b> - <code>{}</code>
+┣ <b>Username</b> - @{}
+┣ <b>ID</b> - <code>{}</code>
+┣ <b>Instagram</b> - <a href=https://www.instagram.com/{}>{}</a>
+┣ <b>Version</b> - <code>v{}</code>
+┣ <b>Plugin</b> - <code>{}</code>
+┣ <b>Ping</b> - <code>{} ms</code>
+┣ <b>Uptime</b> - <code>{}</code>
+┣ <b>Python</b> - <code>{}</code>
+┣ <b>Telethon</b> - <code>{}</code>
+┣ <b>Branch</b> - <code>{}</code>
+┗━━━━━━━━━━━━━━━━━━━━━
+
+<a href=https://github.com/notudope/notubot>Repo</a>  /  <a href=https://t.me/notudope>Channel</a>  /  <a href=https://t.me/NOTUBOTS>Support</a>  /  <a href=https://t.me/CariTemanOK>Mutualan</a>"""
+
 
 @bot_cmd(pattern="(alive|on)$")
 async def aliveon(event):
-    # [Instagram]({IG_ALIVE})
+    start = time()
+    await event.edit("ㅤ")
+    ms = round((time() - start) * 1000)
+
     me = await event.client.get_me()
     user = await event.client.get_entity("me")
     uptime = time_formatter((time() - start_time) * 1000)
+
     b = Repo().active_branch
     g = Repo().remotes[0].config_reader.get("url")
     r = g.replace(".git", f"/tree/{b}")
-    branch = f"[{b}]({r})"
+    branch = f"<a href={r}>{b}</a>"
 
     await event.edit(".")
     await event.edit("..")
@@ -48,34 +74,31 @@ async def aliveon(event):
     await event.edit("⚡")
     await asyncio.sleep(2)
 
-    text = (
-        f"`{__botname__}`\n"
-        f"[REPO](https://github.com/notudope/notubot)  /  [Channel](https://t.me/notudope)  /  [Support](https://t.me/NOTUBOTS)  /  [Mutualan](https://t.me/CariTemanOK)\n\n"
-        f"**Owner** - `{get_display_name(user)}`\n"
-        f"**Username** - @{me.username}\n"
-        f"**ID** - `{me.id}`\n"
-        f"**Version** - `v{__botversion__}`\n"
-        f"**Plugin** - `{len(CMD_HELP)}`\n"
-        f"**Uptime** - `{uptime}`\n"
-        f"**Python** - `{python_version()}`\n"
-        f"**Telethon** - `{version.__version__}\n`"
-        f"**Branch** - {branch}"
+    text = alive_text.format(
+        __botname__,
+        ALIVE_TEXT,
+        get_display_name(user),
+        me.username,
+        me.id,
+        ALIVE_IG,
+        ALIVE_IG,
+        __botversion__,
+        len(CMD_HELP),
+        ms,
+        uptime,
+        python_version(),
+        version.__version__,
+        branch,
     )
 
     if ALIVE_LOGO:
         try:
-            await event.client.send_file(event.chat_id, ALIVE_LOGO, caption=text)
+            await event.client.send_file(event.chat_id, ALIVE_LOGO, caption=text, parse_mode="html")
             await event.delete()
         except MediaEmptyError:
-            await event.edit(
-                text + "\n\n `ALIVE_LOGO tidak valid.`",
-            )
+            await event.edit(text + "\n\n <code>ALIVE_LOGO tidak valid.</code>", parse_mode="html")
     else:
-        await event.client.send_message(
-            event.chat_id,
-            text,
-            link_preview=False,
-        )
+        await event.client.send_message(event.chat_id, text, link_preview=False, parse_mode="html")
         await event.delete()
 
 
@@ -87,7 +110,7 @@ async def restartbot(event):
         await event.client.send_message(BOTLOG_CHATID, "#bot #restart \n" "Restarting UserBot...")
 
     try:
-        from notubot.plugins.sql_helper.globals import addgvar, delgvar
+        from notubot.database.globals import addgvar, delgvar
 
         delgvar("restartstatus")
         addgvar("restartstatus", f"{event.chat_id}\n{event.id}")
@@ -169,14 +192,14 @@ async def ping(event):
     end = round((time() - start) * 1000)
     uptime = time_formatter((time() - start_time) * 1000)
     await x.edit("**Pong !!** `{}ms`\n**Uptime** - `{}`".format(end, uptime))
-    await asyncio.sleep(20)
+    await asyncio.sleep(15)
     await x.delete()
 
 
 CMD_HELP.update(
     {
-        "system": [
-            "System",
+        "bot": [
+            "Bot",
             "`.alive`\n"
             "↳ : Mengecek UserBot berjalan atau tidak.\n\n"
             "`.restart`\n"

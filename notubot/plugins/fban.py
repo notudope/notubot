@@ -17,13 +17,13 @@ from notubot import (
     BOTLOG,
     DEVLIST,
 )
-from notubot.events import bot_cmd
-from notubot.plugins.sql_helper.fban_sql import (
+from notubot.database.fban_sql import (
     get_flist,
     add_flist,
     del_flist,
     del_flist_all,
 )
+from notubot.events import bot_cmd
 
 fbot = "@MissRose_bot"
 REQ_ID = "`Kesalahan, dibutuhkan ID atau balas pesan itu.`"
@@ -61,13 +61,14 @@ async def fban(event):
 
     me = await event.client.get_me()
     mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
-    user_link = f"[{userid}](tg://user?id={userid})"
+    userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(userid)), userid)
+    location = "{} [`{}`]".format((await event.get_chat()).title or "Private", event.chat_id or event.from_id)
     failed = []
     total = int(0)
 
     if userid == me.id:
         return await NotUBot.edit("🥴 **Mabok?**")
-    if int(userid) in DEVLIST:
+    if userid in DEVLIST:
         return await NotUBot.edit("😑 **Gagal fban, dia pembuatku!**")
 
     if len(fed_list := get_flist()) == 0:
@@ -78,7 +79,7 @@ async def fban(event):
         chat = int(i.chat_id)
         try:
             async with event.client.conversation(chat) as conv:
-                await conv.send_message(f"/fban {user_link} {reason}")
+                await conv.send_message(f"/fban {userlink} {reason}")
                 reply = await conv.get_response()
                 await event.client.send_read_acknowledge(conv.chat_id, message=reply, clear_mentions=True)
 
@@ -101,16 +102,15 @@ async def fban(event):
     else:
         status = f"Berhasil fban `{total}` feds."
 
-    if BOTLOG:
-        await event.client.send_message(
-            BOTLOG_CHATID, "**#Fbanned** user [{}](tg://user?id={}) {}".format(userid, userid, reason)
-        )
-
     text = f"""**#Fbanned** by {mention}
-**User :** {user_link}
+**User :** {userlink}
 **Aksi :** `Fbanned`
 **Alasan :** `{reason}`
+**Lokasi :** {location}
 **Status :** {status}"""
+    if BOTLOG:
+        await event.client.send_message(BOTLOG_CHATID, text)
+
     await NotUBot.edit(text)
 
 
@@ -146,7 +146,8 @@ async def unfban(event):
 
     me = await event.client.get_me()
     mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
-    user_link = f"[{userid}](tg://user?id={userid})"
+    userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(userid)), userid)
+    location = "{} [`{}`]".format((await event.get_chat()).title or "Private", event.chat_id or event.from_id)
     failed = []
     total = int(0)
 
@@ -161,7 +162,7 @@ async def unfban(event):
         chat = int(i.chat_id)
         try:
             async with event.client.conversation(chat) as conv:
-                await conv.send_message(f"/unfban {user_link} {reason}")
+                await conv.send_message(f"/unfban {userlink} {reason}")
                 reply = await conv.get_response()
                 await event.client.send_read_acknowledge(conv.chat_id, message=reply, clear_mentions=True)
 
@@ -183,16 +184,15 @@ async def unfban(event):
     else:
         status = f"Berhasil unfban `{total}` feds."
 
-    if BOTLOG:
-        await event.client.send_message(
-            BOTLOG_CHATID, "**#UnFbanned** user [{}](tg://user?id={}) {}".format(userid, userid, reason)
-        )
-
     text = f"""**#UnFbanned** by {mention}
-**User :** {user_link}
+**User :** {userlink}
 **Aksi :** `UnFbanned`
 **Alasan :** `{reason}`
+**Lokasi :** {location}
 **Status :** {status}"""
+    if BOTLOG:
+        await event.client.send_message(BOTLOG_CHATID, text)
+
     await NotUBot.edit(text)
 
 
@@ -277,9 +277,9 @@ CMD_HELP.update(
     {
         "fban": [
             f"{fbot} Federation",
-            "`.fban <id/username> <reason>`\n"
+            "`.fban <username/id/reply> <reason (optional)>`\n"
             "↳ : Fban user dari federasi yang terhubung.\n\n"
-            "`.unfban <id/username> <reason>`\n"
+            "`.unfban <username/id/reply> <reason (optional)>`\n"
             "↳ : Melepas user dari fban.\n\n"
             "`.addfed <name>`\n"
             "↳ : Tambahkan grup saat ini dengan <name> di federasi yang terhubung.\n\n"

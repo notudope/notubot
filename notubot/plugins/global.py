@@ -20,14 +20,14 @@ from notubot import (
     DEVLIST,
     NOSPAM_CHAT,
 )
-from notubot.events import bot_cmd
-from notubot.plugins.sql_helper.gban_sql import (
+from notubot.database.gban_sql import (
     is_gbanned,
     gbaner,
     ungbaner,
     all_gbanned,
 )
-from notubot.plugins.sql_helper.gmute_sql import is_gmuted, gmute, ungmute
+from notubot.database.gmute_sql import is_gmuted, gmute, ungmute
+from notubot.events import bot_cmd
 
 REQ_ID = "`Kesalahan, dibutuhkan ID atau balas pesan itu.`"
 
@@ -88,12 +88,12 @@ async def gban(event):
 
     me = await event.client.get_me()
     mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
-    name = (await event.client.get_entity(userid)).first_name
+    userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(userid)), userid)
     success = failed = 0
 
     if userid == me.id:
         return await NotUBot.edit("🥴 **Mabok?**")
-    if int(userid) in DEVLIST:
+    if userid in DEVLIST:
         return await NotUBot.edit("😑 **Gagal Global Banned, dia pembuatku!**")
 
     if is_gbanned(userid):
@@ -117,16 +117,14 @@ async def gban(event):
 
     reason = reason if reason else "None given."
     gbaner(userid, reason)
-    if BOTLOG:
-        await event.client.send_message(
-            BOTLOG_CHATID, "**#Gbanned** user [{}](tg://user?id={}) {}".format(userid, userid, reason)
-        )
-
     text = f"""**#Gbanned** by {mention}
-**User :** [{name}](tg://user?id={userid})
+**User :** {userlink}
 **Aksi :** `Gbanned`
 **Alasan :** `{reason}`
 **Grup/Channel :** Berhasil `{success}` Gagal `{failed}`"""
+    if BOTLOG:
+        await event.client.send_message(BOTLOG_CHATID, text)
+
     await NotUBot.edit(text)
 
 
@@ -146,7 +144,7 @@ async def ungban(event):
 
     me = await event.client.get_me()
     mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
-    name = (await event.client.get_entity(userid)).first_name
+    userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(userid)), userid)
     success = failed = 0
 
     if not is_gbanned(userid):
@@ -167,15 +165,13 @@ async def ungban(event):
                 failed += 1
 
     ungbaner(userid)
-    if BOTLOG:
-        await event.client.send_message(
-            BOTLOG_CHATID, "**#UnGbanned** user [{}](tg://user?id={})".format(userid, userid)
-        )
-
     text = f"""**#UnGbanned** by {mention}
-**User :** [{name}](tg://user?id={userid})
+**User :** {userlink}
 **Aksi :** `UnGbanned`
 **Grup/Channel :** Berhasil `{success}` Gagal `{failed}`"""
+    if BOTLOG:
+        await event.client.send_message(BOTLOG_CHATID, text)
+
     await NotUBot.edit(text)
 
 
@@ -190,7 +186,7 @@ async def listgban(event):
     if len(gbanned_users) > 0:
         for user in gbanned_users:
             try:
-                name = (await event.client.get_entity(int(user.user_id))).first_name
+                name = get_display_name(await event.client.get_entity(int(user.user_id)))
             except BaseException:
                 name = user.user_id
             msg += f"<strong>User</strong>: <a href=tg://user?id={user.user_id}>{name}</a>\n"
@@ -228,24 +224,37 @@ async def listgban(event):
 async def gkick(event):
     NotUBot = await event.edit("`Gkicking...`")
     await event.get_chat()
+    reason = ""
     if event.reply_to_msg_id:
         userid = (await event.get_reply_message()).sender_id
+        try:
+            reason = event.text.split(" ", maxsplit=1)[1]
+        except IndexError:
+            reason = ""
     elif event.pattern_match.group(1):
-        usr = event.pattern_match.group(1)
+        usr = event.text.split(" ", maxsplit=2)[1]
         userid = await get_user_id(usr, event)
+        try:
+            reason = event.text.split(" ", maxsplit=2)[2]
+        except IndexError:
+            reason = ""
     elif event.is_private:
         userid = (await event.get_chat()).id
+        try:
+            reason = event.text.split(" ", maxsplit=1)[1]
+        except IndexError:
+            reason = ""
     else:
         return await NotUBot.edit(REQ_ID)
 
     me = await event.client.get_me()
     mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
-    name = (await event.client.get_entity(userid)).first_name
+    userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(userid)), userid)
     success = failed = 0
 
     if userid == me.id:
         return await NotUBot.edit("🥴 **Mabok?**")
-    if int(userid) in DEVLIST:
+    if userid in DEVLIST:
         return await NotUBot.edit("😑 **Gagal Global Kick, dia pembuatku!**")
 
     async for x in event.client.iter_dialogs():
@@ -257,13 +266,15 @@ async def gkick(event):
             except BaseException:
                 failed += 1
 
-    if BOTLOG:
-        await event.client.send_message(BOTLOG_CHATID, "**#Gkicked** user [{}](tg://user?id={})".format(userid, userid))
-
+    reason = reason if reason else "None given."
     text = f"""**#Gkicked** by {mention}
-**User :** [{name}](tg://user?id={userid})
+**User :** {userlink}
 **Aksi :** `Gkicked`
+**Alasan :** `{reason}`
 **Grup/Channel :** Berhasil `{success}` Gagal `{failed}`"""
+    if BOTLOG:
+        await event.client.send_message(BOTLOG_CHATID, text)
+
     await NotUBot.edit(text)
 
 
@@ -271,24 +282,37 @@ async def gkick(event):
 async def gmuter(event):
     NotUBot = await event.edit("`Gmuting...`")
     await event.get_chat()
+    reason = ""
     if event.reply_to_msg_id:
         userid = (await event.get_reply_message()).sender_id
+        try:
+            reason = event.text.split(" ", maxsplit=1)[1]
+        except IndexError:
+            reason = ""
     elif event.pattern_match.group(1):
-        usr = event.pattern_match.group(1)
+        usr = event.text.split(" ", maxsplit=2)[1]
         userid = await get_user_id(usr, event)
+        try:
+            reason = event.text.split(" ", maxsplit=2)[2]
+        except IndexError:
+            reason = ""
     elif event.is_private:
         userid = (await event.get_chat()).id
+        try:
+            reason = event.text.split(" ", maxsplit=1)[1]
+        except IndexError:
+            reason = ""
     else:
         return await NotUBot.edit(REQ_ID)
 
     me = await event.client.get_me()
     mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
-    name = (await event.client.get_entity(userid)).first_name
+    userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(userid)), userid)
     success = failed = 0
 
     if userid == me.id:
         return await NotUBot.edit("🥴 **Mabok?**")
-    if int(userid) in DEVLIST:
+    if userid in DEVLIST:
         return await NotUBot.edit("😑 **Gagal Global Mute, dia pembuatku!**")
 
     if is_gmuted(userid):
@@ -303,14 +327,16 @@ async def gmuter(event):
             except BaseException:
                 failed += 1
 
+    reason = reason if reason else "None given."
     gmute(userid)
-    if BOTLOG:
-        await event.client.send_message(BOTLOG_CHATID, "**#Gmuted** user [{}](tg://user?id={})".format(userid, userid))
-
     text = f"""**#Gmuted** by {mention}
-**User :** [{name}](tg://user?id={userid})
+**User :** {userlink}
 **Aksi :** `Gmuted`
+**Alasan :** `{reason}`
 **Grup/Channel :** Berhasil `{success}` Gagal `{failed}`"""
+    if BOTLOG:
+        await event.client.send_message(BOTLOG_CHATID, text)
+
     await NotUBot.edit(text)
 
 
@@ -330,7 +356,7 @@ async def ungmuter(event):
 
     me = await event.client.get_me()
     mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
-    name = (await event.client.get_entity(userid)).first_name
+    userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(userid)), userid)
     success = failed = 0
 
     if not is_gmuted(userid):
@@ -347,15 +373,13 @@ async def ungmuter(event):
                 failed += 1
 
     ungmute(userid)
-    if BOTLOG:
-        await event.client.send_message(
-            BOTLOG_CHATID, "**#UnGmuted** user [{}](tg://user?id={})".format(userid, userid)
-        )
-
     text = f"""**#UnGmuted** by {mention}
-**User :** [{name}](tg://user?id={userid})
+**User :** {userlink}
 **Aksi :** `UnGmuted`
 **Grup/Channel :** Berhasil `{success}` Gagal `{failed}`"""
+    if BOTLOG:
+        await event.client.send_message(BOTLOG_CHATID, text)
+
     await NotUBot.edit(text)
 
 
@@ -383,9 +407,11 @@ async def gcast(event):
                 except BaseException:
                     failed += 1
 
-    await NotUBot.edit(
-        f"Berhasil mengirim pesan broadcast grup ke `{success}` obrolan, gagal mengirim ke `{failed}` obrolan."
-    )
+    text = f"**#Gcast** Berhasil mengirim pesan broadcast grup ke `{success}` obrolan, gagal mengirim ke `{failed}` obrolan."
+    if BOTLOG:
+        await event.client.send_message(BOTLOG_CHATID, text)
+
+    await NotUBot.edit(text)
 
 
 @bot_cmd(pattern="gucast(?: |$)(.*)")
@@ -410,9 +436,11 @@ async def gucast(event):
             except BaseException:
                 failed += 1
 
-    await NotUBot.edit(
-        f"Berhasil mengirim pesan broadcast pribadi ke `{success}` obrolan, gagal mengirim ke `{failed}` obrolan."
-    )
+    text = f"**#Gucast** Berhasil mengirim pesan broadcast pribadi ke `{success}` obrolan, gagal mengirim ke `{failed}` obrolan."
+    if BOTLOG:
+        await event.client.send_message(BOTLOG_CHATID, text)
+
+    await NotUBot.edit(text)
 
 
 @bot_cmd(pattern="gsend(?: |$)(.*)")
@@ -448,18 +476,18 @@ CMD_HELP.update(
     {
         "global": [
             "Global Tools",
-            "`.gban`\n"
+            "`.gban <username/id/reply> <reason (optional)>`\n"
             "↳ : Global Banned ke semua grup yang menjadi admin,\n"
             "Gunakan perintah ini dengan bijak.\n\n"
-            "`.ungban`\n"
+            "`.ungban <username/id/reply>`\n"
             "↳ : Membatalkan Global Banned.\n\n"
             "`.listgban`\n"
             "↳ : Daftar semua user Global Banned.\n\n"
-            "`.gkick`\n"
+            "`.gkick <username/id/reply> <reason (optional)>`\n"
             "↳ : Global Kick ke semua grup yang menjadi admin.\n\n"
-            "`.gmute`\n"
+            "`.gmute <username/id/reply> <reason (optional)>`\n"
             "↳ : Global Mute ke semua grup yang menjadi admin.\n\n"
-            "`.ungmute`\n"
+            "`.ungmute <username/id/reply>`\n"
             "↳ : Membatalkan Global Mute.\n\n"
             "`.gcast`\n"
             "↳ : Mengirim Pesan Group secara global,\n"
@@ -467,7 +495,7 @@ CMD_HELP.update(
             "`.gucast`\n"
             "↳ : Mengirim Pesan Pribadi secara global,\n"
             "Gak usah spam, seperlunya aja!\n\n"
-            "`.gsend <link grup> <pesan>`\n"
+            "`.gsend <username> <message>`\n"
             "↳ : Mengirim pesan jarak jauh ke grup lain.",
         ]
     }
