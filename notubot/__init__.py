@@ -229,12 +229,6 @@ async def setup_me_bot():
     bot.uid = bot.me.id
 
 
-try:
-    bot.loop.run_until_complete(setup_me_bot())
-except Exception as e:
-    LOGS.error(f"{e}")
-
-
 async def check_botlog_chatid() -> None:
     if not BOTLOG_CHATID and BOTLOG:
         LOGS.warning(

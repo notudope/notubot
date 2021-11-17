@@ -20,6 +20,7 @@ from notubot import (
     start_time,
     HEROKU_APP,
     ipchange,
+    setup_me_bot,
 )
 from notubot.plugins import ALL_PLUGINS
 from notubot.utils import time_formatter
@@ -39,6 +40,12 @@ def trap() -> None:
 
 
 trap()
+
+
+try:
+    bot.loop.run_until_complete(setup_me_bot())
+except Exception as e:
+    LOGS.error(f"{e}")
 
 
 class NotUBotCheck:
