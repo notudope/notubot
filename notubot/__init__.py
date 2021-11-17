@@ -303,7 +303,7 @@ async def ipchange():
 
     newip = (get("https://httpbin.org/ip").json())["origin"]
 
-    if gvarstatus("ipaddress") is None:
+    if not gvarstatus("ipaddress"):
         addgvar("ipaddress", newip)
         return None
 

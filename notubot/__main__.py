@@ -49,38 +49,37 @@ class NotUBotCheck:
 NotUBotCheck = NotUBotCheck()
 
 
-async def main() -> None:
+async def startup_process() -> None:
     check = await ipchange()
-    if check is not None:
+    if check:
         NotUBotCheck.sucess = False
         return
 
     await bot.start()
-
-    NotUBotCheck.sucess = True
 
     for plugins in ALL_PLUGINS:
         import_module("notubot.plugins.{}".format(plugins))
 
     LOGS.info("{} v{} Launched 🚀".format(__botname__, __botversion__))
 
-    if len(sys.argv) not in (1, 3, 4):
-        await bot.disconnect()
-    elif not NotUBotCheck.sucess:
-        if HEROKU_APP is not None:
-            HEROKU_APP.restart()
-    else:
-        try:
-            await bot.run_until_disconnected()
-        except ConnectionError:
-            pass
+    NotUBotCheck.sucess = True
+    return
 
 
 if __name__ == "__main__":
     try:
         LOGS.info("Took {} to start {}".format(time_formatter((time() - start_time) * 1000), __botname__))
-        LOOP.run_until_complete(main())
-    except (NotImplementedError, KeyboardInterrupt, SystemExit):
+        bot.loop.run_until_complete(startup_process())
+
+        if len(sys.argv) not in (1, 3, 4):
+            bot.disconnect()
+        elif not NotUBotCheck.sucess:
+            if HEROKU_APP:
+                HEROKU_APP.restart()
+        else:
+            bot.run_until_disconnected()
+
+    except (ConnectionError, NotImplementedError, KeyboardInterrupt, SystemExit):
         pass
     except (BaseException, Exception) as e:
         LOGS.exception("main : {}".format(e))
