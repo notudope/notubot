@@ -22,7 +22,7 @@ async def ChatActionsHandler(event):
         mention = "[{}](tg://user?id={})".format(get_display_name(user), user.id)
 
         if chat.admin_rights or chat.creator:
-            if str(user.id) == is_gbanned(user.id).user_id:
+            if is_gbanned(user.id):
                 try:
                     await event.client.edit_permissions(
                         chat.id,
