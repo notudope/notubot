@@ -187,6 +187,14 @@ for file, bin in binaries.items():
         downloader.start()
         chmod(bin, 0o755)
 
+try:
+    if HEROKU_API_KEY is not None or HEROKU_APP_NAME is not None:
+        HEROKU_APP = from_key(HEROKU_API_KEY).apps()[HEROKU_APP_NAME]
+    else:
+        HEROKU_APP = None
+except Exception:
+    HEROKU_APP = None
+
 LOOP = asyncio.get_event_loop()
 
 
@@ -215,20 +223,6 @@ def client_connection() -> TelegramClient:
 bot = client_connection()
 
 
-try:
-    if HEROKU_API_KEY is not None or HEROKU_APP_NAME is not None:
-        HEROKU_APP = from_key(HEROKU_API_KEY).apps()[HEROKU_APP_NAME]
-    else:
-        HEROKU_APP = None
-except Exception:
-    HEROKU_APP = None
-
-
-async def setup_me_bot():
-    bot.me = await bot.get_me()
-    bot.uid = bot.me.id
-
-
 async def check_botlog_chatid() -> None:
     if not BOTLOG_CHATID and BOTLOG:
         LOGS.warning(
@@ -244,6 +238,9 @@ async def check_botlog_chatid() -> None:
             "Akun tidak memiliki hak/akses untuk mengirim pesan ke grup/channel BOTLOG_CHATID. Periksa apakah ID sudah benar."
         )
         sys.exit(1)
+
+    bot.me = await bot.get_me()
+    bot.uid = bot.me.id
 
 
 with bot:
