@@ -121,7 +121,7 @@ async def restartbot(event):
     if HEROKU_API_KEY:
         return await restart(event)
 
-    await run_cmd("git pull && pip3 install --no-cache-dir -U -r requirements.txt")
+    await run_cmd("git pull && pip3 install -U -r requirements.txt")
     os.execl(sys.executable, sys.executable, "-m", "notubot")
 
 
