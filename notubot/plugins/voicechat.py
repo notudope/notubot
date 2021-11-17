@@ -173,8 +173,7 @@ CMD_HELP.update(
     {
         "voicechat": [
             "Voice Chat",
-            """
-`.startvc <silent/s> <judul>`
+            """`.startvc <silent/s> <judul>`
 ↳ : Memulai Obrolan Suara.
 
 `.stopvc|endvc <silent/s>`

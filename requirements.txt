@@ -4,7 +4,7 @@ aria2p==0.10.4
 async_generator==1.10
 bs4==0.0.1
 CairoSVG==2.5.2
-carbonnow==0.0.1
+git+https://github.com/1danish-00/carbon-now-sh-api-wrapper.git
 cffi==1.15.0
 covid
 cowpy

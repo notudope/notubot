@@ -409,7 +409,7 @@ CMD_HELP.update(
             "`.eval <code>`\n"
             "↳ : Eksekusi perintah python di Telegram, \n\n"
             """Pintasan:
-            client = bot = event.client
+        client = bot = event.client
         e = event
         p = print
         reply = await event.get_reply_message()
