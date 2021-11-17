@@ -14,7 +14,7 @@ from notubot.database.gmute_sql import is_gmuted
 from notubot.database.mute_sql import is_muted
 
 
-@bot.on(ChatAction(func=lambda e: e.is_group))
+@bot.on(ChatAction)
 async def ChatActionsHandler(event):
     if not event.user_joined or not event.user_added or not event.added_by:
         return ""
