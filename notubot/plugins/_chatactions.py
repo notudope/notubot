@@ -16,43 +16,43 @@ from notubot.database.mute_sql import is_muted
 
 @bot.on(ChatAction)
 async def ChatActionsHandler(event):
-    LOGS.info(event)
-    if not event.user_joined or not event.user_added or not event.added_by:
-        return ""
+    if event.user_joined or event.user_added or event.added_by:
+        user = await event.get_user()
+        chat = await event.get_chat()
+        mention = "[{}](tg://user?id={})".format(get_display_name(user), user.id)
 
-    user = await event.get_user()
-    chat = await event.get_chat()
-    mention = "[{}](tg://user?id={})".format(get_display_name(user), user.id)
+        if chat.admin_rights or chat.creator:
+            gban = is_gbanned(user.id)
+            LOGS.info(gban)
+            if gban:
+                try:
+                    await event.client.edit_permissions(
+                        chat.id,
+                        user.id,
+                        view_messages=False,
+                    )
+                    text = "#GBanned_User Joined.\n\n**User** : {}\n**Reason**: {}\n\n`User Banned.`".format(
+                        mention, gban
+                    )
+                    return await event.reply(text)
+                except Exception:
+                    pass
 
-    if chat.admin_rights or chat.creator:
-        gban = is_gbanned(user.id)
-        if gban:
-            try:
-                await event.client.edit_permissions(
-                    chat.id,
-                    user.id,
-                    view_messages=False,
-                )
-                text = "#GBanned_User Joined.\n\n**User** : {}\n**Reason**: {}\n\n`User Banned.`".format(mention, gban)
-                return await event.reply(text)
-            except Exception:
-                pass
+            if is_gmuted(user.id):
+                try:
+                    await event.client.edit_permissions(chat.id, user.id, until_date=None, send_messages=False)
+                    text = "#GMuted_User Joined.\n\n**User** : {}\n\n`User Muted.`".format(mention)
+                    return await event.reply(text)
+                except Exception:
+                    pass
 
-        if is_gmuted(user.id):
-            try:
-                await event.client.edit_permissions(chat.id, user.id, until_date=None, send_messages=False)
-                text = "#GMuted_User Joined.\n\n**User** : {}\n\n`User Muted.`".format(mention)
-                return await event.reply(text)
-            except Exception:
-                pass
-
-        muted = is_muted(user.id, chat.id)
-        if muted:
-            for i in muted:
-                if str(i.sender) == str(user.id):
-                    try:
-                        await event.client.edit_permissions(
-                            event.chat.id, user.id, until_date=None, send_messages=False
-                        )
-                    except Exception:
-                        pass
+            muted = is_muted(user.id, chat.id)
+            if muted:
+                for m in muted:
+                    if str(m.sender) == str(user.id):
+                        try:
+                            await event.client.edit_permissions(
+                                event.chat.id, user.id, until_date=None, send_messages=False
+                            )
+                        except Exception:
+                            pass
