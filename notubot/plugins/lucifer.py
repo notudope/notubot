@@ -5,11 +5,12 @@
 # PLease read the GNU General Public License v3.0 in
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
-import asyncio
+from asyncio import sleep
 
 from telethon.tl.functions.channels import EditBannedRequest, DeleteMessagesRequest
 from telethon.tl.types import ChannelParticipantCreator, ChannelParticipantAdmin, ChatBannedRights
 
+from notubot import bot
 from notubot.events import bot_cmd
 
 BANNED_RIGHTS = ChatBannedRights(
@@ -27,8 +28,6 @@ BANNED_RIGHTS = ChatBannedRights(
 
 @bot_cmd(groups_only=True, admins_only=True, pattern="rocker(?: |$)(.*)")
 async def rocker(event):
-    me = await event.client.get_me()
-
     opts = event.pattern_match.group(1)
     damnit = ["s", "silent"]
     rockers = True if opts in damnit else False
@@ -39,18 +38,18 @@ async def rocker(event):
         await event.edit("`...`")
 
     async for x in event.client.iter_participants(event.chat_id):
-        if x.id == me.id:
+        if x.id == bot.uid:
             pass
         if not (
             isinstance(x.participant, ChannelParticipantAdmin) or isinstance(x.participant, ChannelParticipantCreator)
         ):
             crying = await event.client(
-                EditBannedRequest(event.chat_id, int(x.id), ChatBannedRights(until_date=None, view_messages=True))
+                EditBannedRequest(event.chat_id, x.id, ChatBannedRights(until_date=None, view_messages=True))
             )
             if rockers is True and crying:
                 if crying.updates[0].id is not None:
                     await event.client(DeleteMessagesRequest(event.chat_id, [crying.updates[0].id]))
-        await asyncio.sleep(2)
+        await sleep(2)
 
     if rockers is False:
         await event.edit("👏 Congratulations\nFrom now, you have no friends!")
@@ -58,8 +57,6 @@ async def rocker(event):
 
 @bot_cmd(groups_only=True, admins_only=True, pattern="gohell(?: |$)(.*)")
 async def gohell(event):
-    me = await event.client.get_me()
-
     opts = event.pattern_match.group(1)
     damnit = ["s", "silent"]
     lucifer = True if opts in damnit else False
@@ -70,16 +67,16 @@ async def gohell(event):
         await event.edit("`...`")
 
     async for x in event.client.iter_participants(event.chat_id):
-        if x.id == me.id:
+        if x.id == bot.uid:
             pass
         if not (
             isinstance(x.participant, ChannelParticipantAdmin) or isinstance(x.participant, ChannelParticipantCreator)
         ):
-            crying = await event.client(EditBannedRequest(event.chat_id, int(x.id), BANNED_RIGHTS))
+            crying = await event.client(EditBannedRequest(event.chat_id, x.id, BANNED_RIGHTS))
             if lucifer is True and crying:
                 if crying.updates[0].id is not None:
                     await event.client(DeleteMessagesRequest(event.chat_id, [crying.updates[0].id]))
-        await asyncio.sleep(2)
+        await sleep(2)
 
     if lucifer is False:
         await event.edit("You're Lucifer 👁️")

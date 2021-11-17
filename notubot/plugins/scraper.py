@@ -65,17 +65,9 @@ async def get_chatinfo(event):
 
 @bot_cmd(groups_only=True, pattern="inviteall(?: |$)(.*)")
 async def inviteall(event):
-    sender = await event.get_sender()
-    me = await event.client.get_me()
-
-    if not sender.id == me.id:
-        NotUBot = await event.reply("`...`")
-    else:
-        NotUBot = await event.edit("`...`")
-
+    NotUBot = await event.edit("`...`")
     chatinfo = await get_chatinfo(event)
     chat = await event.get_chat()
-
     success = failed = 0
     error = "None"
 

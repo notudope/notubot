@@ -32,6 +32,7 @@ from telethon.tl.types import (
     UserStatusLastWeek,
     UserStatusOffline,
     UserStatusOnline,
+    TypeChannelParticipantsFilter,
     UserStatusRecently,
 )
 from telethon.utils import get_display_name
@@ -73,8 +74,13 @@ UNBAN_RIGHTS = ChatBannedRights(
     send_inline=None,
     embed_links=None,
 )
+
+KICK_RIGHTS = ChatBannedRights(until_date=None, view_messages=True)
+
 MUTE_RIGHTS = ChatBannedRights(until_date=None, send_messages=True)
+
 UNMUTE_RIGHTS = ChatBannedRights(until_date=None, send_messages=False)
+
 CHATLOCK_RIGHTS = ChatBannedRights(
     until_date=None,
     view_messages=None,
@@ -260,7 +266,7 @@ async def kick(event):
     if not user:
         return await NotUBot.edit(REQ_ID)
 
-    mention = "[{}](tg://user?id={})".format(get_display_name(bot.me), bot.uid)
+    mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(user.id)), user.id)
     location = "{} [`{}`]".format((await event.get_chat()).title, event.chat_id)
 
@@ -270,8 +276,7 @@ async def kick(event):
         return await NotUBot.edit("😑 **Gagal Kick, dia pembuatku!**")
 
     try:
-        await event.client.kick_participant(event.chat_id, user.id)
-        await sleep(0.5)
+        await event.client(EditBannedRequest(event.chat_id, user.id, KICK_RIGHTS))
     except BaseException:
         return await NotUBot.edit(FAILED)
 
@@ -295,7 +300,7 @@ async def ban(event):
     if not user:
         return await NotUBot.edit(REQ_ID)
 
-    mention = "[{}](tg://user?id={})".format(get_display_name(bot.me), bot.uid)
+    mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(user.id)), user.id)
     location = "{} [`{}`]".format((await event.get_chat()).title, event.chat_id)
 
@@ -329,7 +334,7 @@ async def unban(event):
     if not user:
         return await NotUBot.edit(REQ_ID)
 
-    mention = "[{}](tg://user?id={})".format(get_display_name(bot.me), bot.uid)
+    mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(user.id)), user.id)
     location = "{} [`{}`]".format((await event.get_chat()).title, event.chat_id)
 
@@ -356,7 +361,7 @@ async def muter(event):
     if not user:
         return await NotUBot.edit(REQ_ID)
 
-    mention = "[{}](tg://user?id={})".format(get_display_name(bot.me), bot.uid)
+    mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(user.id)), user.id)
     location = "{} [`{}`]".format((await event.get_chat()).title, event.chat_id)
 
@@ -394,7 +399,7 @@ async def unmuter(event):
     if not user:
         return await NotUBot.edit(REQ_ID)
 
-    mention = "[{}](tg://user?id={})".format(get_display_name(bot.me), bot.uid)
+    mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(user.id)), user.id)
     location = "{} [`{}`]".format((await event.get_chat()).title, event.chat_id)
 
@@ -623,9 +628,9 @@ async def allunban(event):
         aggressive=True,
     ):
         try:
-            await event.client.edit_permissions(event.chat_id, x, view_messages=True)
+            await event.client(EditBannedRequest(event.chat_id, x, UNBAN_RIGHTS))
             success += 1
-            await sleep(1)
+            await sleep(2)
         except BaseException:
             pass
 
@@ -640,7 +645,7 @@ async def staff(event):
     try:
         async for x in event.client.iter_participants(event.chat_id, filter=ChannelParticipantsAdmins):
             if not x.deleted:
-                link = f'<a href="tg://user?id={x.id}">{get_display_name(x)}</a>'
+                link = f"<a href=tg://user?id={x.id}>{get_display_name(x)}</a>"
                 mentions += f"\n{link}"
     except ChatAdminRequiredError as e:
         mentions += " " + str(e) + "\n"
@@ -656,7 +661,7 @@ async def member(event):
     try:
         async for x in event.client.iter_participants(event.chat_id, 100):
             if not (x.bot or x.deleted):
-                link = f'<a href="tg://user?id={x.id}">{get_display_name(x)}</a>'
+                link = f"<a href=tg://user?id={x.id}>{get_display_name(x)}</a>"
                 mentions += f"\n{link}"
     except ChatAdminRequiredError as e:
         mentions += " " + str(e) + "\n"
@@ -664,16 +669,31 @@ async def member(event):
     await event.edit(mentions, parse_mode="html")
 
 
-@bot_cmd(groups_only=True, admins_only=True, pattern="tag$")
-async def tag(event):
+@bot_cmd(groups_only=True, admins_only=True, pattern="evo|@everyone$")
+async def everyone(event):
+    """
     await event.delete()
-    mentions = "@all"
+    mentions = "@everyone"
     chat = await event.get_input_chat()
 
     async for x in event.client.iter_participants(chat):
         mentions += f"[\u2063](tg://user?id={x.id})"
 
     await event.client.send_message(chat, mentions, reply_to=event.message.reply_to_msg_id)
+    """
+
+    tag = "\U000e0020everyone"
+    mention_text = f"@{tag}"
+    mention_slots = 4096 - len(mention_text)
+
+    chat = await event.get_chat()
+    async for x in event.client.iter_participants(chat, filter=TypeChannelParticipantsFilter):
+        mention_text += f"[\u200b](tg://user?id={x.id})"
+        mention_slots -= 1
+        if mention_slots == 0:
+            break
+
+    await event.respond(mention_text, mode="repost")
 
 
 @bot_cmd(groups_only=True, admins_only=True, pattern="all(?: |$)(.*)|@all(?: |$)(.*)")
@@ -689,11 +709,11 @@ async def all(event):
                 isinstance(x.participant, ChannelParticipantAdmin)
                 or isinstance(x.participant, ChannelParticipantCreator)
             ):
-                users.append(f' <a href="tg://user?id={x.id}">{get_display_name(x)}</a> ')
+                users.append(f" <a href=tg://user?id={x.id}>{get_display_name(x)}</a> ")
             if isinstance(x.participant, ChannelParticipantAdmin):
-                users.append(f'\n👮 Admin: <a href="tg://user?id={x.id}">{get_display_name(x)}</a> ')
+                users.append(f"\n👮 Admin: <a href=tg://user?id={x.id}>{get_display_name(x)}</a> ")
             if isinstance(x.participant, ChannelParticipantCreator):
-                users.append(f'\n🤴 Owner: <a href="tg://user?id={x.id}">{get_display_name(x)}</a> ')
+                users.append(f"\n🤴 Owner: <a href=tg://user?id={x.id}>{get_display_name(x)}</a> ")
 
     for mention in list(user_list(users, 6)):
         mention = "  |  ".join(map(str, mention))
@@ -725,8 +745,9 @@ async def rmusers(event):
         if isinstance(x.status, UserStatusEmpty):
             if "empty" in match:
                 try:
-                    await event.client.kick_participant(event.chat_id, x)
+                    await event.client(EditBannedRequest(event.chat_id, x, KICK_RIGHTS))
                     c += 1
+                    await sleep(0.5)
                 except BaseException:
                     pass
             else:
@@ -734,8 +755,9 @@ async def rmusers(event):
         if isinstance(x.status, UserStatusLastMonth):
             if "month" in match:
                 try:
-                    await event.client.kick_participant(event.chat_id, x)
+                    await event.client(EditBannedRequest(event.chat_id, x, KICK_RIGHTS))
                     c += 1
+                    await sleep(0.5)
                 except BaseException:
                     pass
             else:
@@ -743,8 +765,9 @@ async def rmusers(event):
         if isinstance(x.status, UserStatusLastWeek):
             if "week" in match:
                 try:
-                    await event.client.kick_participant(event.chat_id, x)
+                    await event.client(EditBannedRequest(event.chat_id, x, KICK_RIGHTS))
                     c += 1
+                    await sleep(0.5)
                 except BaseException:
                     pass
             else:
@@ -752,8 +775,9 @@ async def rmusers(event):
         if isinstance(x.status, UserStatusOffline):
             if "offline" in match:
                 try:
-                    await event.client.kick_participant(event.chat_id, x)
+                    await event.client(EditBannedRequest(event.chat_id, x, KICK_RIGHTS))
                     c += 1
+                    await sleep(0.5)
                 except BaseException:
                     pass
             else:
@@ -761,8 +785,9 @@ async def rmusers(event):
         if isinstance(x.status, UserStatusOnline):
             if "online" in match:
                 try:
-                    await event.client.kick_participant(event.chat_id, x)
+                    await event.client(EditBannedRequest(event.chat_id, x, KICK_RIGHTS))
                     c += 1
+                    await sleep(0.5)
                 except BaseException:
                     pass
             else:
@@ -770,8 +795,9 @@ async def rmusers(event):
         if isinstance(x.status, UserStatusRecently):
             if "recently" in match:
                 try:
-                    await event.client.kick_participant(event.chat_id, x)
+                    await event.client(EditBannedRequest(event.chat_id, x, KICK_RIGHTS))
                     c += 1
+                    await sleep(0.5)
                 except BaseException:
                     pass
             else:
@@ -779,8 +805,9 @@ async def rmusers(event):
         if x.bot:
             if "bot" in match:
                 try:
-                    await event.client.kick_participant(event.chat_id, x)
+                    await event.client(EditBannedRequest(event.chat_id, x, KICK_RIGHTS))
                     c += 1
+                    await sleep(0.5)
                 except BaseException:
                     pass
             else:
@@ -788,8 +815,9 @@ async def rmusers(event):
         elif x.deleted:
             if "deleted" in match:
                 try:
-                    await event.client.kick_participant(event.chat_id, x)
+                    await event.client(EditBannedRequest(event.chat_id, x, KICK_RIGHTS))
                     c += 1
+                    await sleep(0.5)
                 except BaseException:
                     pass
             else:
@@ -797,8 +825,9 @@ async def rmusers(event):
         elif x.status is None:
             if "none" in match:
                 try:
-                    await event.client.kick_participant(event.chat_id, x)
+                    await event.client(EditBannedRequest(event.chat_id, x, KICK_RIGHTS))
                     c += 1
+                    await sleep(0.5)
                 except BaseException:
                     pass
             else:

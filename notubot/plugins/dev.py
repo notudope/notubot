@@ -13,7 +13,6 @@ from pprint import pprint
 from random import choice
 
 from carbonnow import Carbon
-from telethon.utils import get_display_name
 
 from notubot import CMD_HELP
 from notubot import bot as client
@@ -195,9 +194,7 @@ async def _(event):
         except IndexError:
             return await NotUBot.edit("`Balasan pesan readable file.`")
 
-    me = await event.client.get_me()
-    mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
-
+    mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
     carbon = Carbon(base_url="https://carbonara.vercel.app/api/cook", code=code, background=col)
     notubot_carbon = await carbon.memorize("notubot_carbon")
     await NotUBot.delete()
@@ -239,8 +236,7 @@ async def crbn(event):
     except Exception as e:
         return await NotUBot.edit(str(e))
 
-    me = await event.client.get_me()
-    mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
+    mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
     await NotUBot.delete()
     await event.reply(
         f"Carbonised by {mention}",

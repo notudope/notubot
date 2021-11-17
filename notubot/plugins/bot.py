@@ -15,7 +15,6 @@ from time import time
 from git import Repo
 from telethon import version
 from telethon.errors.rpcerrorlist import MediaEmptyError
-from telethon.utils import get_display_name
 
 from notubot import (
     ALIVE_LOGO,
@@ -78,7 +77,7 @@ async def aliveon(event):
     text = alive_text.format(
         __botname__,
         ALIVE_TEXT,
-        get_display_name(bot.me),
+        bot.name,
         bot.me.username,
         bot.uid,
         ALIVE_IG,

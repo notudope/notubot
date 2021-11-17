@@ -60,7 +60,7 @@ async def fban(event):
     except BaseException:
         pass
 
-    mention = "[{}](tg://user?id={})".format(get_display_name(bot.me), bot.uid)
+    mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(userid)), userid)
     location = "{} [`{}`]".format((await event.get_chat()).title or "Private", event.chat_id or event.from_id)
     failed = []
@@ -144,7 +144,7 @@ async def unfban(event):
     except BaseException:
         pass
 
-    mention = "[{}](tg://user?id={})".format(get_display_name(bot.me), bot.uid)
+    mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(userid)), userid)
     location = "{} [`{}`]".format((await event.get_chat()).title or "Private", event.chat_id or event.from_id)
     failed = []

@@ -15,9 +15,8 @@ from telethon.tl.custom import Dialog
 from telethon.tl.functions.contacts import GetBlockedRequest
 from telethon.tl.functions.messages import GetAllStickersRequest
 from telethon.tl.types import Chat, User, Channel
-from telethon.utils import get_display_name
 
-from notubot import CMD_HELP
+from notubot import CMD_HELP, bot
 from notubot.events import bot_cmd
 from notubot.utils import parse_pre, yaml_format
 
@@ -162,8 +161,7 @@ async def stats(
     except BaseException:
         sp_count = 0
 
-    me = await event.client.get_me()
-    mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
+    mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
 
     res = f"🔸 **Stats for {mention}** \n\n"
     res += f"**Private Chats:** {private_chats} \n"

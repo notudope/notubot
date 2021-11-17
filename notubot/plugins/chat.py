@@ -9,9 +9,9 @@ from telethon.errors import ChatAdminRequiredError
 from telethon.tl.functions.channels import LeaveChannelRequest, GetFullChannelRequest
 from telethon.tl.functions.messages import AddChatUserRequest, GetFullChatRequest, ExportChatInviteRequest
 from telethon.tl.types import Chat, Channel
-from telethon.utils import get_display_name, pack_bot_file_id
+from telethon.utils import pack_bot_file_id, get_display_name
 
-from notubot import CMD_HELP
+from notubot import CMD_HELP, bot
 from notubot.events import bot_cmd
 
 
@@ -59,9 +59,8 @@ async def getlink(event):
 
 @bot_cmd(pattern="kickme$")
 async def kickme(event):
-    me = await event.client.get_me()
-    mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
-    await event.edit(f"{mention} Goodbye!")
+    mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
+    await event.edit(f"{mention} `Leaved!`")
     await event.client(LeaveChannelRequest(event.chat_id))
 
 

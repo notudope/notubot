@@ -26,6 +26,7 @@ BANNED_RIGHTS = ChatBannedRights(
     send_inline=True,
     embed_links=True,
 )
+
 MUTE_RIGHTS = ChatBannedRights(until_date=None, send_messages=True)
 
 

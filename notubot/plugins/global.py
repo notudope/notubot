@@ -54,7 +54,11 @@ UNBAN_RIGHTS = ChatBannedRights(
     send_inline=None,
     embed_links=None,
 )
+
+KICK_RIGHTS = ChatBannedRights(until_date=None, view_messages=True)
+
 MUTE_RIGHTS = ChatBannedRights(until_date=None, send_messages=True)
+
 UNMUTE_RIGHTS = ChatBannedRights(until_date=None, send_messages=False)
 
 
@@ -101,7 +105,7 @@ async def gban(event):
     else:
         return await NotUBot.edit(REQ_ID)
 
-    mention = "[{}](tg://user?id={})".format(get_display_name(bot.me), bot.uid)
+    mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(userid)), userid)
     success = failed = 0
 
@@ -156,7 +160,7 @@ async def ungban(event):
     else:
         return await NotUBot.edit(REQ_ID)
 
-    mention = "[{}](tg://user?id={})".format(get_display_name(bot.me), bot.uid)
+    mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(userid)), userid)
     success = failed = 0
 
@@ -191,8 +195,8 @@ async def ungban(event):
 @bot_cmd(pattern="listgban$")
 async def listgban(event):
     chat_id = event.chat_id or event.from_id
-    mention = "[{}](tg://user?id={})".format(get_display_name(bot.me), bot.uid)
-    msg = f"<strong>GBanned by {get_display_name(bot.me)}</strong>:\n\n"
+    mention = "<a href=tg://user?id={}>{}</a>".format(bot.uid, bot.name)
+    msg = f"<strong>GBanned by {mention}</strong>:\n\n"
     await event.get_chat()
     gbanned_users = all_gbanned()
     if len(gbanned_users) > 0:
@@ -224,6 +228,7 @@ async def listgban(event):
                     allow_cache=False,
                     reply_to=event.id,
                     caption=f"GBanned by {mention}",
+                    parse_mode="html",
                 )
         except Exception:
             pass
@@ -259,12 +264,11 @@ async def gkick(event):
     else:
         return await NotUBot.edit(REQ_ID)
 
-    me = await event.client.get_me()
-    mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
+    mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(userid)), userid)
     success = failed = 0
 
-    if userid == me.id:
+    if userid == bot.uid:
         return await NotUBot.edit("🥴 **Mabok?**")
     if userid in DEVLIST:
         return await NotUBot.edit("😑 **Gagal Global Kick, dia pembuatku!**")
@@ -272,7 +276,7 @@ async def gkick(event):
     async for x in event.client.iter_dialogs():
         if x.is_group or x.is_channel:
             try:
-                await event.client.kick_participant(x.id, userid)
+                await event.client(EditBannedRequest(x.id, userid, KICK_RIGHTS))
                 success += 1
                 await sleep(0.5)
             except BaseException:
@@ -317,12 +321,11 @@ async def gmuter(event):
     else:
         return await NotUBot.edit(REQ_ID)
 
-    me = await event.client.get_me()
-    mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
+    mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(userid)), userid)
     success = failed = 0
 
-    if userid == me.id:
+    if userid == bot.uid:
         return await NotUBot.edit("🥴 **Mabok?**")
     if userid in DEVLIST:
         return await NotUBot.edit("😑 **Gagal Global Mute, dia pembuatku!**")
@@ -366,8 +369,7 @@ async def ungmuter(event):
     else:
         return await NotUBot.edit(REQ_ID)
 
-    me = await event.client.get_me()
-    mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
+    mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(userid)), userid)
     success = failed = 0
 
