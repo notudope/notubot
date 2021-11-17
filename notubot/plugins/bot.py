@@ -104,7 +104,7 @@ async def aliveon(event):
 
 @bot_cmd(pattern="restart$")
 async def restartbot(event):
-    await event.edit("`Restarting {} ...`".format(__botname__))
+    await event.edit("`{} Restarting...`".format(__botname__))
 
     if BOTLOG:
         await event.client.send_message(BOTLOG_CHATID, "#bot #restart \n" "Restarting UserBot...")
@@ -127,7 +127,7 @@ async def restartbot(event):
 
 @bot_cmd(pattern="shutdown$")
 async def shutdown(event):
-    await event.edit("`Shutting down {} ...`".format(__botname__))
+    await event.edit("`{} Shutting down...`".format(__botname__))
 
     if BOTLOG:
         await event.client.send_message(BOTLOG_CHATID, "#bot #shutdown \n" "Shutting down UserBot...")
