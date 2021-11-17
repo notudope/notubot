@@ -36,29 +36,25 @@ async def help(event):
     else:
         plugins = ""
         for p in CMD_HELP:
-            plugins += f"`{str(p)}`  |  "
+            plugins += f"<code>{str(p)}</code>  |  "
         plugins = plugins[:-3]
 
-        text = f"""`{__botname__}`
-[Repo](https://github.com/notudope/notubot)  •  [Channel](https://t.me/notudope)  •  [Support](https://t.me/NOTUBOTS)  •  [Mutualan](https://t.me/CariTemanOK)
+        text = f"""<code>{__botname__}</code>
+<a href=https://github.com/notudope/notubot>Repo</a>  •  <a href=https://t.me/notudope>Channel</a>  •  <a href=https://t.me/NOTUBOTS>Support</a>  •  <a href=https://t.me/CariTemanOK>Mutualan</a>
 
-😎 **Owner:** `{get_display_name(me)}`
-🤖 **Version:** `v{__botversion__}`
-📦 **Plugin:** `{len(CMD_HELP)}`
-👨‍💻 **Usage:** `{HANDLER}help <plugin>`
+😎 <b>Owner:</b> <code>{get_display_name(me)}</code>
+🤖 <b>Version:</b> <code>v{__botversion__}</code>
+📦 <b>Plugin:</b> <code>{len(CMD_HELP)}</code>
+👨‍💻 <b>Usage:</b> <code>{HANDLER}help <plugin></code>
 
 Daftar semua plugin beserta perintah tersedia dibawah ini:
 
 {plugins}
 
-📌 **Gunakan perintah dengan bijak dan seperlunya, resiko ditanggung pengguna!**"""
+📌 <b>Gunakan perintah dengan bijak dan seperlunya, resiko ditanggung pengguna!</b>"""
 
         await event.edit("⚡")
         await asyncio.sleep(2)
         await event.delete()
-        helper = await event.client.send_message(
-            event.chat_id,
-            text,
-            link_preview=False,
-        )
+        helper = await event.client.send_message(event.chat_id, text, link_preview=False, parse_mode="html")
         await helper.reply(f"**Contoh :** Ketik `{HANDLER}help admin` Untuk informasi pengunaan.")
