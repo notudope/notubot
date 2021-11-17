@@ -22,9 +22,8 @@ async def ChatActionsHandler(event):
         mention = "[{}](tg://user?id={})".format(get_display_name(user), user.id)
 
         if chat.admin_rights or chat.creator:
-            gban = is_gbanned(user.id)
-            LOGS.info(gban)
-            if gban:
+            if is_gbanned(user.id):
+                LOGS.info(is_gbanned(user.id).reason)
                 try:
                     await event.client.edit_permissions(
                         chat.id,
@@ -32,7 +31,7 @@ async def ChatActionsHandler(event):
                         view_messages=False,
                     )
                     text = "#GBanned_User Joined.\n\n**User** : {}\n**Reason**: {}\n\n`User Banned.`".format(
-                        mention, gban
+                        mention, is_gbanned(user.id).reason
                     )
                     return await event.reply(text)
                 except Exception:
