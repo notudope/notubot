@@ -8,7 +8,7 @@
 from telethon.events import ChatAction
 from telethon.utils import get_display_name
 
-from notubot import bot
+from notubot import bot, LOGS
 from notubot.database.gban_sql import is_gbanned
 from notubot.database.gmute_sql import is_gmuted
 from notubot.database.mute_sql import is_muted
@@ -33,16 +33,16 @@ async def ChatActionsHandler(event):
                         mention, is_gbanned(user.id).reason
                     )
                     await event.reply(text)
-                except Exception:
-                    pass
+                except Exception as e:
+                    LOGS.exception(e)
 
             if is_gmuted(user.id):
                 try:
                     await event.client.edit_permissions(chat.id, user.id, until_date=None, send_messages=False)
                     text = "#GMuted_User Joined.\n\n**User** : {}\n\n`User Muted.`".format(mention)
                     await event.reply(text)
-                except Exception:
-                    pass
+                except Exception as e:
+                    LOGS.exception(e)
 
             muted = is_muted(user.id, chat.id)
             if muted:
@@ -52,5 +52,5 @@ async def ChatActionsHandler(event):
                             await event.client.edit_permissions(
                                 event.chat.id, user.id, until_date=None, send_messages=False
                             )
-                        except Exception:
-                            pass
+                        except Exception as e:
+                            LOGS.exception(e)
