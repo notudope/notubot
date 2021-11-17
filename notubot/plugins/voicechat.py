@@ -34,7 +34,7 @@ def user_list(ls, n):
         yield ls[i : i + n]
 
 
-@bot_cmd(groups_only=True, admins_only=True, pattern="startvc(?: |$)(.*)")
+@bot_cmd(disable_errors=True, groups_only=True, admins_only=True, pattern="startvc(?: |$)(.*)")
 async def vcstart(event):
     opts = event.pattern_match.group(1)
     args = opts.split(" ")
@@ -64,7 +64,7 @@ async def vcstart(event):
             await event.client(DeleteMessagesRequest(event.chat_id, [_group.updates[1].id]))
 
 
-@bot_cmd(groups_only=True, admins_only=True, pattern="(stopvc|endvc)(?: |$)(.*)")
+@bot_cmd(disable_errors=True, groups_only=True, admins_only=True, pattern="(stopvc|endvc)(?: |$)(.*)")
 async def vcstop(event):
     opts = event.pattern_match.group(1)
     silent = ["s", "silent"]
@@ -92,7 +92,7 @@ async def vcstop(event):
             await event.client(DeleteMessagesRequest(event.chat_id, [_group.updates[1].id]))
 
 
-@bot_cmd(groups_only=True, admins_only=True, pattern="joinvc$")
+@bot_cmd(disable_errors=True, groups_only=True, admins_only=True, pattern="joinvc$")
 async def joinvc(event):
     await event.edit("`...`")
 
@@ -115,7 +115,7 @@ async def joinvc(event):
     await event.delete()
 
 
-@bot_cmd(groups_only=True, admins_only=True, pattern="leavevc$")
+@bot_cmd(disable_errors=True, groups_only=True, admins_only=True, pattern="leavevc$")
 async def leavevc(event):
     await event.edit("`...`")
 
