@@ -16,6 +16,7 @@ from notubot import (
     BOTLOG_CHATID,
     BOTLOG,
     DEVLIST,
+    bot,
 )
 from notubot.database.fban_sql import (
     get_flist,
@@ -59,14 +60,13 @@ async def fban(event):
     except BaseException:
         pass
 
-    me = await event.client.get_me()
-    mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
+    mention = "[{}](tg://user?id={})".format(get_display_name(bot.me), bot.uid)
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(userid)), userid)
     location = "{} [`{}`]".format((await event.get_chat()).title or "Private", event.chat_id or event.from_id)
     failed = []
     total = int(0)
 
-    if userid == me.id:
+    if userid == bot.uid:
         return await NotUBot.edit("🥴 **Mabok?**")
     if userid in DEVLIST:
         return await NotUBot.edit("😑 **Gagal fban, dia pembuatku!**")
@@ -103,11 +103,11 @@ async def fban(event):
         status = f"Berhasil fban `{total}` feds."
 
     text = f"""**#Fbanned** by {mention}
-**User :** {userlink}
-**Aksi :** `Fbanned`
-**Alasan :** `{reason}`
-**Lokasi :** {location}
-**Status :** {status}"""
+**User:** {userlink}
+**Aksi:** `Fbanned`
+**Alasan:** `{reason}`
+**Lokasi:** {location}
+**Status:** {status}"""
     if BOTLOG:
         await event.client.send_message(BOTLOG_CHATID, text)
 
@@ -144,14 +144,13 @@ async def unfban(event):
     except BaseException:
         pass
 
-    me = await event.client.get_me()
-    mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
+    mention = "[{}](tg://user?id={})".format(get_display_name(bot.me), bot.uid)
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(userid)), userid)
     location = "{} [`{}`]".format((await event.get_chat()).title or "Private", event.chat_id or event.from_id)
     failed = []
     total = int(0)
 
-    if userid == me.id:
+    if userid == bot.uid:
         return await NotUBot.edit("🥴 **Mabok?**")
 
     if len(fed_list := get_flist()) == 0:
@@ -185,11 +184,11 @@ async def unfban(event):
         status = f"Berhasil unfban `{total}` feds."
 
     text = f"""**#UnFbanned** by {mention}
-**User :** {userlink}
-**Aksi :** `UnFbanned`
-**Alasan :** `{reason}`
-**Lokasi :** {location}
-**Status :** {status}"""
+**User:** {userlink}
+**Aksi:** `UnFbanned`
+**Alasan:** `{reason}`
+**Lokasi:** {location}
+**Status:** {status}"""
     if BOTLOG:
         await event.client.send_message(BOTLOG_CHATID, text)
 

@@ -27,6 +27,7 @@ from requests import get
 from telethon import TelegramClient, version
 from telethon.errors.rpcerrorlist import ApiIdInvalidError, AuthKeyDuplicatedError, PhoneNumberInvalidError
 from telethon.sessions import StringSession
+from telethon.utils import get_display_name
 
 start_time = time()
 __botversion__ = "0.1"
@@ -241,6 +242,7 @@ async def check_botlog_chatid() -> None:
 
     bot.me = await bot.get_me()
     bot.uid = bot.me.id
+    bot.name = get_display_name(bot.me)
 
 
 with bot:

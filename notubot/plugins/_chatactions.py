@@ -10,7 +10,7 @@ from telethon.tl.functions.channels import EditBannedRequest
 from telethon.tl.types import ChatBannedRights
 from telethon.utils import get_display_name
 
-from notubot import bot, LOGS
+from notubot import bot
 from notubot.database.gban_sql import is_gbanned
 from notubot.database.gmute_sql import is_gmuted
 from notubot.database.mute_sql import is_muted
@@ -34,29 +34,29 @@ async def ChatActionsHandler(event):
     if event.user_joined or event.user_added or event.added_by:
         user = await event.get_user()
         chat = await event.get_chat()
-        mention = "[{}](tg://user?id={})".format(get_display_name(user), user.id)
+        mention = "[➥ {}](tg://user?id={})".format(get_display_name(user), user.id)
 
         if chat.admin_rights or chat.creator:
-            if is_gbanned(user.id):
+            gban = is_gbanned(user.id)
+            if gban:
                 try:
                     await event.delete()
                     await event.client(EditBannedRequest(chat.id, user.id, BANNED_RIGHTS))
-                    text = "#GBanned_User Joined.\n\n**User** : {}\n**Reason**: {}\n\n`User Banned.`".format(
-                        mention, is_gbanned(user.id).reason
+                    text = "#GBanned_User Joined\n\n**User:** {}\n**Reason:** {}\n\n`User Banned`".format(
+                        mention, gban.reason
                     )
                     await event.reply(text)
-                except Exception as e:
-                    LOGS.exception(e)
+                except Exception:
+                    pass
 
             if is_gmuted(user.id):
                 try:
                     await event.delete()
-                    # await event.client.edit_permissions(chat.id, user.id, until_date=None, send_messages=False)
                     await event.client(EditBannedRequest(chat.id, user.id, MUTE_RIGHTS))
-                    text = "#GMuted_User Joined.\n\n**User** : {}\n\n`User Muted.`".format(mention)
+                    text = "#GMuted_User Joined\n\n**User:** {}\n\n`User Muted`".format(mention)
                     await event.reply(text)
-                except Exception as e:
-                    LOGS.exception(e)
+                except Exception:
+                    pass
 
             muted = is_muted(user.id, chat.id)
             if muted:
@@ -65,5 +65,5 @@ async def ChatActionsHandler(event):
                         try:
                             await event.delete()
                             await event.client(EditBannedRequest(chat.id, user.id, MUTE_RIGHTS))
-                        except Exception as e:
-                            LOGS.exception(e)
+                        except Exception:
+                            pass

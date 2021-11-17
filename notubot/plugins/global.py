@@ -19,6 +19,7 @@ from notubot import (
     BOTLOG,
     DEVLIST,
     NOSPAM_CHAT,
+    bot,
 )
 from notubot.database.gban_sql import (
     is_gbanned,
@@ -31,6 +32,18 @@ from notubot.events import bot_cmd
 
 REQ_ID = "`Kesalahan, dibutuhkan ID atau balas pesan itu.`"
 
+BANNED_RIGHTS = ChatBannedRights(
+    until_date=None,
+    view_messages=True,
+    send_messages=True,
+    send_media=True,
+    send_stickers=True,
+    send_gifs=True,
+    send_games=True,
+    send_inline=True,
+    embed_links=True,
+)
+
 UNBAN_RIGHTS = ChatBannedRights(
     until_date=None,
     send_messages=None,
@@ -41,6 +54,8 @@ UNBAN_RIGHTS = ChatBannedRights(
     send_inline=None,
     embed_links=None,
 )
+MUTE_RIGHTS = ChatBannedRights(until_date=None, send_messages=True)
+UNMUTE_RIGHTS = ChatBannedRights(until_date=None, send_messages=False)
 
 
 async def get_user_id(id, event):
@@ -86,12 +101,11 @@ async def gban(event):
     else:
         return await NotUBot.edit(REQ_ID)
 
-    me = await event.client.get_me()
-    mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
+    mention = "[{}](tg://user?id={})".format(get_display_name(bot.me), bot.uid)
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(userid)), userid)
     success = failed = 0
 
-    if userid == me.id:
+    if userid == bot.uid:
         return await NotUBot.edit("🥴 **Mabok?**")
     if userid in DEVLIST:
         return await NotUBot.edit("😑 **Gagal Global Banned, dia pembuatku!**")
@@ -109,7 +123,7 @@ async def gban(event):
     async for x in event.client.iter_dialogs():
         if x.is_group or x.is_channel:
             try:
-                await event.client.edit_permissions(x.id, userid, view_messages=False)
+                await event.client(EditBannedRequest(x.id, userid, BANNED_RIGHTS))
                 success += 1
                 await sleep(0.5)
             except BaseException:
@@ -118,10 +132,10 @@ async def gban(event):
     reason = reason if reason else "None given."
     gbaner(userid, reason)
     text = f"""**#Gbanned** by {mention}
-**User :** {userlink}
-**Aksi :** `Gbanned`
-**Alasan :** `{reason}`
-**Grup/Channel :** Berhasil `{success}` Gagal `{failed}`"""
+**User:** {userlink}
+**Aksi:** `Gbanned`
+**Alasan:** `{reason}`
+**Grup/Channel:** Berhasil `{success}` Gagal `{failed}`"""
     if BOTLOG:
         await event.client.send_message(BOTLOG_CHATID, text)
 
@@ -142,8 +156,7 @@ async def ungban(event):
     else:
         return await NotUBot.edit(REQ_ID)
 
-    me = await event.client.get_me()
-    mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
+    mention = "[{}](tg://user?id={})".format(get_display_name(bot.me), bot.uid)
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(userid)), userid)
     success = failed = 0
 
@@ -158,7 +171,7 @@ async def ungban(event):
     async for x in event.client.iter_dialogs():
         if x.is_group or x.is_channel:
             try:
-                await event.client.edit_permissions(x.id, userid, view_messages=True)
+                await event.client(EditBannedRequest(x.id, userid, UNBAN_RIGHTS))
                 success += 1
                 await sleep(0.5)
             except BaseException:
@@ -166,9 +179,9 @@ async def ungban(event):
 
     ungbaner(userid)
     text = f"""**#UnGbanned** by {mention}
-**User :** {userlink}
-**Aksi :** `UnGbanned`
-**Grup/Channel :** Berhasil `{success}` Gagal `{failed}`"""
+**User:** {userlink}
+**Aksi:** `UnGbanned`
+**Grup/Channel:** Berhasil `{success}` Gagal `{failed}`"""
     if BOTLOG:
         await event.client.send_message(BOTLOG_CHATID, text)
 
@@ -178,9 +191,8 @@ async def ungban(event):
 @bot_cmd(pattern="listgban$")
 async def listgban(event):
     chat_id = event.chat_id or event.from_id
-    me = await event.client.get_me()
-    mention = "[{}](tg://user?id={})".format(get_display_name(me), me.id)
-    msg = f"<strong>GBanned by {get_display_name(me)}</strong>:\n\n"
+    mention = "[{}](tg://user?id={})".format(get_display_name(bot.me), bot.uid)
+    msg = f"<strong>GBanned by {get_display_name(bot.me)}</strong>:\n\n"
     await event.get_chat()
     gbanned_users = all_gbanned()
     if len(gbanned_users) > 0:
@@ -268,10 +280,10 @@ async def gkick(event):
 
     reason = reason if reason else "None given."
     text = f"""**#Gkicked** by {mention}
-**User :** {userlink}
-**Aksi :** `Gkicked`
-**Alasan :** `{reason}`
-**Grup/Channel :** Berhasil `{success}` Gagal `{failed}`"""
+**User:** {userlink}
+**Aksi:** `Gkicked`
+**Alasan:** `{reason}`
+**Grup/Channel:** Berhasil `{success}` Gagal `{failed}`"""
     if BOTLOG:
         await event.client.send_message(BOTLOG_CHATID, text)
 
@@ -321,7 +333,7 @@ async def gmuter(event):
     async for x in event.client.iter_dialogs():
         if x.is_group:
             try:
-                await event.client.edit_permissions(x.id, userid, until_date=None, send_messages=False)
+                await event.client(EditBannedRequest(x.id, userid, MUTE_RIGHTS))
                 success += 1
                 await sleep(0.5)
             except BaseException:
@@ -330,10 +342,10 @@ async def gmuter(event):
     reason = reason if reason else "None given."
     gmute(userid)
     text = f"""**#Gmuted** by {mention}
-**User :** {userlink}
-**Aksi :** `Gmuted`
-**Alasan :** `{reason}`
-**Grup/Channel :** Berhasil `{success}` Gagal `{failed}`"""
+**User:** {userlink}
+**Aksi:** `Gmuted`
+**Alasan:** `{reason}`
+**Grup/Channel:** Berhasil `{success}` Gagal `{failed}`"""
     if BOTLOG:
         await event.client.send_message(BOTLOG_CHATID, text)
 
@@ -365,7 +377,6 @@ async def ungmuter(event):
     async for x in event.client.iter_dialogs():
         if x.is_group:
             try:
-                # await event.client.edit_permissions(x.id, userid, until_date=None, send_messages=True)
                 await event.client(EditBannedRequest(x.id, userid, UNBAN_RIGHTS))
                 success += 1
                 await sleep(0.5)
@@ -374,9 +385,9 @@ async def ungmuter(event):
 
     ungmute(userid)
     text = f"""**#UnGmuted** by {mention}
-**User :** {userlink}
-**Aksi :** `UnGmuted`
-**Grup/Channel :** Berhasil `{success}` Gagal `{failed}`"""
+**User:** {userlink}
+**Aksi:** `UnGmuted`
+**Grup/Channel:** Berhasil `{success}` Gagal `{failed}`"""
     if BOTLOG:
         await event.client.send_message(BOTLOG_CHATID, text)
 
