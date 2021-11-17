@@ -8,7 +8,7 @@
 from telethon.events import ChatAction
 from telethon.utils import get_display_name
 
-from notubot import bot
+from notubot import bot, LOGS
 from notubot.database.gban_sql import is_gbanned
 from notubot.database.gmute_sql import is_gmuted
 from notubot.database.mute_sql import is_muted
@@ -16,6 +16,7 @@ from notubot.database.mute_sql import is_muted
 
 @bot.on(ChatAction)
 async def ChatActionsHandler(event):
+    LOGS.info(event)
     if not event.user_joined or not event.user_added or not event.added_by:
         return ""
 
