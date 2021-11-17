@@ -25,8 +25,17 @@ from heroku3 import from_key
 from pySmartDL import SmartDL
 from requests import get
 from telethon import TelegramClient, version
-from telethon.errors.rpcerrorlist import ApiIdInvalidError, AuthKeyDuplicatedError, PhoneNumberInvalidError
+from telethon.errors.rpcerrorlist import (
+    ApiIdInvalidError,
+    AuthKeyDuplicatedError,
+    PhoneNumberInvalidError,
+    MessageIdInvalidError,
+    MessageNotModifiedError,
+    MessageDeleteForbiddenError,
+    ChatWriteForbiddenError,
+)
 from telethon.sessions import StringSession
+from telethon.tl.functions.channels import DeleteMessagesRequest
 from telethon.utils import get_display_name
 
 start_time = time()
@@ -224,14 +233,12 @@ def client_connection() -> TelegramClient:
 bot = client_connection()
 
 
-async def check_botlog_chatid() -> None:
+async def startup_check() -> None:
     if not BOTLOG_CHATID and BOTLOG:
         LOGS.warning(
             "Wajib mengatur variabel BOTLOG_CHATID di config.env atau environment variabel, supaya fitur logging berfungsi."
         )
         sys.exit(1)
-    elif not BOTLOG:
-        return
 
     entity = await bot.get_entity(BOTLOG_CHATID)
     if entity.default_banned_rights.send_messages:
@@ -244,55 +251,40 @@ async def check_botlog_chatid() -> None:
     bot.uid = bot.me.id
     bot.name = get_display_name(bot.me)
 
-
-with bot:
-    try:
-        bot.loop.run_until_complete(check_botlog_chatid())
-    except BaseException:
-        LOGS.warning(
-            "Environment variable BOTLOG_CHATID tidak valid. Periksa environment variable atau file config.env."
-        )
-        sys.exit(1)
-
-
-async def check_alive() -> None:
     await bot.send_message(BOTLOG_CHATID, "```{} v{} Launched 🚀```".format(__botname__, __botversion__))
 
+    from notubot.database.globals import delgvar, gvarstatus
 
-with bot:
-    try:
-        bot.loop.run_until_complete(check_alive())
-    except BaseException:
-        LOGS.warning(
-            "Environment variable BOTLOG_CHATID tidak valid. Periksa environment variable atau config.env file."
-        )
-        sys.exit(1)
-
-
-async def update_restarted(chat_id: int, msg_id: int) -> bool:
-    message = (
+    chatid, mid = gvarstatus("restartstatus").split("\n")
+    text = (
         f"`{__botname__}`\n"
         f"[Repo](https://github.com/notudope/notubot)  •  [Channel](https://t.me/notudope)  •  [Support](https://t.me/NOTUBOTS)  •  [Mutualan](https://t.me/CariTemanOK)\n\n"
         f"**Version** - `v{__botversion__}`\n"
         f"**Python** - `{python_version()}`\n"
         f"**Telethon** - `{version.__version__}`"
     )
-    await bot.edit_message(chat_id, msg_id, message, link_preview=False)
-    return True
+    await bot.edit_message(int(chatid), int(mid), text, link_preview=False)
 
-
-try:
-    from notubot.database.globals import delgvar, gvarstatus
-
-    chat_id, msg_id = gvarstatus("restartstatus").split("\n")
-    try:
-        with bot:
-            bot.loop.run_until_complete(update_restarted(int(chat_id), int(msg_id)))
-    except BaseException:
-        pass
+    await asyncio.sleep(100)
+    await bot(DeleteMessagesRequest(int(chatid), [int(mid)]))
     delgvar("restartstatus")
-except AttributeError:
-    pass
+
+
+with bot:
+    try:
+        bot.loop.run_until_complete(startup_check())
+    except (
+        MessageIdInvalidError,
+        MessageNotModifiedError,
+        MessageDeleteForbiddenError,
+        ChatWriteForbiddenError,
+        AttributeError,
+    ):
+        pass
+    except Exception as e:
+        LOGS.warning("Terjadi kesalahan saat proses pertama kali menjalankan UserBot.")
+        LOGS.exception(e)
+        sys.exit(1)
 
 
 async def ipchange():

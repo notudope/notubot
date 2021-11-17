@@ -6,10 +6,9 @@ import sys
 import time
 from datetime import datetime
 
-import heroku3
 from html_telegraph_poster import TelegraphPoster
 
-from notubot import HEROKU_API_KEY, HEROKU_APP_NAME
+from notubot import HEROKU_APP
 
 
 def utc_to_local(utc_datetime):
@@ -104,12 +103,10 @@ async def run_cmd(cmd: str) -> (bytes, bytes):
 
 
 async def restart(event):
-    if HEROKU_APP_NAME and HEROKU_API_KEY:
+    if HEROKU_APP:
         try:
-            Heroku = heroku3.from_key(HEROKU_API_KEY)
-            app = Heroku.apps()[HEROKU_APP_NAME]
             await event.edit("`Restarting... Tunggu beberapa menit.`")
-            app.restart()
+            HEROKU_APP.restart()
         except BaseException:
             return await event.edit(
                 "`HEROKU_API_KEY` atau `HEROKU_APP_NAME` salah! Cek ulang config var.",
