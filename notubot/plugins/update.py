@@ -109,11 +109,11 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
     await event.edit(f"`{__botname__} Dyno sedang memperbarui, perkiraan waktu sampai 5 menit...`")
 
     try:
-        from notubot.database.globals import addgvar, delgvar
+        from notubot.database.globals import addgv, delgv
 
-        delgvar("restartstatus")
+        delgv("restartstatus")
         chat_id = event.chat_id or event.from_id
-        addgvar("restartstatus", f"{chat_id}\n{event.id}")
+        addgv("restartstatus", f"{chat_id}\n{event.id}")
     except AttributeError:
         pass
 
@@ -163,11 +163,11 @@ async def update(event, repo, ups_rem, ac_br):
         await event.client.send_message(BOTLOG_CHATID, "#bot #pull \n" f"**{__botname__} Telah Diperbarui ツ**")
 
     try:
-        from notubot.database.globals import addgvar, delgvar
+        from notubot.database.globals import addgv, delgv
 
-        delgvar("restartstatus")
+        delgv("restartstatus")
         chat_id = event.chat_id or event.from_id
-        addgvar("restartstatus", f"{chat_id}\n{event.id}")
+        addgv("restartstatus", f"{chat_id}\n{event.id}")
     except AttributeError:
         pass
 

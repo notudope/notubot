@@ -5,7 +5,7 @@
 # PLease read the GNU General Public License v3.0 in
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
-import asyncio
+from asyncio import sleep
 
 from notubot import CMD_HELP
 from notubot.events import bot_cmd
@@ -31,11 +31,11 @@ async def fakeaction(event):
 
     act = event.pattern_match.group(1).capitalize()
     await event.edit(f'`Memulai "Fake {act}" selama {seconds} detik.`')
-    await asyncio.sleep(5)
+    await sleep(5)
     await event.delete()
 
     async with event.client.action(event.chat_id, action):
-        await asyncio.sleep(seconds)
+        await sleep(seconds)
 
 
 CMD_HELP.update(

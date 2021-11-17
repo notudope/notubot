@@ -110,10 +110,10 @@ async def restartbot(event):
         await event.client.send_message(BOTLOG_CHATID, "#bot #restart \n" "Restarting UserBot...")
 
     try:
-        from notubot.database.globals import addgvar, delgvar
+        from notubot.database.globals import addgv, delgv
 
-        delgvar("restartstatus")
-        addgvar("restartstatus", f"{event.chat_id}\n{event.id}")
+        delgv("restartstatus")
+        addgv("restartstatus", f"{event.chat_id}\n{event.id}")
     except AttributeError:
         pass
 

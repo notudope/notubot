@@ -5,7 +5,7 @@
 # PLease read the GNU General Public License v3.0 in
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
-import asyncio
+from asyncio import sleep
 
 from pytgcalls import GroupCallFactory
 from telethon.tl.functions.channels import GetFullChannelRequest, DeleteMessagesRequest
@@ -24,8 +24,8 @@ group_call = group_call_factory.get_file_group_call(None)
 
 
 async def get_call(event):
-    mm = await event.client(GetFullChannelRequest(event.chat_id))
-    xx = await event.client(GetGroupCallRequest(mm.full_chat.call))
+    x = await event.client(GetFullChannelRequest(event.chat_id))
+    xx = await event.client(GetGroupCallRequest(x.full_chat.call))
     return xx.call
 
 
@@ -35,7 +35,7 @@ def user_list(ls, n):
 
 
 @bot_cmd(disable_errors=True, groups_only=True, admins_only=True, pattern="startvc(?: |$)(.*)")
-async def vcstart(event):
+async def _(event):
     opts = event.pattern_match.group(1)
     args = opts.split(" ")
 
@@ -45,8 +45,6 @@ async def vcstart(event):
     title = ""
     for i in args[1:]:
         title += i + " "
-    if title == "":
-        title = ""
 
     _group = await event.client(
         CreateGroupCallRequest(
@@ -55,9 +53,9 @@ async def vcstart(event):
         )
     )
 
-    if stfu is not True:
+    if not stfu:
         await event.edit("`Memulai Obrolan Suara...`")
-        await asyncio.sleep(3)
+        await sleep(3)
     else:
         await event.delete()
         if _group and _group.updates[1].id is not None:
@@ -65,7 +63,7 @@ async def vcstart(event):
 
 
 @bot_cmd(disable_errors=True, groups_only=True, admins_only=True, pattern="(stopvc|endvc)(?: |$)(.*)")
-async def vcstop(event):
+async def _(event):
     opts = event.pattern_match.group(1)
     silent = ["s", "silent"]
     stfu = True if opts in silent else False
@@ -77,14 +75,14 @@ async def vcstop(event):
 
     if not call:
         await event.edit("`Tidak ada obrolan.`")
-        await asyncio.sleep(3)
+        await sleep(3)
         return await event.delete()
 
     _group = await event.client(DiscardGroupCallRequest(call))
 
-    if stfu is not True:
+    if not stfu:
         await event.edit("`Obrolan Suara dimatikan...`")
-        await asyncio.sleep(3)
+        await sleep(3)
         await event.delete()
     else:
         await event.delete()
@@ -93,7 +91,7 @@ async def vcstop(event):
 
 
 @bot_cmd(disable_errors=True, groups_only=True, admins_only=True, pattern="joinvc$")
-async def joinvc(event):
+async def _(event):
     await event.edit("`...`")
 
     try:
@@ -103,7 +101,7 @@ async def joinvc(event):
 
     if not call:
         await event.edit(f"`Tidak ada obrolan, mulai dengan {HANDLER}startvc`")
-        await asyncio.sleep(15)
+        await sleep(15)
         return await event.delete()
 
     if not (group_call and group_call.is_connected):
@@ -111,12 +109,12 @@ async def joinvc(event):
         group_call.enable_action = False
 
     await event.edit("`joined`")
-    await asyncio.sleep(3)
+    await sleep(3)
     await event.delete()
 
 
 @bot_cmd(disable_errors=True, groups_only=True, admins_only=True, pattern="leavevc$")
-async def leavevc(event):
+async def _(event):
     await event.edit("`...`")
 
     try:
@@ -126,19 +124,19 @@ async def leavevc(event):
 
     if not call:
         await event.edit(f"`Tidak ada obrolan, mulai dengan {HANDLER}startvc`")
-        await asyncio.sleep(15)
+        await sleep(15)
         return await event.delete()
 
     if group_call and group_call.is_connected:
         await group_call.stop()
 
     await event.edit("`leaved`")
-    await asyncio.sleep(3)
+    await sleep(3)
     await event.delete()
 
 
 @bot_cmd(groups_only=True, admins_only=True, pattern="vcinvite$")
-async def vcinvite(event):
+async def _(event):
     await event.edit("`Mengundang orang ke Obrolan Suara...`")
     await event.get_chat()
     users = []
@@ -160,12 +158,12 @@ async def vcinvite(event):
         try:
             await event.client(InviteToGroupCallRequest(call=call, users=user))
             invited += 6
-            await asyncio.sleep(2)
+            await sleep(2)
         except BaseException:
             pass
 
     await event.edit(f"`Diundang {invited} orang.`")
-    await asyncio.sleep(15)
+    await sleep(15)
     await event.delete()
 
 

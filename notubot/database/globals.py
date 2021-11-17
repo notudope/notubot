@@ -19,7 +19,7 @@ class Globals(BASE):
 Globals.__table__.create(checkfirst=True)
 
 
-def gvarstatus(variable):
+def gvstatus(variable):
     try:
         return SESSION.query(Globals).filter(Globals.variable == str(variable)).first().value
     except BaseException:
@@ -28,15 +28,15 @@ def gvarstatus(variable):
         SESSION.close()
 
 
-def addgvar(variable, value):
+def addgv(variable, value):
     if SESSION.query(Globals).filter(Globals.variable == str(variable)).one_or_none():
-        delgvar(variable)
+        delgv(variable)
     adder = Globals(str(variable), value)
     SESSION.add(adder)
     SESSION.commit()
 
 
-def delgvar(variable):
+def delgv(variable):
     rem = SESSION.query(Globals).filter(Globals.variable == str(variable)).delete(synchronize_session="fetch")
     if rem:
         SESSION.commit()

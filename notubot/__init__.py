@@ -36,6 +36,7 @@ from telethon.errors.rpcerrorlist import (
 )
 from telethon.sessions import StringSession
 from telethon.tl.functions.channels import DeleteMessagesRequest
+from telethon.tl.functions.messages import EditMessageRequest
 from telethon.utils import get_display_name
 
 start_time = time()
@@ -74,12 +75,36 @@ config = {
     **environ,
 }
 
-# Check if the config was edited by using the already used variable.
+# Check if the config was edited by using the already used variable
 CONFIG_CHECK = strtobool(getenv("_____REMOVE_____THIS_____LINE_____", default="False"))
 
 if CONFIG_CHECK:
     LOGS.error("Hapus baris dalam hashtag pertama dari file config.env")
     sys.exit(1)
+
+# Developer the UserBot
+DEVLIST = [2006788653, 2003361410]
+
+# Special group blacklist, include some federations
+NOSPAM_CHAT = [
+    -1001327032795,  # UltroidSupport
+    -1001387666944,  # PyrogramChat
+    -1001109500936,  # TelethonChat
+    -1001050982793,  # Python
+    -1001256902287,  # DurovsChat
+    -1001235155926,  # RoseSupportChat
+    -1001341570295,  # tgbetachat
+    -1001336679475,  # tgandroidtests
+    -1001311056733,  # BotTalk
+    -1001312712379,  # SpamWatchSupport
+    -1001360494801,  # OFIOpenChat
+    -1001435671639,  # xfichat
+    -1001421589523,  # tdspya
+    -1001294181499,  # userbotindo
+    -1001625295806,  # NOTUBOTS
+    -1001596433756,  # MFIChat
+    -1001307868573,  # CariTemanOK
+]
 
 # Telegram API_ID and API_HASH
 API_ID = int(getenv("API_ID", default=0))
@@ -97,35 +122,8 @@ BOTLOG_CHATID = int(getenv("BOTLOG_CHATID", default=0))
 # Command handler
 HANDLER = getenv("HANDLER", default=".")
 
-# Developer the UserBot
-DEVLIST = [2006788653, 2003361410]
-
 # Running developer command
 I_DEV = strtobool(getenv("I_DEV", default="False"))
-
-# Blacklist group
-BLACKLIST_GROUP = list(map(int, getenv("BLACKLIST_GROUP", default="").split()))
-
-# Special group blacklist
-# Note include some federations
-NOSPAM_CHAT = [
-    -1001327032795,  # UltroidSupport
-    -1001387666944,  # PyrogramChat
-    -1001109500936,  # TelethonChat
-    -1001050982793,  # Python
-    -1001256902287,  # DurovsChat
-    -1001235155926,  # RoseSupportChat
-    -1001341570295,  # tgbetachat
-    -1001336679475,  # tgandroidtests
-    -1001311056733,  # BotTalk
-    -1001294181499,  # userbotindo
-    -1001625295806,  # NOTUBOTS
-    -1001596433756,  # MFIChat
-    -1001307868573,  # CariTemanOK
-]
-
-# Bleep Blop, this is a bot ;)
-PM_AUTO_BAN = strtobool(getenv("PM_AUTO_BAN", default="False"))
 
 # Default .alive logo
 ALIVE_LOGO = getenv("ALIVE_LOGO", default=None)
@@ -136,17 +134,23 @@ ALIVE_TEXT = getenv("ALIVE_TEXT", default="Hey, I am alive.")
 # Default .alive Instagram
 ALIVE_IG = getenv("ALIVE_IG", default="notudope")
 
-# Heroku Credentials for updater.
+# Heroku Credentials for updater
 HEROKU_APP_NAME = getenv("HEROKU_APP_NAME", default=None)
 HEROKU_API_KEY = getenv("HEROKU_API_KEY", default=None)
 
-# Custom (forked) repo URL for updater.
+# Custom (forked) repo URL for updater
 UPSTREAM_REPO_URL = getenv("UPSTREAM_REPO_URL", "https://github.com/notudope/notubot.git")
 # UPSTREAM_REPO_URL branch, the default is main
 UPSTREAM_REPO_BRANCH = getenv("UPSTREAM_REPO_BRANCH", "main")
 
 # SQL Database URI
 DB_URI = getenv("DATABASE_URL", default="")
+
+# Blacklist group
+BLACKLIST_GROUP = list(map(int, getenv("BLACKLIST_GROUP", default="").split()))
+
+# Bleep Blop, this is a bot
+PM_AUTO_BAN = strtobool(getenv("PM_AUTO_BAN", default="False"))
 
 # OpenWeatherMap API Key
 OPEN_WEATHER_MAP_APPID = getenv("OPEN_WEATHER_MAP_APPID", default="")
@@ -218,10 +222,10 @@ def client_connection() -> TelegramClient:
 
         client.parse_mode = "markdown"
     except (AuthKeyDuplicatedError, PhoneNumberInvalidError, EOFError):
-        LOGS.warning("STRING_SESSION Kedaluwarsa. Silakan buat STRING_SESSION baru. Berhenti...")
+        LOGS.warning("STRING_SESSION kedaluwarsa, silakan buat STRING_SESSION baru.")
         sys.exit(1)
     except ApiIdInvalidError:
-        LOGS.warning("Kombinasi API_ID dan API_HASH tidak valid. Silahkan cek ulang. Berhenti...")
+        LOGS.warning("Kombinasi API_ID dan API_HASH tidak valid. Silahkan cek ulang.")
         sys.exit(1)
     except Exception as e:
         LOGS.exception("ERROR - {}".format(e))
@@ -253,9 +257,9 @@ async def startup_check() -> None:
 
     await bot.send_message(BOTLOG_CHATID, "```{} v{} Launched 🚀```".format(__botname__, __botversion__))
 
-    from notubot.database.globals import delgvar, gvarstatus
+    from notubot.database.globals import delgv, gvstatus
 
-    chatid, mid = gvarstatus("restartstatus").split("\n")
+    chatid, mid = gvstatus("restartstatus").split("\n")
     text = (
         f"`{__botname__}`\n"
         f"[Repo](https://github.com/notudope/notubot)  •  [Channel](https://t.me/notudope)  •  [Support](https://t.me/NOTUBOTS)  •  [Mutualan](https://t.me/CariTemanOK)\n\n"
@@ -263,11 +267,17 @@ async def startup_check() -> None:
         f"**Python** - `{python_version()}`\n"
         f"**Telethon** - `{version.__version__}`"
     )
-    await bot.edit_message(int(chatid), int(mid), text, link_preview=False)
-
+    await bot(
+        EditMessageRequest(
+            peer=int(chatid),
+            id=int(mid),
+            no_webpage=True,
+            message=text,
+        )
+    )
     await asyncio.sleep(100)
     await bot(DeleteMessagesRequest(int(chatid), [int(mid)]))
-    delgvar("restartstatus")
+    delgv("restartstatus")
 
 
 with bot:
@@ -289,19 +299,19 @@ with bot:
 
 async def ipchange():
     try:
-        from notubot.database.globals import addgvar, delgvar, gvarstatus
+        from notubot.database.globals import addgv, delgv, gvstatus
     except AttributeError:
         return None
 
     newip = (get("https://httpbin.org/ip").json())["origin"]
 
-    if not gvarstatus("ipaddress"):
-        addgvar("ipaddress", newip)
+    if not gvstatus("ipaddress"):
+        addgv("ipaddress", newip)
         return None
 
-    oldip = gvarstatus("ipaddress")
+    oldip = gvstatus("ipaddress")
     if oldip != newip:
-        delgvar("ipaddress")
+        delgv("ipaddress")
         LOGS.info("🔄 IP change detected!")
         try:
             await bot.disconnect()
