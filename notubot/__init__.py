@@ -28,7 +28,7 @@ from telethon.sessions import StringSession
 
 start_time = time()
 __botversion__ = "0.1"
-__botname__ = "ツ NOTUBOT UserBot"
+__botname__ = "ツNOTUBOT UserBot"
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="%H:%M:%S", level=logging.INFO

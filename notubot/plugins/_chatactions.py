@@ -8,7 +8,7 @@
 from telethon.events import ChatAction
 from telethon.utils import get_display_name
 
-from notubot import bot, LOGS
+from notubot import bot
 from notubot.database.gban_sql import is_gbanned
 from notubot.database.gmute_sql import is_gmuted
 from notubot.database.mute_sql import is_muted
@@ -22,8 +22,7 @@ async def ChatActionsHandler(event):
         mention = "[{}](tg://user?id={})".format(get_display_name(user), user.id)
 
         if chat.admin_rights or chat.creator:
-            if is_gbanned(user.id):
-                LOGS.info(is_gbanned(user.id).reason)
+            if str(user.id) == is_gbanned(user.id).user_id:
                 try:
                     await event.client.edit_permissions(
                         chat.id,
@@ -33,7 +32,7 @@ async def ChatActionsHandler(event):
                     text = "#GBanned_User Joined.\n\n**User** : {}\n**Reason**: {}\n\n`User Banned.`".format(
                         mention, is_gbanned(user.id).reason
                     )
-                    return await event.reply(text)
+                    await event.reply(text)
                 except Exception:
                     pass
 
@@ -41,7 +40,7 @@ async def ChatActionsHandler(event):
                 try:
                     await event.client.edit_permissions(chat.id, user.id, until_date=None, send_messages=False)
                     text = "#GMuted_User Joined.\n\n**User** : {}\n\n`User Muted.`".format(mention)
-                    return await event.reply(text)
+                    await event.reply(text)
                 except Exception:
                     pass
 
