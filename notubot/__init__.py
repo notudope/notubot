@@ -189,7 +189,7 @@ for file, bin in binaries.items():
         chmod(bin, 0o755)
 
 try:
-    if HEROKU_API_KEY is not None or HEROKU_APP_NAME is not None:
+    if HEROKU_API_KEY or HEROKU_APP_NAME:
         HEROKU_APP = from_key(HEROKU_API_KEY).apps()[HEROKU_APP_NAME]
     else:
         HEROKU_APP = None
