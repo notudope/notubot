@@ -18,6 +18,8 @@ from notubot import (
     __botname__,
     LOOP,
     start_time,
+    HEROKU_APP,
+    ipchange,
 )
 from notubot.plugins import ALL_PLUGINS
 from notubot.utils import time_formatter
@@ -39,8 +41,23 @@ def trap() -> None:
 trap()
 
 
+class NotUBotCheck:
+    def __init__(self):
+        self.sucess = True
+
+
+NotUBotCheck = NotUBotCheck()
+
+
 async def main() -> None:
+    check = await ipchange()
+    if check is not None:
+        NotUBotCheck.sucess = False
+        return
+
     await bot.start()
+
+    NotUBotCheck.sucess = True
 
     for plugins in ALL_PLUGINS:
         import_module("notubot.plugins.{}".format(plugins))
@@ -49,8 +66,14 @@ async def main() -> None:
 
     if len(sys.argv) not in (1, 3, 4):
         await bot.disconnect()
+    elif not NotUBotCheck.sucess:
+        if HEROKU_APP is not None:
+            HEROKU_APP.restart()
     else:
-        await bot.run_until_disconnected()
+        try:
+            await bot.run_until_disconnected()
+        except ConnectionError:
+            pass
 
 
 if __name__ == "__main__":

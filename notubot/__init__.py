@@ -21,7 +21,9 @@ from platform import python_version
 from time import time
 
 from dotenv import dotenv_values, load_dotenv
+from heroku3 import from_key
 from pySmartDL import SmartDL
+from requests import get
 from telethon import TelegramClient, version
 from telethon.errors.rpcerrorlist import ApiIdInvalidError, AuthKeyDuplicatedError, PhoneNumberInvalidError
 from telethon.sessions import StringSession
@@ -213,6 +215,26 @@ def client_connection() -> TelegramClient:
 bot = client_connection()
 
 
+try:
+    if HEROKU_API_KEY is not None or HEROKU_APP_NAME is not None:
+        HEROKU_APP = from_key(HEROKU_API_KEY).apps()[HEROKU_APP_NAME]
+    else:
+        HEROKU_APP = None
+except Exception:
+    HEROKU_APP = None
+
+
+async def setup_me_bot():
+    bot.me = await bot.get_me()
+    bot.uid = bot.me.id
+
+
+try:
+    bot.loop.run_until_complete(setup_me_bot())
+except Exception as e:
+    LOGS.error(f"{e}")
+
+
 async def check_botlog_chatid() -> None:
     if not BOTLOG_CHATID and BOTLOG:
         LOGS.warning(
@@ -254,7 +276,7 @@ with bot:
         sys.exit(1)
 
 
-async def update_restart_msg(chat_id: int, msg_id: int) -> bool:
+async def update_restarted(chat_id: int, msg_id: int) -> bool:
     message = (
         f"`{__botname__}`\n"
         f"[Repo](https://github.com/notudope/notubot)  •  [Channel](https://t.me/notudope)  •  [Support](https://t.me/NOTUBOTS)  •  [Mutualan](https://t.me/CariTemanOK)\n\n"
@@ -272,12 +294,36 @@ try:
     chat_id, msg_id = gvarstatus("restartstatus").split("\n")
     try:
         with bot:
-            bot.loop.run_until_complete(update_restart_msg(int(chat_id), int(msg_id)))
+            bot.loop.run_until_complete(update_restarted(int(chat_id), int(msg_id)))
     except BaseException:
         pass
     delgvar("restartstatus")
 except AttributeError:
     pass
+
+
+async def ipchange():
+    try:
+        from notubot.database.globals import addgvar, delgvar, gvarstatus
+    except AttributeError:
+        return None
+
+    newip = (get("https://httpbin.org/ip").json())["origin"]
+
+    if gvarstatus("ipaddress") is None:
+        addgvar("ipaddress", newip)
+        return None
+
+    oldip = gvarstatus("ipaddress")
+    if oldip != newip:
+        delgvar("ipaddress")
+        LOGS.info("🔄 IP change detected!")
+        try:
+            await bot.disconnect()
+        except (ConnectionError, asyncio.exceptions.CancelledError):
+            pass
+        return "ip change"
+
 
 # Global Variables
 CMD_HELP = {}

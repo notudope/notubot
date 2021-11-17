@@ -42,6 +42,7 @@ from notubot import (
     CMD_HELP,
     DEVLIST,
     HANDLER,
+    bot,
 )
 from notubot.database.mute_sql import is_muted, mute, unmute
 from notubot.events import bot_cmd
@@ -263,7 +264,7 @@ async def kick(event):
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(user.id)), user.id)
     location = "{} [`{}`]".format((await event.get_chat()).title, event.chat_id)
 
-    if user.id == me.id:
+    if user.id == bot.uid:  # me.id
         return await NotUBot.edit("🥴 **Mabok?**")
     if user.id in DEVLIST:
         return await NotUBot.edit("😑 **Gagal Kick, dia pembuatku!**")

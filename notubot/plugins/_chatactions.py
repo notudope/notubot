@@ -6,12 +6,27 @@
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
 from telethon.events import ChatAction
+from telethon.tl.functions.channels import EditBannedRequest
+from telethon.tl.types import ChatBannedRights
 from telethon.utils import get_display_name
 
 from notubot import bot, LOGS
 from notubot.database.gban_sql import is_gbanned
 from notubot.database.gmute_sql import is_gmuted
 from notubot.database.mute_sql import is_muted
+
+BANNED_RIGHTS = ChatBannedRights(
+    until_date=None,
+    view_messages=True,
+    send_messages=True,
+    send_media=True,
+    send_stickers=True,
+    send_gifs=True,
+    send_games=True,
+    send_inline=True,
+    embed_links=True,
+)
+MUTE_RIGHTS = ChatBannedRights(until_date=None, send_messages=True)
 
 
 @bot.on(ChatAction)
@@ -24,11 +39,8 @@ async def ChatActionsHandler(event):
         if chat.admin_rights or chat.creator:
             if is_gbanned(user.id):
                 try:
-                    await event.client.edit_permissions(
-                        chat.id,
-                        user.id,
-                        view_messages=False,
-                    )
+                    await event.delete()
+                    await event.client(EditBannedRequest(chat.id, user.id, BANNED_RIGHTS))
                     text = "#GBanned_User Joined.\n\n**User** : {}\n**Reason**: {}\n\n`User Banned.`".format(
                         mention, is_gbanned(user.id).reason
                     )
@@ -38,7 +50,9 @@ async def ChatActionsHandler(event):
 
             if is_gmuted(user.id):
                 try:
-                    await event.client.edit_permissions(chat.id, user.id, until_date=None, send_messages=False)
+                    await event.delete()
+                    # await event.client.edit_permissions(chat.id, user.id, until_date=None, send_messages=False)
+                    await event.client(EditBannedRequest(chat.id, user.id, MUTE_RIGHTS))
                     text = "#GMuted_User Joined.\n\n**User** : {}\n\n`User Muted.`".format(mention)
                     await event.reply(text)
                 except Exception as e:
@@ -49,8 +63,7 @@ async def ChatActionsHandler(event):
                 for m in muted:
                     if str(m.sender) == str(user.id):
                         try:
-                            await event.client.edit_permissions(
-                                event.chat.id, user.id, until_date=None, send_messages=False
-                            )
+                            await event.delete()
+                            await event.client(EditBannedRequest(chat.id, user.id, MUTE_RIGHTS))
                         except Exception as e:
                             LOGS.exception(e)

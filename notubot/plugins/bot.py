@@ -24,6 +24,7 @@ from notubot import (
     __botname__,
     start_time,
     BOTLOG,
+    bot,
     BOTLOG_CHATID,
     ALIVE_TEXT,
     HEROKU_API_KEY,
@@ -59,8 +60,8 @@ async def aliveon(event):
     await event.edit("ㅤ")
     ms = round((time() - start) * 1000)
 
-    me = await event.client.get_me()
-    user = await event.client.get_entity("me")
+    # me = await event.client.get_me()
+    # user = await event.client.get_entity("me")
     uptime = time_formatter((time() - start_time) * 1000)
 
     b = Repo().active_branch
@@ -77,9 +78,9 @@ async def aliveon(event):
     text = alive_text.format(
         __botname__,
         ALIVE_TEXT,
-        get_display_name(user),
-        me.username,
-        me.id,
+        get_display_name(bot.me),
+        event.me.username,
+        event.me.id,
         ALIVE_IG,
         ALIVE_IG,
         __botversion__,
