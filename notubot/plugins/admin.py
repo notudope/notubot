@@ -644,7 +644,7 @@ async def member(event):
 
 @bot_cmd(groups_only=True, admins_only=True, pattern="everyone|@everyone$")
 async def everyone(event):
-    tag = "\U000e0020@everyone"
+    tag = "\U000e0020everyone"
     mention_text = f"@{tag}"
     mention_slots = 4096 - len(mention_text)
 
