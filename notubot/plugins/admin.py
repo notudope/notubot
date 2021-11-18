@@ -618,7 +618,7 @@ async def staff(event):
     try:
         chat = await event.get_chat()
         async for x in event.client.iter_participants(chat, filter=Admins):
-            if not (x.deleted or (await event.client.get_permissions(chat, x.id)).participant.admin_rights.anonymous):
+            if not (x.deleted or (x.participant.admin_rights and x.participant.admin_rights.anonymous)):
                 link = f"<a href=tg://user?id={x.id}>{get_display_name(x)}</a>"
                 mentions += f"\n{link}"
     except ChatAdminRequiredError as e:
@@ -636,11 +636,7 @@ async def member(event):
     try:
         chat = await event.get_chat()
         async for x in event.client.iter_participants(chat, 100):
-            if not (
-                x.deleted
-                or x.bot
-                or (await event.client.get_permissions(chat, x.id)).participant.admin_rights.anonymous
-            ):
+            if not (x.deleted or x.bot or (x.participant.admin_rights and x.participant.admin_rights.anonymous)):
                 link = f"<a href=tg://user?id={x.id}>{get_display_name(x)}</a>"
                 mentions += f"\n{link}"
     except ChatAdminRequiredError as e:
@@ -660,7 +656,7 @@ async def everyone(event):
         if not (
             x.deleted
             or x.bot
-            or (await event.client.get_permissions(chat, x.id)).participant.admin_rights.anonymous
+            or (x.participant.admin_rights and x.participant.admin_rights.anonymous)
             or x.id == bot.uid
         ):
             mention_text += f"[\u200b](tg://user?id={x.id})"
@@ -683,7 +679,7 @@ async def all(event):
         if not (
             x.deleted
             or x.bot
-            or (await event.client.get_permissions(chat, x.id)).participant.admin_rights.anonymous
+            or (x.participant.admin_rights and x.participant.admin_rights.anonymous)
             or x.id == bot.uid
         ):
             if not (isinstance(x.participant, (Admin, Creator))):
