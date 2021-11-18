@@ -16,16 +16,14 @@ from telethon.errors import (
     UserAdminInvalidError,
     ChatNotModifiedError,
 )
+from telethon.tl.functions.channels import GetParticipantRequest  # noqa: F401
 from telethon.tl.functions.channels import EditAdminRequest, EditBannedRequest, EditPhotoRequest
 from telethon.tl.functions.messages import SetHistoryTTLRequest, EditChatDefaultBannedRightsRequest
 from telethon.tl.types import (
-    ChannelParticipantsAdmins,
-    ChannelParticipantCreator,
-    ChannelParticipantAdmin,
+    ChannelParticipantsKicked,
     ChatAdminRights,
     ChatBannedRights,
     MessageMediaPhoto,
-    ChannelParticipantsKicked,
     InputMessagesFilterPinned,
     UserStatusEmpty,
     UserStatusLastMonth,
@@ -34,6 +32,9 @@ from telethon.tl.types import (
     UserStatusOnline,
     UserStatusRecently,
 )
+from telethon.tl.types import ChannelParticipantAdmins as Admins
+from telethon.tl.types import ChannelParticipantAdmin as Admin
+from telethon.tl.types import ChannelParticipantCreator as Creator
 from telethon.utils import get_display_name
 
 from notubot import (
@@ -46,6 +47,7 @@ from notubot import (
 )
 from notubot.database.mute_sql import is_muted, mute, unmute
 from notubot.events import bot_cmd
+from notubot.utils import get_user_from_event, get_uinfo, get_user_id  # noqa: F401
 
 NO_PERM = "`Tidak memiliki izin!`"
 FAILED = "`Gagal melakukan aksi!`"
@@ -114,33 +116,6 @@ CHATUNLOCK_RIGHTS = ChatBannedRights(
 def user_list(ls, n):
     for i in range(0, len(ls), n):
         yield ls[i : i + n]
-
-
-async def get_uinfo(event):
-    user, data = None, None
-    if event.reply_to:
-        user = (await event.get_reply_message()).sender
-        data = event.pattern_match.group(1)
-    else:
-        ok = event.pattern_match.group(1).split(maxsplit=1)
-        if len(ok) >= 1:
-            usr = ok[0]
-            if usr.isdigit():
-                usr = int(usr)
-
-            try:
-                user = await event.client.get_entity(usr)
-            except BaseException:
-                if str(usr).isdigit():
-                    user.id = usr
-                    user.first_name = usr
-                else:
-                    pass
-
-            if len(ok) == 2:
-                data = ok[1]
-
-    return user, data
 
 
 @bot_cmd(groups_only=True, admins_only=True, pattern="promote(?: |$)(.*)")
@@ -406,9 +381,7 @@ async def unmuter(event):
         return NotUBot.edit("`User tidak terkena Mute.`")
 
     try:
-        result = await event.client.get_permissions(event.chat_id, user.id)
-        if result.participant.banned_rights.send_messages:
-            await event.client(EditBannedRequest(event.chat_id, user.id, UNBAN_RIGHTS))
+        await event.client(EditBannedRequest(event.chat_id, user.id, UNBAN_RIGHTS))
         unmute(user.id, event.chat_id)
     except BaseException:
         return await NotUBot.edit(FAILED)
@@ -571,7 +544,7 @@ async def zombies(event):
     if match != "clean":
         await event.edit("`Mencari akun terhapus...`")
 
-        async for x in event.client.iter_participants(event.chat_id):
+        async for x in event.client.iter_participants(event.chat_id, aggressive=True):
             if x.deleted:
                 deleted_user += 1
                 await sleep(1)
@@ -587,7 +560,7 @@ async def zombies(event):
     deleted_user = 0
     deleted_admin = 0
 
-    async for x in event.client.iter_participants(event.chat_id):
+    async for x in event.client.iter_participants(event.chat_id, aggressive=True):
         if x.deleted:
             try:
                 await event.client(EditBannedRequest(event.chat_id, x.id, BANNED_RIGHTS))
@@ -641,9 +614,14 @@ async def staff(event):
     title = (await event.get_chat()).title
     mentions = f"<b>Admin {title}</b>\n"
 
+    # (await event.client(GetParticipantRequest(event.chat_id, x.id))).participant.admin_rights.anonymous
+    # x.participant.admin_rights.anonymous
     try:
-        async for x in event.client.iter_participants(event.chat_id, filter=ChannelParticipantsAdmins):
-            if not x.deleted:
+        async for x in event.client.iter_participants(event.chat_id, filter=Admins):
+            if not (
+                x.deleted
+                or (await event.client.get_permissions(event.chat_id, x.id)).participant.admin_rights.anonymous
+            ):
                 link = f"<a href=tg://user?id={x.id}>{get_display_name(x)}</a>"
                 mentions += f"\n{link}"
     except ChatAdminRequiredError as e:
@@ -686,8 +664,8 @@ async def everyone(event):
     mention_slots = 4096 - len(mention_text)
 
     chat = await event.get_chat()
-    async for x in event.client.iter_participants(chat):
-        if not (x.bot or x.deleted):
+    async for x in event.client.iter_participants(chat, aggressive=True):
+        if not (x.bot or x.deleted or x.id == bot.uid):
             mention_text += f"[\u200b](tg://user?id={x.id})"
             mention_slots -= 1
             if mention_slots == 0:
@@ -703,16 +681,13 @@ async def all(event):
     limit = 0
     await event.get_chat()
 
-    async for x in event.client.iter_participants(event.chat_id):
-        if not (x.bot or x.deleted):
-            if not (
-                isinstance(x.participant, ChannelParticipantAdmin)
-                or isinstance(x.participant, ChannelParticipantCreator)
-            ):
+    async for x in event.client.iter_participants(event.chat_id, aggressive=True):
+        if not (x.bot or x.deleted or x.id == bot.uid):
+            if not (isinstance(x.participant, (Admin, Creator))):
                 users.append(f" <a href=tg://user?id={x.id}>{get_display_name(x)}</a> ")
-            if isinstance(x.participant, ChannelParticipantAdmin):
+            if isinstance(x.participant, Admin):
                 users.append(f"\n👮 Admin: <a href=tg://user?id={x.id}>{get_display_name(x)}</a> ")
-            if isinstance(x.participant, ChannelParticipantCreator):
+            if isinstance(x.participant, Creator):
                 users.append(f"\n🤴 Owner: <a href=tg://user?id={x.id}>{get_display_name(x)}</a> ")
 
     for mention in list(user_list(users, 6)):
@@ -740,7 +715,7 @@ async def rmusers(event):
     match = event.pattern_match.group(1)
     p, b, c, d, m, n, y, w, o, q, r = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
-    async for x in event.client.iter_participants(event.chat_id):
+    async for x in event.client.iter_participants(event.chat_id, aggressive=True):
         p += 1
         if isinstance(x.status, UserStatusEmpty):
             if "empty" in match:

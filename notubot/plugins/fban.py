@@ -25,6 +25,7 @@ from notubot.database.fban_sql import (
     del_flist_all,
 )
 from notubot.events import bot_cmd
+from notubot.utils import get_user_from_event, get_uinfo, get_user_id  # noqa: F401
 
 fbot = "@MissRose_bot"
 REQ_ID = "`Kesalahan, dibutuhkan ID atau balas pesan itu.`"

@@ -8,7 +8,9 @@
 from asyncio import sleep
 
 from telethon.tl.functions.channels import EditBannedRequest, DeleteMessagesRequest
-from telethon.tl.types import ChannelParticipantCreator, ChannelParticipantAdmin, ChatBannedRights
+from telethon.tl.types import ChannelParticipantCreator as Creator
+from telethon.tl.types import ChannelParticipantAdmin as Admin
+from telethon.tl.types import ChatBannedRights
 
 from notubot import bot
 from notubot.events import bot_cmd
@@ -38,11 +40,7 @@ async def rocker(event):
         await event.edit("`...`")
 
     async for x in event.client.iter_participants(event.chat_id):
-        if x.id == bot.uid:
-            pass
-        if not (
-            isinstance(x.participant, ChannelParticipantAdmin) or isinstance(x.participant, ChannelParticipantCreator)
-        ):
+        if not (isinstance(x.participant, (Admin, Creator)) or x.id == bot.uid):
             crying = await event.client(
                 EditBannedRequest(event.chat_id, x.id, ChatBannedRights(until_date=None, view_messages=True))
             )
@@ -67,11 +65,7 @@ async def gohell(event):
         await event.edit("`...`")
 
     async for x in event.client.iter_participants(event.chat_id):
-        if x.id == bot.uid:
-            pass
-        if not (
-            isinstance(x.participant, ChannelParticipantAdmin) or isinstance(x.participant, ChannelParticipantCreator)
-        ):
+        if not (isinstance(x.participant, (Admin, Creator)) or x.id == bot.uid):
             crying = await event.client(EditBannedRequest(event.chat_id, x.id, BANNED_RIGHTS))
             if lucifer is True and crying:
                 if crying.updates[0].id is not None:

@@ -10,6 +10,7 @@ from io import BytesIO
 
 from telethon.tl.functions.channels import EditBannedRequest
 from telethon.tl.functions.contacts import BlockRequest, UnblockRequest
+from telethon.tl.functions.messages import ReportSpamRequest
 from telethon.tl.types import ChatBannedRights
 from telethon.utils import get_display_name
 
@@ -29,6 +30,7 @@ from notubot.database.gban_sql import (
 )
 from notubot.database.gmute_sql import is_gmuted, gmute, ungmute
 from notubot.events import bot_cmd
+from notubot.utils import get_user_from_event, get_uinfo, get_user_id  # noqa: F401
 
 REQ_ID = "`Kesalahan, dibutuhkan ID atau balas pesan itu.`"
 
@@ -60,22 +62,6 @@ KICK_RIGHTS = ChatBannedRights(until_date=None, view_messages=True)
 MUTE_RIGHTS = ChatBannedRights(until_date=None, send_messages=True)
 
 UNMUTE_RIGHTS = ChatBannedRights(until_date=None, send_messages=False)
-
-
-async def get_user_id(id, event):
-    if str(id).isdigit() or str(id).startswith("-"):
-        if str(id).startswith("-100"):
-            userid = int(str(id).replace("-100", ""))
-        elif str(id).startswith("-"):
-            userid = int(str(id).replace("-", ""))
-        else:
-            userid = int(id)
-    else:
-        try:
-            userid = (await event.client.get_entity(id)).id
-        except BaseException:
-            pass
-    return userid
 
 
 @bot_cmd(pattern="gban(?: |$)(.*)")
@@ -120,6 +106,7 @@ async def gban(event):
         )
 
     try:
+        await event.client(ReportSpamRequest(int(userid)))
         await event.client(BlockRequest(int(userid)))
     except BaseException:
         pass

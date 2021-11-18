@@ -77,7 +77,7 @@ async def inviteall(event):
         return
 
     await NotUBot.edit("`Mengumpulkan member...`")
-    async for user in event.client.iter_participants(chatinfo.full_chat.id):
+    async for user in event.client.iter_participants(chatinfo.full_chat.id, aggressive=True):
         if not (
             user.bot
             or user.deleted

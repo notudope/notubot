@@ -1,4 +1,5 @@
 from .chrome import chrome, options  # noqa: F401
+from .events import get_user_from_event, get_uinfo, get_user_id  # noqa: F401
 from .format import parse_pre, yaml_format  # noqa: F401
 from .google_images_download import googleimagesdownload  # noqa: F401
 from .progress import progress  # noqa: F401

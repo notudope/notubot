@@ -36,7 +36,6 @@ from telethon.errors.rpcerrorlist import (
 )
 from telethon.sessions import StringSession
 from telethon.tl.functions.channels import DeleteMessagesRequest
-from telethon.tl.functions.messages import EditMessageRequest
 from telethon.utils import get_display_name
 
 start_time = time()
@@ -263,18 +262,12 @@ async def startup_check() -> None:
     text = (
         f"`{__botname__}`\n"
         f"[Repo](https://github.com/notudope/notubot)  •  [Channel](https://t.me/notudope)  •  [Support](https://t.me/NOTUBOTS)  •  [Mutualan](https://t.me/CariTemanOK)\n\n"
-        f"**Version** - `v{__botversion__}`\n"
-        f"**Python** - `{python_version()}`\n"
-        f"**Telethon** - `{version.__version__}`"
+        f"**Version:** `v{__botversion__}`\n"
+        f"**Python:** `{python_version()}`\n"
+        f"**Telethon:** `{version.__version__}`"
     )
-    await bot(
-        EditMessageRequest(
-            peer=int(chatid),
-            id=int(mid),
-            no_webpage=True,
-            message=text,
-        )
-    )
+
+    await bot.edit_message(int(chatid), int(mid), text, link_preview=False)
     await asyncio.sleep(100)
     await bot(DeleteMessagesRequest(int(chatid), [int(mid)]))
     delgv("restartstatus")
@@ -292,7 +285,7 @@ with bot:
     ):
         pass
     except Exception as e:
-        LOGS.warning("Terjadi kesalahan saat proses pertama kali menjalankan UserBot.")
+        LOGS.warning("Terjadi kesalahan saat proses pertama kali menjalankan.")
         LOGS.exception(e)
         sys.exit(1)
 

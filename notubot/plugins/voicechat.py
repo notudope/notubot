@@ -8,7 +8,7 @@
 from asyncio import sleep
 
 from pytgcalls import GroupCallFactory
-from telethon.tl.functions.channels import GetFullChannelRequest, DeleteMessagesRequest
+from telethon.tl.functions.channels import GetFullChannelRequest, DeleteMessagesRequest, GetParticipantRequest
 from telethon.tl.functions.phone import (
     CreateGroupCallRequest,
     DiscardGroupCallRequest,
@@ -46,6 +46,11 @@ async def _(event):
     for i in args[1:]:
         title += i + " "
 
+    perm = await event.client(GetParticipantRequest(event.chat_id, bot.uid))
+    # perm = await event.client.get_permissions(event.chat_id, bot.uid)
+    if not perm.participant.admin_rights.manage_call:
+        return await event.edit("`Tidak ada izin untuk memulai obrolan!`")
+
     _group = await event.client(
         CreateGroupCallRequest(
             event.chat_id,
@@ -62,7 +67,7 @@ async def _(event):
             await event.client(DeleteMessagesRequest(event.chat_id, [_group.updates[1].id]))
 
 
-@bot_cmd(disable_errors=True, groups_only=True, admins_only=True, pattern="(stopvc|endvc)(?: |$)(.*)")
+@bot_cmd(disable_errors=True, groups_only=True, admins_only=True, can_call=True, pattern="(stopvc|endvc)(?: |$)(.*)")
 async def _(event):
     opts = event.pattern_match.group(1)
     silent = ["s", "silent"]
@@ -78,6 +83,11 @@ async def _(event):
         await sleep(3)
         return await event.delete()
 
+    perm = await event.client(GetParticipantRequest(event.chat_id, bot.uid))
+    # perm = await event.client.get_permissions(event.chat_id, bot.uid)
+    if not perm.participant.admin_rights.manage_call:
+        return await event.edit("`Tidak ada izin untuk mematikan obrolan!`")
+
     _group = await event.client(DiscardGroupCallRequest(call))
 
     if not stfu:
@@ -90,7 +100,7 @@ async def _(event):
             await event.client(DeleteMessagesRequest(event.chat_id, [_group.updates[1].id]))
 
 
-@bot_cmd(disable_errors=True, groups_only=True, admins_only=True, pattern="joinvc$")
+@bot_cmd(disable_errors=True, groups_only=True, admins_only=True, can_call=True, pattern="joinvc$")
 async def _(event):
     await event.edit("`...`")
 
@@ -150,8 +160,8 @@ async def _(event):
     if not call:
         return await event.delete()
 
-    async for x in event.client.iter_participants(event.chat_id):
-        if not (x.bot or x.deleted):
+    async for x in event.client.iter_participants(event.chat_id, aggressive=True):
+        if not (x.bot or x.deleted or x.id == bot.uid):
             users.append(x.id)
 
     for user in list(user_list(users, 6)):

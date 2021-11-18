@@ -27,6 +27,9 @@ from telethon.errors.rpcerrorlist import (
     ChatSendGifsForbiddenError,
     ChatWriteForbiddenError,
 )
+from telethon.tl.functions.channels import GetParticipantRequest
+from telethon.tl.types import ChannelParticipantAdmin as Admin
+from telethon.tl.types import ChannelParticipantCreator as Creator
 from telethon.utils import get_display_name
 
 from notubot import (
@@ -66,6 +69,8 @@ def bot_cmd(**args):
     disable_errors: bool = args.get("disable_errors", False)
     insecure: bool = args.get("insecure", False)
     only_devs: bool = args.get("only_devs", False)
+    can_promote: bool = args.get("can_promote", False)
+    can_call: bool = args.get("can_call", False)
     # allow_sudo: bool = args.get("allow_sudo", False)
 
     stack = inspect.stack()
@@ -108,6 +113,8 @@ def bot_cmd(**args):
         "disable_errors",
         "insecure",
         "only_devs",
+        "can_promote",
+        "can_call",
         "allow_sudo",
     ]:
         if i in args:
@@ -127,16 +134,6 @@ def bot_cmd(**args):
                     f"**⚠️ Developer Restricted!**\nHarap **tentukan variabel** `I_DEV` untuk mengaktifkan perintah developer.\n\nMungkin ini berbahaya."
                 )
 
-            if admins_only:
-                if event.is_private:
-                    await event.delete()
-                    return await event.respond("`Gunakan perintah itu dalam grup!`")
-
-                gchat = await event.get_chat()
-                if not (gchat.admin_rights or gchat.creator):
-                    await event.delete()
-                    return await event.respond("`Bukan admin disini!`")
-
             if groups_only and event.is_private:
                 await event.delete()
                 return await event.respond("`Gunakan perintah itu dalam grup/channel!`")
@@ -144,6 +141,24 @@ def bot_cmd(**args):
             if private_only and not event.is_private:
                 await event.delete()
                 return await event.respond("`Gunakan perintah itu dalam obrolan pribadi!`")
+
+            if admins_only:
+                if event.is_private:
+                    await event.delete()
+                    return await event.respond("`Gunakan perintah itu dalam grup!`")
+
+                # gchat = await event.get_chat()
+                # if not (gchat.admin_rights or gchat.creator):
+                p = await event.client(GetParticipantRequest(event.chat_id, event.sender_id))
+                if not isinstance(p.participant, (Admin, Creator)):
+                    await event.delete()
+                    return await event.respond("`Bukan admin disini!`")
+                if can_promote and not p.participant.admin_rights.add_admins:
+                    await event.delete()
+                    return await event.respond("`Bukan Co-Founder disini!`")
+                if can_call and not p.participant.admin_rights.manage_call:
+                    await event.delete()
+                    return await event.respond("`Tidak punya izin akses obrolan!`")
 
             try:
                 from notubot.database.blacklist_sql import get_blacklist
