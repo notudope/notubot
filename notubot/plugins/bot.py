@@ -65,6 +65,7 @@ async def aliveon(event):
     g = Repo().remotes[0].config_reader.get("url")
     r = g.replace(".git", f"/tree/{b}")
     branch = f"<a href={r}>{b}</a>"
+    username_or_mention = f"@{bot.me.username}" if bot.me.username else f"<a href=tg://user?id={bot.uid}>{bot.uid}</a>"
 
     await event.edit(".")
     await event.edit("..")
@@ -76,7 +77,7 @@ async def aliveon(event):
         __botname__,
         ALIVE_TEXT,
         bot.name,
-        f"@{bot.me.username}" if bot.me.username else f"<a href=tg://user?id={bot.uid}>{bot.uid}</a>",
+        username_or_mention,
         bot.uid,
         ALIVE_IG,
         ALIVE_IG,
