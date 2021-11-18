@@ -16,7 +16,6 @@ from telethon.errors import (
     UserAdminInvalidError,
     ChatNotModifiedError,
 )
-from telethon.tl.functions.channels import GetParticipantRequest  # noqa: F401
 from telethon.tl.functions.channels import EditAdminRequest, EditBannedRequest, EditPhotoRequest
 from telethon.tl.functions.messages import SetHistoryTTLRequest, EditChatDefaultBannedRightsRequest
 from telethon.tl.types import (

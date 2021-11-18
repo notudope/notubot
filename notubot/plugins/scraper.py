@@ -80,7 +80,7 @@ async def inviteall(event):
 
     await NotUBot.edit("`Mengumpulkan member...`")
     async for x in event.client.iter_participants(chatinfo.full_chat.id, aggressive=True):
-        if not (x.deleted or x.bot or isinstance(x.participant, Admin) or isinstance(x.participant, Creator)):
+        if not (x.deleted or x.bot or isinstance(x.participant, (Admin, Creator))):
             try:
                 if error.startswith("Too"):
                     return await NotUBot.edit(
@@ -120,8 +120,10 @@ async def getmemb(event):
     with open("members.csv", "w", encoding="UTF-8") as f:
         writer = csv.writer(f, delimiter=",", lineterminator="\n")
         writer.writerow(["user_id", "hash"])
-        for member in members:
-            writer.writerow([member.id, member.access_hash])
+
+        for x in members:
+            if not (x.deleted or x.bot or isinstance(x.participant, (Admin, Creator))):
+                writer.writerow([x.id, x.access_hash])
 
     await event.edit("`Berhasil mengumpulkan member.`")
     await event.delete()
