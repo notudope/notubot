@@ -56,7 +56,7 @@ alive_text = """<code>{}</code>
 @bot_cmd(disable_errors=True, pattern="(alive|on)$")
 async def aliveon(event):
     start = time()
-    await event.edit(" ")
+    await event.edit("ㅤ")
     ms = round((time() - start) * 1000)
     # me = await event.client.get_me()
     # user = await event.client.get_entity("me")
