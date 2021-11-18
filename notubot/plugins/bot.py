@@ -66,6 +66,7 @@ async def aliveon(event):
     r = g.replace(".git", f"/tree/{b}")
     branch = f"<a href={r}>{b}</a>"
     username_or_mention = f"@{bot.me.username}" if bot.me.username else f"<a href=tg://user?id={bot.uid}>{bot.uid}</a>"
+    instagram = ALIVE_IG.replace("@", "")
 
     await event.edit(".")
     await event.edit("..")
@@ -79,8 +80,8 @@ async def aliveon(event):
         bot.name,
         username_or_mention,
         bot.uid,
-        ALIVE_IG,
-        ALIVE_IG,
+        instagram,
+        instagram,
         __botversion__,
         len(CMD_HELP),
         ms,
