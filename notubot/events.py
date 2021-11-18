@@ -70,6 +70,7 @@ def bot_cmd(**args):
     insecure: bool = args.get("insecure", False)
     only_devs: bool = args.get("only_devs", False)
     can_promote: bool = args.get("can_promote", False)
+    can_ban: bool = args.get("can_ban", False)
     can_call: bool = args.get("can_call", False)
     # allow_sudo: bool = args.get("allow_sudo", False)
 
@@ -114,6 +115,7 @@ def bot_cmd(**args):
         "insecure",
         "only_devs",
         "can_promote",
+        "can_ban",
         "can_call",
         "allow_sudo",
     ]:
@@ -145,17 +147,18 @@ def bot_cmd(**args):
             if admins_only:
                 if event.is_private:
                     await event.delete()
-                    return await event.respond("`Gunakan perintah itu dalam grup!`")
+                    return await event.respond("`Gunakan perintah itu dalam grup/channel!`")
 
-                # gchat = await event.get_chat()
-                # if not (gchat.admin_rights or gchat.creator):
                 p = await event.client(GetParticipantRequest(event.chat_id, event.sender_id))
                 if not isinstance(p.participant, (Admin, Creator)):
                     await event.delete()
                     return await event.respond("`Bukan admin disini!`")
                 if can_promote and not p.participant.admin_rights.add_admins:
                     await event.delete()
-                    return await event.respond("`Bukan Co-Founder disini!`")
+                    return await event.respond("`Bukan Owner/Co-Founder disini!`")
+                if can_ban and not p.participant.admin_rights.ban_users:
+                    await event.delete()
+                    return await event.respond("`Tidak punya izin mengeluarkan orang!`")
                 if can_call and not p.participant.admin_rights.manage_call:
                     await event.delete()
                     return await event.respond("`Tidak punya izin akses obrolan!`")

@@ -118,7 +118,7 @@ def user_list(ls, n):
         yield ls[i : i + n]
 
 
-@bot_cmd(groups_only=True, admins_only=True, pattern="promote(?: |$)(.*)")
+@bot_cmd(groups_only=True, admins_only=True, can_promote=True, pattern="promote(?: |$)(.*)")
 async def promote(event):
     NotUBot = await event.edit("`Promoting...`")
     await event.get_chat()
@@ -156,7 +156,7 @@ async def promote(event):
     await NotUBot.edit("`promoted`")
 
 
-@bot_cmd(groups_only=True, admins_only=True, pattern="demote(?: |$)(.*)")
+@bot_cmd(groups_only=True, admins_only=True, can_promote=True, pattern="demote(?: |$)(.*)")
 async def demote(event):
     NotUBot = await event.edit("`Demoting...`")
     await event.get_chat()
@@ -191,7 +191,7 @@ async def demote(event):
     await NotUBot.edit("`demoted`")
 
 
-@bot_cmd(groups_only=True, admins_only=True, pattern="(fpromote|fullpromote)(?: |$)(.*)")
+@bot_cmd(groups_only=True, admins_only=True, can_promote=True, pattern="(fpromote|fullpromote)(?: |$)(.*)")
 async def fpromote(event):
     NotUBot = await event.edit("`Promoting...`")
     await event.get_chat()
@@ -229,7 +229,7 @@ async def fpromote(event):
     await NotUBot.edit("`promoted`")
 
 
-@bot_cmd(groups_only=True, admins_only=True, pattern="kick(?: |$)(.*)")
+@bot_cmd(groups_only=True, admins_only=True, can_ban=True, pattern="kick(?: |$)(.*)")
 async def kick(event):
     if "kickme" in event.text:
         return
@@ -266,7 +266,7 @@ async def kick(event):
     await NotUBot.edit(text)
 
 
-@bot_cmd(groups_only=True, admins_only=True, pattern="ban(?: |$)(.*)")
+@bot_cmd(groups_only=True, admins_only=True, can_ban=True, pattern="ban(?: |$)(.*)")
 async def ban(event):
     NotUBot = await event.edit("`Banning...`")
     await event.get_chat()
@@ -300,7 +300,7 @@ async def ban(event):
     await NotUBot.edit(text)
 
 
-@bot_cmd(groups_only=True, admins_only=True, pattern="unban(?: |$)(.*)")
+@bot_cmd(groups_only=True, admins_only=True, can_ban=True, pattern="unban(?: |$)(.*)")
 async def unban(event):
     NotUBot = await event.edit("`Unbanning...`")
     await event.get_chat()
@@ -535,7 +535,7 @@ async def set_group_photo(event):
             await NotUBot.edit("`Gagal memproses gambar.`")
 
 
-@bot_cmd(groups_only=True, admins_only=True, pattern="(zombies|delusers)(?: |$)(.*)")
+@bot_cmd(groups_only=True, admins_only=True, can_ban=True, pattern="(zombies|delusers)(?: |$)(.*)")
 async def zombies(event):
     match = event.pattern_match.group(1).lower()
     deleted_user = 0
@@ -589,7 +589,7 @@ async def zombies(event):
     await event.edit(status)
 
 
-@bot_cmd(groups_only=True, admins_only=True, pattern="(allunban|unbanall)$")
+@bot_cmd(groups_only=True, admins_only=True, can_ban=True, pattern="(allunban|unbanall)$")
 async def allunban(event):
     await event.edit("`...`")
     success = 0
@@ -611,17 +611,14 @@ async def allunban(event):
 
 @bot_cmd(groups_only=True, pattern="(staff|adminlist)$")
 async def staff(event):
+    await event.edit("`...`")
     title = (await event.get_chat()).title
     mentions = f"<b>Admin {title}</b>\n"
 
-    # (await event.client(GetParticipantRequest(event.chat_id, x.id))).participant.admin_rights.anonymous
-    # x.participant.admin_rights.anonymous
+    # (await event.client.get_permissions(event.chat_id, x.id)).participant.admin_rights.anonymous
     try:
         async for x in event.client.iter_participants(event.chat_id, filter=Admins):
-            if not (
-                x.deleted
-                or (await event.client.get_permissions(event.chat_id, x.id)).participant.admin_rights.anonymous
-            ):
+            if not (x.deleted or x.participant.admin_rights.anonymous):
                 link = f"<a href=tg://user?id={x.id}>{get_display_name(x)}</a>"
                 mentions += f"\n{link}"
     except ChatAdminRequiredError as e:
@@ -632,6 +629,7 @@ async def staff(event):
 
 @bot_cmd(groups_only=True, pattern="member$")
 async def member(event):
+    await event.edit("`...`")
     title = (await event.get_chat()).title
     mentions = f"<b>Member {title}</b>\n"
 
