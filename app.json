@@ -26,7 +26,7 @@
       "required": false
     },
     "ALIVE_IG": {
-      "description": "Show your instagram account in .alive message (put username without @)",
+      "description": "Show your Instagram account in .alive message (put username without @)",
       "value": "notudope",
       "required": false
     },
@@ -76,6 +76,11 @@
       "description": "Enable a developer command by set it True",
       "value": "False",
       "required": true
+    },
+    "NOSPAM_GROUP": {
+      "description": "Blacklist your group from gcast feature, get your group ID from '@MissRose_bot' send /id then put the ID into here example: -1001596433756 -1001307868573 (multiple without commas)",
+      "value": "-1001596433756 -1001307868573",
+      "required": false
     }
   },
   "addons": [
