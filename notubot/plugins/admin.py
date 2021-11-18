@@ -34,7 +34,6 @@ from telethon.tl.types import (
 from telethon.tl.types import ChannelParticipantsAdmins as Admins
 from telethon.tl.types import ChannelParticipantAdmin as Admin
 from telethon.tl.types import ChannelParticipantCreator as Creator
-from telethon.types import TypeChannelParticipantsFilter
 from telethon.utils import get_display_name
 
 from notubot import (
@@ -643,14 +642,14 @@ async def member(event):
     await event.edit(mentions, parse_mode="html")
 
 
-@bot_cmd(groups_only=True, admins_only=True, pattern="evo|@everyone$")
+@bot_cmd(groups_only=True, admins_only=True, pattern="everyone|@everyone$")
 async def everyone(event):
-    tag = "\U000e0020everyone"
+    tag = "\U000e0020@everyone"
     mention_text = f"@{tag}"
     mention_slots = 4096 - len(mention_text)
 
     chat = await event.get_chat()
-    async for x in event.client.iter_participants(chat, filter=TypeChannelParticipantsFilter):
+    async for x in event.client.iter_participants(chat):
         mention_text += f"[\u200b](tg://user?id={x.id})"
         mention_slots -= 1
         if mention_slots == 0:
