@@ -43,7 +43,7 @@ alive_text = """<code>{}</code>
 ┣  <b>Instagram</b> - <a href=https://www.instagram.com/{}>{}</a>
 ┣  <b>Version</b> - <code>v{}</code>
 ┣  <b>Plugin</b> - <code>{}</code>
-┣  <b>Ping</b> - <code>{} ms</code>
+┣  <b>Ping</b> - <code>{}ms</code>
 ┣  <b>Uptime</b> - <code>{}</code>
 ┣  <b>Python</b> - <code>{}</code>
 ┣  <b>Telethon</b> - <code>{}</code>
