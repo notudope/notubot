@@ -613,7 +613,7 @@ async def allunban(event):
 async def staff(event):
     await event.edit("`...`")
     title = (await event.get_chat()).title
-    mentions = f"<b>Admin {title}</b>\n"
+    mentions = f"<b>Admin {title}</b>"
 
     try:
         chat = await event.get_chat()
@@ -631,16 +631,12 @@ async def staff(event):
 async def member(event):
     await event.edit("`...`")
     title = (await event.get_chat()).title
-    mentions = f"<b>Member {title}</b>\n"
+    mentions = f"<b>Member {title}</b>"
 
     try:
         chat = await event.get_chat()
         async for x in event.client.iter_participants(chat, 100):
-            if not (
-                x.deleted
-                or x.bot
-                or (isinstance(x.participant, (Admin, Creator)) and x.participant.admin_rights.anonymous)
-            ):
+            if not (x.deleted or x.bot or (isinstance(x.participant, Admins) and x.participant.admin_rights.anonymous)):
                 link = f"<a href=tg://user?id={x.id}>{get_display_name(x)}</a>"
                 mentions += f"\n{link}"
     except ChatAdminRequiredError as e:
@@ -660,7 +656,7 @@ async def everyone(event):
         if not (
             x.deleted
             or x.bot
-            or (isinstance(x.participant, (Admin, Creator)) and x.participant.admin_rights.anonymous)
+            or (isinstance(x.participant, Admins) and x.participant.admin_rights.anonymous)
             or x.id == bot.uid
         ):
             mention_text += f"[\u200b](tg://user?id={x.id})"
@@ -683,15 +679,15 @@ async def all(event):
         if not (
             x.deleted
             or x.bot
-            or (isinstance(x.participant, (Admin, Creator)) and x.participant.admin_rights.anonymous)
+            or (isinstance(x.participant, Admins) and x.participant.admin_rights.anonymous)
             or x.id == bot.uid
         ):
-            if not (isinstance(x.participant, (Admin, Creator))):
-                users.append(f" <a href=tg://user?id={x.id}>{get_display_name(x)}</a> ")
+            if not (isinstance(x.participant, Admins)):
+                users.append(f"<a href=tg://user?id={x.id}>{get_display_name(x)}</a>")
             if isinstance(x.participant, Admin):
-                users.append(f"\n👮 Admin: <a href=tg://user?id={x.id}>{get_display_name(x)}</a> ")
+                users.append(f"\n👮 Admin: <a href=tg://user?id={x.id}>{get_display_name(x)}</a>")
             if isinstance(x.participant, Creator):
-                users.append(f"\n🤴 Owner: <a href=tg://user?id={x.id}>{get_display_name(x)}</a> ")
+                users.append(f"\n🤴 Owner: <a href=tg://user?id={x.id}>{get_display_name(x)}</a>")
 
     for mention in list(user_list(users, 6)):
         mention = "  |  ".join(map(str, mention))
