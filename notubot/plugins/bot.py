@@ -92,13 +92,16 @@ async def aliveon(event):
     if ALIVE_LOGO:
         try:
             await event.client.send_file(event.chat_id, ALIVE_LOGO, caption=text, parse_mode="html")
-            await event.delete()
         except MediaEmptyError:
-            await event.edit(text + "\n\n <code>ALIVE_LOGO tidak valid.</code>", link_preview=False, parse_mode="html")
+            await event.client.send_message(
+                event.chat_id, text + "\n\n <code>ALIVE_LOGO tidak valid.</code>", link_preview=False, parse_mode="html"
+            )
         except (ChatSendMediaForbiddenError, ChatSendGifsForbiddenError):
-            await event.edit(text, link_preview=False, parse_mode="html")
+            await event.client.send_message(event.chat_id, text, link_preview=False, parse_mode="html")
     else:
-        await event.edit(text, link_preview=False, parse_mode="html")
+        await event.client.send_message(event.chat_id, text, link_preview=False, parse_mode="html")
+
+    await event.delete()
 
 
 @bot_cmd(pattern="restart$")
