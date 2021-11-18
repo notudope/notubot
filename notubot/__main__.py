@@ -18,8 +18,6 @@ from notubot import (
     __botname__,
     LOOP,
     start_time,
-    HEROKU_APP,
-    ipchange,
 )
 from notubot.plugins import ALL_PLUGINS
 from notubot.utils import time_formatter
@@ -41,20 +39,7 @@ def trap() -> None:
 trap()
 
 
-class NotUBotCheck:
-    def __init__(self):
-        self.sucess = True
-
-
-NotUBotCheck = NotUBotCheck()
-
-
 async def startup_process() -> None:
-    check = await ipchange()
-    if check:
-        NotUBotCheck.sucess = False
-        return
-
     await bot.start()
 
     for plugins in ALL_PLUGINS:
@@ -62,23 +47,16 @@ async def startup_process() -> None:
 
     LOGS.info("{} v{} Launched 🚀".format(__botname__, __botversion__))
 
-    NotUBotCheck.sucess = True
-    return
+    if len(sys.argv) not in (1, 3, 4):
+        await bot.disconnect()
+    else:
+        await bot.run_until_disconnected()
 
 
 if __name__ == "__main__":
     try:
         LOGS.info("Took {} to start {}".format(time_formatter((time() - start_time) * 1000), __botname__))
         bot.loop.run_until_complete(startup_process())
-
-        if len(sys.argv) not in (1, 3, 4):
-            bot.disconnect()
-        elif not NotUBotCheck.sucess:
-            if HEROKU_APP:
-                HEROKU_APP.restart()
-        else:
-            bot.run_until_disconnected()
-
     except (ConnectionError, NotImplementedError, KeyboardInterrupt, SystemExit):
         pass
     except (BaseException, Exception) as e:
