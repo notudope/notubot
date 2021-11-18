@@ -19,7 +19,9 @@ from telethon.errors.rpcerrorlist import (
 )
 from telethon.tl.functions.channels import InviteToChannelRequest, GetFullChannelRequest
 from telethon.tl.functions.messages import GetFullChatRequest
-from telethon.tl.types import InputPeerUser, ChannelParticipantCreator, ChannelParticipantAdmin
+from telethon.tl.types import InputPeerUser
+from telethon.tl.types import ChannelParticipantCreator as Creator
+from telethon.tl.types import ChannelParticipantAdmin as Admin
 
 from notubot import CMD_HELP
 from notubot.events import bot_cmd
@@ -77,13 +79,8 @@ async def inviteall(event):
         return
 
     await NotUBot.edit("`Mengumpulkan member...`")
-    async for user in event.client.iter_participants(chatinfo.full_chat.id, aggressive=True):
-        if not (
-            user.bot
-            or user.deleted
-            or isinstance(user.participant, ChannelParticipantAdmin)
-            or isinstance(user.participant, ChannelParticipantCreator)
-        ):
+    async for x in event.client.iter_participants(chatinfo.full_chat.id, aggressive=True):
+        if not (x.deleted or x.bot or isinstance(x.participant, Admin) or isinstance(x.participant, Creator)):
             try:
                 if error.startswith("Too"):
                     return await NotUBot.edit(
@@ -95,7 +92,7 @@ async def inviteall(event):
 • Gagal mengundang `{failed}` orang."""
                     )
 
-                await event.client(InviteToChannelRequest(channel=chat, users=[user.id]))
+                await event.client(InviteToChannelRequest(channel=chat, users=[x.id]))
                 success = success + 1
                 await NotUBot.edit(
                     f"""**Sedang Mengundang...**
@@ -119,6 +116,7 @@ async def inviteall(event):
 async def getmemb(event):
     await event.edit("`...`")
     members = await event.client.get_participants(event.chat_id, aggressive=True)
+
     with open("members.csv", "w", encoding="UTF-8") as f:
         writer = csv.writer(f, delimiter=",", lineterminator="\n")
         writer.writerow(["user_id", "hash"])
