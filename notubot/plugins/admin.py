@@ -647,7 +647,6 @@ async def everyone(event):
     """
     await event.delete()
     mentions = "@everyone"
-    chat = await event.get_input_chat()
 
     async for x in event.client.iter_participants(chat):
         mentions += f"[\u2063](tg://user?id={x.id})"
@@ -667,7 +666,7 @@ async def everyone(event):
             if mention_slots == 0:
                 break
 
-    await event.respond(mention_text, mode="repost")
+    await event.client.send_message(chat, mention_text, reply_to=event.message.reply_to_msg_id)
 
 
 @bot_cmd(groups_only=True, admins_only=True, pattern="all(?: |$)(.*)|@all(?: |$)(.*)")
