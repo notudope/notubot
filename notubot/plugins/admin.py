@@ -32,7 +32,7 @@ from telethon.tl.types import (
     UserStatusOnline,
     UserStatusRecently,
 )
-from telethon.tl.types import ChannelParticipantAdmins as Admins
+from telethon.tl.types import ChannelParticipantsAdmins as Admins
 from telethon.tl.types import ChannelParticipantAdmin as Admin
 from telethon.tl.types import ChannelParticipantCreator as Creator
 from telethon.utils import get_display_name
