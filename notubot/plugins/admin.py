@@ -633,7 +633,7 @@ async def member(event):
 
     try:
         async for x in event.client.iter_participants(event.chat_id, 100):
-            if not (x.deleted or x.bot or x.participant.admin_rights.anonymous):
+            if not (x.deleted or x.bot):
                 link = f"<a href=tg://user?id={x.id}>{get_display_name(x)}</a>"
                 mentions += f"\n{link}"
     except ChatAdminRequiredError as e:
@@ -644,23 +644,13 @@ async def member(event):
 
 @bot_cmd(groups_only=True, admins_only=True, pattern="evo|@everyone$")
 async def everyone(event):
-    """
-    await event.delete()
-    mentions = "@everyone"
-
-    async for x in event.client.iter_participants(chat):
-        mentions += f"[\u2063](tg://user?id={x.id})"
-
-    await event.client.send_message(chat, mentions, reply_to=event.message.reply_to_msg_id)
-    """
-
     tag = "\U000e0020everyone"
     mention_text = f"@{tag}"
     mention_slots = 4096 - len(mention_text)
 
     chat = await event.get_chat()
     async for x in event.client.iter_participants(chat, aggressive=True):
-        if not (x.deleted or x.bot or x.participant.admin_rights.anonymous or x.id == bot.uid):
+        if not (x.deleted or x.bot or x.id == bot.uid):
             mention_text += f"[\u200b](tg://user?id={x.id})"
             mention_slots -= 1
             if mention_slots == 0:
