@@ -40,7 +40,7 @@ from telethon.utils import get_display_name
 
 start_time = time()
 __botversion__ = "0.1"
-__botname__ = "ツNOTUBOT UserBot"
+__botname__ = "ツNOTUBOT UserBot  "
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="%H:%M:%S", level=logging.INFO
@@ -254,7 +254,7 @@ async def startup_check() -> None:
     bot.uid = bot.me.id
     bot.name = get_display_name(bot.me)
 
-    await bot.send_message(BOTLOG_CHATID, "```{} v{} Launched ??```".format(__botname__, __botversion__))
+    await bot.send_message(BOTLOG_CHATID, "```{} v{} Launched 🚀```".format(__botname__, __botversion__))
 
     from notubot.database.globals import delgv, gvstatus
 
