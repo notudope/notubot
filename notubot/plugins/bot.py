@@ -14,7 +14,7 @@ from time import time
 
 from git import Repo
 from telethon import version
-from telethon.errors.rpcerrorlist import MediaEmptyError
+from telethon.errors.rpcerrorlist import MediaEmptyError, ChatSendMediaForbiddenError, ChatSendGifsForbiddenError
 
 from notubot import (
     ALIVE_LOGO,
@@ -38,7 +38,7 @@ alive_text = """<code>{}</code>
 
 ┏━━━━━━━━━━━━━━━━━━━━━━━
 ┣  <b>Owner</b> - <code>{}</code>
-┣  <b>Username</b> - @{}
+┣  <b>Username</b> - {}
 ┣  <b>ID</b> - <code>{}</code>
 ┣  <b>Instagram</b> - <a href=https://www.instagram.com/{}>{}</a>
 ┣  <b>Version</b> - <code>v{}</code>
@@ -53,16 +53,14 @@ alive_text = """<code>{}</code>
 <a href=https://github.com/notudope/notubot>Repo</a>  •  <a href=https://t.me/notudope>Channel</a>  •  <a href=https://t.me/NOTUBOTS>Support</a>  •  <a href=https://t.me/CariTemanOK>Mutualan</a>"""
 
 
-@bot_cmd(pattern="(alive|on)$")
+@bot_cmd(disable_errors=True, pattern="(alive|on)$")
 async def aliveon(event):
     start = time()
-    await event.edit("ㅤ")
+    await event.edit(" ")
     ms = round((time() - start) * 1000)
-
     # me = await event.client.get_me()
     # user = await event.client.get_entity("me")
     uptime = time_formatter((time() - start_time) * 1000)
-
     b = Repo().active_branch
     g = Repo().remotes[0].config_reader.get("url")
     r = g.replace(".git", f"/tree/{b}")
@@ -78,7 +76,7 @@ async def aliveon(event):
         __botname__,
         ALIVE_TEXT,
         bot.name,
-        bot.me.username,
+        f"@{bot.me.username}" if bot.me.username else f"<a href=tg://user?id={bot.uid}>{bot.uid}</a>",
         bot.uid,
         ALIVE_IG,
         ALIVE_IG,
@@ -96,10 +94,11 @@ async def aliveon(event):
             await event.client.send_file(event.chat_id, ALIVE_LOGO, caption=text, parse_mode="html")
             await event.delete()
         except MediaEmptyError:
-            await event.edit(text + "\n\n <code>ALIVE_LOGO tidak valid.</code>", parse_mode="html")
+            await event.edit(text + "\n\n <code>ALIVE_LOGO tidak valid.</code>", link_preview=False, parse_mode="html")
+        except (ChatSendMediaForbiddenError, ChatSendGifsForbiddenError):
+            await event.edit(text, link_preview=False, parse_mode="html")
     else:
-        await event.client.send_message(event.chat_id, text, link_preview=False, parse_mode="html")
-        await event.delete()
+        await event.edit(text, link_preview=False, parse_mode="html")
 
 
 @bot_cmd(pattern="restart$")

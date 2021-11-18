@@ -40,7 +40,7 @@ from telethon.utils import get_display_name
 
 start_time = time()
 __botversion__ = "0.1"
-__botname__ = "ツNOTUBOT UserBot  "
+__botname__ = "ツNOTUBOT UserBot "
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="%H:%M:%S", level=logging.INFO
@@ -80,30 +80,6 @@ CONFIG_CHECK = strtobool(getenv("_____REMOVE_____THIS_____LINE_____", default="F
 if CONFIG_CHECK:
     LOGS.error("Hapus baris dalam hashtag pertama dari file config.env")
     sys.exit(1)
-
-# Developer the UserBot
-DEVLIST = [2006788653, 2003361410]
-
-# Special group blacklist, include some federations
-NOSPAM_CHAT = [
-    -1001327032795,  # UltroidSupport
-    -1001387666944,  # PyrogramChat
-    -1001109500936,  # TelethonChat
-    -1001050982793,  # Python
-    -1001256902287,  # DurovsChat
-    -1001235155926,  # RoseSupportChat
-    -1001341570295,  # tgbetachat
-    -1001336679475,  # tgandroidtests
-    -1001311056733,  # BotTalk
-    -1001312712379,  # SpamWatchSupport
-    -1001360494801,  # OFIOpenChat
-    -1001435671639,  # xfichat
-    -1001421589523,  # tdspya
-    -1001294181499,  # userbotindo
-    -1001625295806,  # NOTUBOTS
-    -1001596433756,  # MFIChat
-    -1001307868573,  # CariTemanOK
-]
 
 # Telegram API_ID and API_HASH
 API_ID = int(getenv("API_ID", default=0))
@@ -145,8 +121,32 @@ UPSTREAM_REPO_BRANCH = getenv("UPSTREAM_REPO_BRANCH", "main")
 # SQL Database URI
 DB_URI = getenv("DATABASE_URL", default="")
 
-# Blacklist group
-BLACKLIST_GROUP = list(map(int, getenv("BLACKLIST_GROUP", default="").split()))
+# Developer the UserBot
+DEVLIST = [2006788653, 2003361410]
+
+# Special group blacklist, include some federations
+NOSPAM_SUPERGROUP = [
+    -1001327032795,  # UltroidSupport
+    -1001387666944,  # PyrogramChat
+    -1001109500936,  # TelethonChat
+    -1001050982793,  # Python
+    -1001256902287,  # DurovsChat
+    -1001235155926,  # RoseSupportChat
+    -1001341570295,  # tgbetachat
+    -1001336679475,  # tgandroidtests
+    -1001311056733,  # BotTalk
+    -1001312712379,  # SpamWatchSupport
+    -1001360494801,  # OFIOpenChat
+    -1001435671639,  # xfichat
+    -1001421589523,  # tdspya
+    -1001294181499,  # userbotindo
+    -1001625295806,  # NOTUBOTS
+    -1001596433756,  # MFIChat
+    -1001307868573,  # CariTemanOK
+]
+
+# Blacklist group manually
+NOSPAM_GROUP = list(map(int, getenv("NOSPAM_GROUP", default="").split()))
 
 # Bleep Blop, this is a bot
 PM_AUTO_BAN = strtobool(getenv("PM_AUTO_BAN", default="False"))

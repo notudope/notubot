@@ -19,7 +19,8 @@ from notubot import (
     BOTLOG_CHATID,
     BOTLOG,
     DEVLIST,
-    NOSPAM_CHAT,
+    NOSPAM_SUPERGROUP,
+    NOSPAM_GROUP,
     bot,
 )
 from notubot.database.gban_sql import (
@@ -399,7 +400,7 @@ async def gcast(event):
     async for x in event.client.iter_dialogs():
         if x.is_group:
             chat = x.entity.id
-            if not int("-100" + str(chat)) in NOSPAM_CHAT:
+            if not int("-100" + str(chat)) in list(set(NOSPAM_SUPERGROUP + NOSPAM_GROUP)):
                 try:
                     await event.client.send_message(chat, msg)
                     success += 1
