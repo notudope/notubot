@@ -247,7 +247,7 @@ def bot_cmd(**args):
 
                     if BOTLOG:
                         await event.respond("`NOTUBOT-UserBot ERROR, Disimpan ke BOTLOG.`")
-                        await asyncio.sleep(15)
+                        await asyncio.sleep(30)
                         await event.delete()
                     try:
                         with BytesIO(str.encode(ftext)) as file:

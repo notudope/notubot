@@ -593,8 +593,9 @@ async def allunban(event):
     await event.edit("`...`")
     success = 0
     title = (await event.get_chat()).title
+    chat = await event.get_chat()
     async for x in event.client.iter_participants(
-        event.chat_id,
+        chat,
         filter=ChannelParticipantsKicked,
         aggressive=True,
     ):
@@ -615,8 +616,11 @@ async def staff(event):
     mentions = f"<b>Admin {title}</b>\n"
 
     try:
-        async for x in event.client.iter_participants(event.chat_id, filter=Admins):
-            if not (x.deleted or x.participant.admin_rights.anonymous):
+        chat = await event.get_chat()
+        async for x in event.client.iter_participants(chat, filter=Admins):
+            if not (
+                x.deleted or (await event.client.get_permissions(x.chat_id, x.id)).participant.admin_rights.anonymous
+            ):
                 link = f"<a href=tg://user?id={x.id}>{get_display_name(x)}</a>"
                 mentions += f"\n{link}"
     except ChatAdminRequiredError as e:
@@ -632,8 +636,13 @@ async def member(event):
     mentions = f"<b>Member {title}</b>\n"
 
     try:
-        async for x in event.client.iter_participants(event.chat_id, 100):
-            if not (x.deleted or x.bot):
+        chat = await event.get_chat()
+        async for x in event.client.iter_participants(chat, 100):
+            if not (
+                x.deleted
+                or x.bot
+                or (await event.client.get_permissions(x.chat_id, x.id)).participant.admin_rights.anonymous
+            ):
                 link = f"<a href=tg://user?id={x.id}>{get_display_name(x)}</a>"
                 mentions += f"\n{link}"
     except ChatAdminRequiredError as e:
@@ -649,13 +658,18 @@ async def everyone(event):
     mention_slots = 4096 - len(mention_text)
 
     chat = await event.get_chat()
-    async for x in event.client.iter_participants(chat):
-        mention_text += f"[\u200b](tg://user?id={x.id})"
-        mention_slots -= 1
-        if mention_slots == 0:
-            break
+    async for x in event.client.iter_participants(chat, aggressive=True):
+        if not (
+            x.deleted
+            or x.bot
+            or (await event.client.get_permissions(x.chat_id, x.id)).participant.admin_rights.anonymous
+            or x.id == bot.uid
+        ):
+            mention_text += f"[\u200b](tg://user?id={x.id})"
+            mention_slots -= 1
+            if mention_slots == 0:
+                break
 
-    # await event.client.send_message(chat, mention_text, reply_to=event.message.reply_to_msg_id)
     await event.respond(mention_text, reply_to=event.message.reply_to_msg_id)
     await event.delete()
 
@@ -665,10 +679,15 @@ async def all(event):
     text = event.pattern_match.group(1)
     users = []
     limit = 0
-    await event.get_chat()
 
-    async for x in event.client.iter_participants(event.chat_id, aggressive=True):
-        if not (x.deleted or x.bot or x.participant.admin_rights.anonymous or x.id == bot.uid):
+    chat = await event.get_chat()
+    async for x in event.client.iter_participants(chat, aggressive=True):
+        if not (
+            x.deleted
+            or x.bot
+            or (await event.client.get_permissions(x.chat_id, x.id)).participant.admin_rights.anonymous
+            or x.id == bot.uid
+        ):
             if not (isinstance(x.participant, (Admin, Creator))):
                 users.append(f" <a href=tg://user?id={x.id}>{get_display_name(x)}</a> ")
             if isinstance(x.participant, Admin):
@@ -681,9 +700,9 @@ async def all(event):
         mention = f"{text}\n{mention}" if text else mention
 
         if event.reply_to_msg_id:
-            await event.client.send_message(event.chat_id, mention, reply_to=event.reply_to_msg_id, parse_mode="html")
+            await event.client.send_message(chat, mention, reply_to=event.reply_to_msg_id, parse_mode="html")
         else:
-            await event.client.send_message(event.chat_id, mention, parse_mode="html")
+            await event.client.send_message(chat, mention, parse_mode="html")
 
         limit += 6
         await sleep(5)
