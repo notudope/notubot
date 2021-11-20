@@ -40,13 +40,14 @@ from notubot import (
     BOTLOG,
     BOTLOG_CHATID,
     CMD_HELP,
-    DEVLIST,
     HANDLER,
     bot,
 )
 from notubot.database.mute_sql import is_muted, mute, unmute
 from notubot.events import bot_cmd
 from notubot.functions import get_user_from_event, get_uinfo, get_user_id  # noqa: F401
+
+from . import DEVLIST
 
 NO_PERM = "`Tidak memiliki izin!`"
 FAILED = "`Gagal melakukan aksi!`"

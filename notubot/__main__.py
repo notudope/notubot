@@ -8,7 +8,9 @@
 import asyncio
 import signal
 import sys
+from glob import glob
 from importlib import import_module
+from os.path import basename, isfile
 from platform import python_version
 from time import time
 
@@ -23,17 +25,25 @@ from notubot import (
     start_time,
 )
 from notubot.functions import time_formatter
-from notubot.plugins import ALL_PLUGINS
 
 from . import db
 
 db.init()
 
 
-THENOTUBOT = """
-█▄░█ █▀█ ▀█▀ █░█ █▄▄ █▀█ ▀█▀
-█░▀█ █▄█ ░█░ █▄█ █▄█ █▄█ ░█░
-"""
+def __list_all_plugins():
+    start = time()
+    paths = glob("notubot/plugins/*.py")
+    plugins = sorted(
+        [
+            basename(plugin)[:-3]
+            for plugin in paths
+            if isfile(plugin) and plugin.endswith(".py") and not plugin.endswith("__init__.py")
+        ]
+    )
+    took = time_formatter((time() - start) * 1000)
+    LOGS.info("Loaded Plugins {} (took {}) : {}".format(len(plugins), took, str(plugins)))
+    return plugins
 
 
 async def shutdown_bot(signum: str) -> None:
@@ -55,6 +65,7 @@ trap()
 async def startup_process() -> None:
     await bot.start()
 
+    ALL_PLUGINS = __list_all_plugins()
     for plugins in ALL_PLUGINS:
         import_module("notubot.plugins.{}".format(plugins))
 
@@ -69,7 +80,6 @@ async def startup_process() -> None:
 if __name__ == "__main__":
     try:
         LOGS.info("🚀 Launch deployment...")
-        LOGS.info(THENOTUBOT)
         LOGS.info("Version - v{}".format(__botversion__))
         LOGS.info("Python Version - {}".format(python_version()))
         LOGS.info("Telethon Version - {}".format(version.__version__))

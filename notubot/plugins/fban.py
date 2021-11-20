@@ -15,7 +15,6 @@ from notubot import (
     CMD_HELP,
     BOTLOG_CHATID,
     BOTLOG,
-    DEVLIST,
     bot,
 )
 from notubot.database.fban_sql import (
@@ -26,6 +25,8 @@ from notubot.database.fban_sql import (
 )
 from notubot.events import bot_cmd
 from notubot.functions import get_user_from_event, get_uinfo, get_user_id  # noqa: F401
+
+from . import DEVLIST
 
 fbot = "@MissRose_bot"
 REQ_ID = "`Kesalahan, dibutuhkan ID atau balas pesan itu.`"

@@ -40,21 +40,7 @@ from notubot.functions import (
     def_logs,
 )
 
-ATRA_COL = [
-    "DarkCyan",
-    "DeepSkyBlue",
-    "DarkTurquoise",
-    "Cyan",
-    "LightSkyBlue",
-    "Turquoise",
-    "MediumVioletRed",
-    "Aquamarine",
-    "Lightcyan",
-    "Azure",
-    "Moccasin",
-    "PowderBlue",
-]
-
+from . import ATRA_COL
 
 alive_text = """<code>{}</code>
 

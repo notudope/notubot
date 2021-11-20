@@ -18,8 +18,6 @@ from notubot import (
     CMD_HELP,
     BOTLOG_CHATID,
     BOTLOG,
-    DEVLIST,
-    NOSPAM_SUPERGROUP,
     NOSPAM_GROUP,
     bot,
 )
@@ -32,6 +30,8 @@ from notubot.database.gban_sql import (
 from notubot.database.gmute_sql import is_gmuted, gmute, ungmute
 from notubot.events import bot_cmd
 from notubot.functions import get_user_from_event, get_uinfo, get_user_id  # noqa: F401
+
+from . import DEVLIST, NOSPAM_SUPERGROUP
 
 REQ_ID = "`Kesalahan, dibutuhkan ID atau balas pesan itu.`"
 

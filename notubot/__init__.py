@@ -24,7 +24,8 @@ from dotenv import dotenv_values, load_dotenv
 from heroku3 import from_key
 from pySmartDL import SmartDL
 from requests import get
-from telethon import TelegramClient, version
+from telethon import TelegramClient as Client
+from telethon import version
 from telethon.errors.rpcerrorlist import (
     ApiIdInvalidError,
     AuthKeyDuplicatedError,
@@ -130,35 +131,6 @@ UPSTREAM_REPO_BRANCH = getenv("UPSTREAM_REPO_BRANCH", "main")
 # SQL Database URI
 DB_URI = getenv("DATABASE_URL", default="")
 
-# Developer the notubot
-DEVLIST = [2006788653, 2003361410]
-
-# Special group blacklist, include some federations
-NOSPAM_SUPERGROUP = [
-    -1001387666944,  # PyrogramChat
-    -1001109500936,  # TelethonChat
-    -1001471736013,  # TelegrafJSChat
-    -1001050982793,  # Python
-    -1001256902287,  # DurovsChat
-    -1001235155926,  # RoseSupportChat
-    -1001341570295,  # tgbetachat
-    -1001336679475,  # tgandroidtests
-    -1001120290128,  # plusmsgrchat
-    -1001311056733,  # BotTalk
-    -1001312712379,  # SpamWatchSupport
-    -1001360494801,  # OFIOpenChat
-    -1001435671639,  # xfichat
-    -1001421589523,  # tdspya
-    -1001294181499,  # userbotindo
-    -1001625295806,  # NOTUBOTS
-    -1001596433756,  # MFIChat
-    -1001307868573,  # CariTemanOK
-    -1001598265414,  # govolt
-    -1001304351429,  # 404
-    -1001327032795,  # UltroidSupport
-    -1001481357570,  # usergeot
-]
-
 # Blacklist group manually
 NOSPAM_GROUP = list(map(int, getenv("NOSPAM_GROUP", default="").split()))
 
@@ -225,13 +197,13 @@ except Exception:
 LOOP = asyncio.get_event_loop()
 
 
-def client_connection() -> TelegramClient:
+def client_connection() -> Client:
     client = None
     try:
         if STRING_SESSION:
-            client = TelegramClient(StringSession(STRING_SESSION), api_id=API_ID, api_hash=API_HASH, loop=LOOP)
+            client = Client(StringSession(STRING_SESSION), api_id=API_ID, api_hash=API_HASH, loop=LOOP)
         else:
-            client = TelegramClient("notubot", api_id=API_ID, api_hash=API_HASH, loop=LOOP)
+            client = Client("notubot", api_id=API_ID, api_hash=API_HASH, loop=LOOP)
 
         client.parse_mode = "markdown"
     except (AuthKeyDuplicatedError, PhoneNumberInvalidError, EOFError):
