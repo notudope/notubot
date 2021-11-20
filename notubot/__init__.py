@@ -52,7 +52,8 @@ logging.basicConfig(
     handlers=[logging.FileHandler("notubot.log"), logging.StreamHandler()],
 )
 logging.getLogger("asyncio").setLevel(logging.ERROR)
-logging.getLogger("Telethon").setLevel(logging.WARNING)
+logging.getLogger("Telethon").setLevel(logging.ERROR)
+logging.getLogger("telethon.network.mtprotosender").setLevel(logging.ERROR)
 LOGS = logging.getLogger("NOTUBOT")
 
 
