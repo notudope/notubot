@@ -63,7 +63,7 @@
       "required": false
     },
     "BOTLOG": {
-      "description": "Incase you want to turn off logging, put this to False",
+      "description": "Incase you want to turn off logging ex (Error, GBAN, FBAN), put this to False",
       "value": "True",
       "required": true
     },

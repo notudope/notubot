@@ -25,7 +25,7 @@ from notubot.database.fban_sql import (
     del_flist_all,
 )
 from notubot.events import bot_cmd
-from notubot.utils import get_user_from_event, get_uinfo, get_user_id  # noqa: F401
+from notubot.functions import get_user_from_event, get_uinfo, get_user_id  # noqa: F401
 
 fbot = "@MissRose_bot"
 REQ_ID = "`Kesalahan, dibutuhkan ID atau balas pesan itu.`"
@@ -35,6 +35,7 @@ REQ_ID = "`Kesalahan, dibutuhkan ID atau balas pesan itu.`"
 async def fban(event):
     NotUBot = await event.edit("`Fbanning...`")
     reason = ""
+    chat = await event.get_chat()
     if event.reply_to_msg_id:
         userid = (await event.get_reply_message()).sender_id
         try:
@@ -48,7 +49,7 @@ async def fban(event):
         except IndexError:
             reason = ""
     elif event.is_private:
-        userid = (await event.get_chat()).id
+        userid = chat.id
         try:
             reason = event.text.split(" ", maxsplit=1)[1]
         except IndexError:
@@ -63,7 +64,7 @@ async def fban(event):
 
     mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(userid)), userid)
-    location = "{} [`{}`]".format((await event.get_chat()).title or "Private", event.chat_id or event.from_id)
+    location = "{} [`{}`]".format(chat.title or "Private", event.chat_id or event.from_id)
     failed = []
     total = int(0)
 
@@ -75,11 +76,11 @@ async def fban(event):
     if len(fed_list := get_flist()) == 0:
         return await NotUBot.edit("`Tidak ada federasi yang terhubung.`")
 
+    reason = reason if reason else "None given."
     for i in fed_list:
         total += 1
-        chat = int(i.chat_id)
         try:
-            async with event.client.conversation(chat) as conv:
+            async with event.client.conversation(int(i.chat_id)) as conv:
                 await conv.send_message(f"/fban {userlink} {reason}")
                 reply = await conv.get_response()
                 await event.client.send_read_acknowledge(conv.chat_id, message=reply, clear_mentions=True)
@@ -95,7 +96,6 @@ async def fban(event):
         except BaseException:
             failed.append(i.fed_name)
 
-    reason = reason if reason else "None given."
     if failed:
         status = f"Gagal fban `{len(failed)}/{total}` feds.\n"
         for i in failed:
@@ -119,6 +119,7 @@ async def fban(event):
 async def unfban(event):
     NotUBot = await event.edit("`UnFbanning...`")
     reason = ""
+    chat = await event.get_chat()
     if event.reply_to_msg_id:
         userid = (await event.get_reply_message()).sender_id
         try:
@@ -132,7 +133,7 @@ async def unfban(event):
         except IndexError:
             reason = ""
     elif event.is_private:
-        userid = (await event.get_chat()).id
+        userid = chat.id
         try:
             reason = event.text.split(" ", maxsplit=1)[1]
         except IndexError:
@@ -147,7 +148,7 @@ async def unfban(event):
 
     mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(userid)), userid)
-    location = "{} [`{}`]".format((await event.get_chat()).title or "Private", event.chat_id or event.from_id)
+    location = "{} [`{}`]".format(chat.title or "Private", event.chat_id or event.from_id)
     failed = []
     total = int(0)
 
@@ -157,11 +158,11 @@ async def unfban(event):
     if len(fed_list := get_flist()) == 0:
         return await NotUBot.edit("`Tidak ada federasi yang terhubung.`")
 
+    reason = reason if reason else "None given."
     for i in fed_list:
         total += 1
-        chat = int(i.chat_id)
         try:
-            async with event.client.conversation(chat) as conv:
+            async with event.client.conversation(int(i.chat_id)) as conv:
                 await conv.send_message(f"/unfban {userlink} {reason}")
                 reply = await conv.get_response()
                 await event.client.send_read_acknowledge(conv.chat_id, message=reply, clear_mentions=True)
@@ -176,7 +177,6 @@ async def unfban(event):
         except BaseException:
             failed.append(i.fed_name)
 
-    reason = reason if reason else "None given."
     if failed:
         status = f"Gagal unfban `{len(failed)}/{total}` feds.\n"
         for i in failed:
@@ -198,40 +198,42 @@ async def unfban(event):
 
 @bot_cmd(pattern="addfed(?: |$)(.*)")
 async def addfed(event):
+    NotUBot = await event.edit("`...`")
     if not (fed_name := event.pattern_match.group(1)):
-        return await event.edit("`Sertakan nama untuk menghubungkan grup ini.`")
+        return await NotUBot.edit("`Sertakan nama untuk menghubungkan grup ini.`")
 
     try:
         add_flist(event.chat_id, fed_name)
     except IntegrityError:
-        return await event.edit("`Grup ini sudah terhubung ke federasi.`")
+        return await NotUBot.edit("`Grup ini sudah terhubung ke federasi.`")
 
-    await event.edit("`Menambahkan grup ini ke daftar federasi.`")
+    await NotUBot.edit("`Menambahkan grup ini ke daftar federasi.`")
 
 
 @bot_cmd(pattern="delfed$")
 async def delfed(event):
-    await event.edit("`...`")
+    NotUBot = await event.edit("`...`")
     del_flist(event.chat_id)
-    await event.edit("`Menghapus grup ini dari daftar federasi.`")
+    await NotUBot.edit("`Menghapus grup ini dari daftar federasi.`")
 
 
 @bot_cmd(pattern="listfed$")
 async def listfed(event):
+    NotUBot = await event.edit("`...`")
     if len(fed_list := get_flist()) == 0:
-        return await event.edit("`Tidak ada federasi yang terhubung.`")
+        return await NotUBot.edit("`Tidak ada federasi yang terhubung.`")
 
-    msg = "**Federasi:**\n\n"
+    msg = "**Federasi:**\n"
     for i in fed_list:
         msg += "• " + str(i.fed_name) + "\n"
-    await event.edit(msg)
+    await NotUBot.edit(msg)
 
 
 @bot_cmd(pattern="clearfed$")
 async def clearfed(event):
-    await event.edit("`...`")
+    NotUBot = await event.edit("`...`")
     del_flist_all()
-    await event.edit("`unfederations`")
+    await NotUBot.edit("`unfederations`")
 
 
 @bot_cmd(pattern="fstat(?: |$)(.*)")

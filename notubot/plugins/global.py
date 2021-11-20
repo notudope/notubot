@@ -31,7 +31,7 @@ from notubot.database.gban_sql import (
 )
 from notubot.database.gmute_sql import is_gmuted, gmute, ungmute
 from notubot.events import bot_cmd
-from notubot.utils import get_user_from_event, get_uinfo, get_user_id  # noqa: F401
+from notubot.functions import get_user_from_event, get_uinfo, get_user_id  # noqa: F401
 
 REQ_ID = "`Kesalahan, dibutuhkan ID atau balas pesan itu.`"
 
@@ -68,8 +68,8 @@ UNMUTE_RIGHTS = ChatBannedRights(until_date=None, send_messages=False)
 @bot_cmd(pattern="gban(?: |$)(.*)")
 async def gban(event):
     NotUBot = await event.edit("`Gbanning...`")
-    await event.get_chat()
     reason = ""
+    chat = await event.get_chat()
     if event.reply_to_msg_id:
         userid = (await event.get_reply_message()).sender_id
         try:
@@ -84,7 +84,7 @@ async def gban(event):
         except IndexError:
             reason = ""
     elif event.is_private:
-        userid = (await event.get_chat()).id
+        userid = chat.id
         try:
             reason = event.text.split(" ", maxsplit=1)[1]
         except IndexError:
@@ -137,14 +137,14 @@ async def gban(event):
 @bot_cmd(pattern="ungban(?: |$)(.*)")
 async def ungban(event):
     NotUBot = await event.edit("`UnGbanning...`")
-    await event.get_chat()
+    chat = await event.get_chat()
     if event.reply_to_msg_id:
         userid = (await event.get_reply_message()).sender_id
     elif event.pattern_match.group(1):
         usr = event.pattern_match.group(1)
         userid = await get_user_id(usr, event)
     elif event.is_private:
-        userid = (await event.get_chat()).id
+        userid = chat.id
     else:
         return await NotUBot.edit(REQ_ID)
 
@@ -182,6 +182,7 @@ async def ungban(event):
 
 @bot_cmd(pattern="listgban$")
 async def listgban(event):
+    NotUBot = await event.edit("`...`")
     chat_id = event.chat_id or event.from_id
     mention = "<a href=tg://user?id={}>{}</a>".format(bot.uid, bot.name)
     msg = f"<strong>GBanned by {mention}</strong>:\n\n"
@@ -220,16 +221,16 @@ async def listgban(event):
                 )
         except Exception:
             pass
-        await event.delete()
+        await NotUBot.delete()
     else:
-        await event.edit(msg, parse_mode="html")
+        await NotUBot.edit(msg, parse_mode="html")
 
 
 @bot_cmd(pattern="gkick(?: |$)(.*)")
 async def gkick(event):
     NotUBot = await event.edit("`Gkicking...`")
-    await event.get_chat()
     reason = ""
+    chat = await event.get_chat()
     if event.reply_to_msg_id:
         userid = (await event.get_reply_message()).sender_id
         try:
@@ -244,7 +245,7 @@ async def gkick(event):
         except IndexError:
             reason = ""
     elif event.is_private:
-        userid = (await event.get_chat()).id
+        userid = chat.id
         try:
             reason = event.text.split(" ", maxsplit=1)[1]
         except IndexError:
@@ -285,8 +286,8 @@ async def gkick(event):
 @bot_cmd(pattern="gmute(?: |$)(.*)")
 async def gmuter(event):
     NotUBot = await event.edit("`Gmuting...`")
-    await event.get_chat()
     reason = ""
+    chat = await event.get_chat()
     if event.reply_to_msg_id:
         userid = (await event.get_reply_message()).sender_id
         try:
@@ -301,7 +302,7 @@ async def gmuter(event):
         except IndexError:
             reason = ""
     elif event.is_private:
-        userid = (await event.get_chat()).id
+        userid = chat.id
         try:
             reason = event.text.split(" ", maxsplit=1)[1]
         except IndexError:
@@ -346,14 +347,14 @@ async def gmuter(event):
 @bot_cmd(pattern="ungmute(?: |$)(.*)")
 async def ungmuter(event):
     NotUBot = await event.edit("`UnGmuting...`")
-    await event.get_chat()
+    chat = await event.get_chat()
     if event.reply_to_msg_id:
         userid = (await event.get_reply_message()).sender_id
     elif event.pattern_match.group(1):
         usr = event.pattern_match.group(1)
         userid = await get_user_id(usr, event)
     elif event.is_private:
-        userid = (await event.get_chat()).id
+        userid = chat.id
     else:
         return await NotUBot.edit(REQ_ID)
 
@@ -386,15 +387,16 @@ async def ungmuter(event):
 
 @bot_cmd(pattern="gcast(?: |$)(.*)")
 async def gcast(event):
+    NotUBot = await event.edit("`...`")
     match = event.pattern_match.group(1)
     if match:
         msg = match
     elif event.is_reply:
         msg = await event.get_reply_message()
     else:
-        return await event.edit("`Berikan sebuah pesan atau balas pesan tersebut...`")
+        return await NotUBot.edit("`Berikan sebuah pesan atau balas pesan tersebut...`")
 
-    NotUBot = await event.edit("`Mengirim pesan broadcast ke grup 📢`")
+    await NotUBot.edit("`Mengirim pesan broadcast ke grup 📢`")
     success = failed = 0
 
     async for x in event.client.iter_dialogs():
@@ -417,15 +419,16 @@ async def gcast(event):
 
 @bot_cmd(pattern="gucast(?: |$)(.*)")
 async def gucast(event):
+    NotUBot = await event.edit("`...`")
     match = event.pattern_match.group(1)
     if match:
         msg = match
     elif event.is_reply:
         msg = await event.get_reply_message()
     else:
-        return await event.edit("`Berikan sebuah pesan atau balas pesan tersebut...`")
+        return await NotUBot.edit("`Berikan sebuah pesan atau balas pesan tersebut...`")
 
-    NotUBot = await event.edit("`Mengirim pesan broadcast ke pribadi 📢`")
+    await NotUBot.edit("`Mengirim pesan broadcast ke pribadi 📢`")
     success = failed = 0
 
     async for x in event.client.iter_dialogs():
@@ -446,6 +449,7 @@ async def gucast(event):
 
 @bot_cmd(pattern="gsend(?: |$)(.*)")
 async def gsend(event):
+    NotUBot = await event.edit("`...`")
     opts = event.pattern_match.group(1)
     args = opts.split(" ")
     chat_id = args[0]
@@ -459,7 +463,7 @@ async def gsend(event):
     reply = await event.get_reply_message()
     if event.reply_to_msg_id:
         await event.client.send_message(chat_id, reply)
-        await event.edit("`Pesan diteruskan ke grup tujuan, coba cek!`")
+        await NotUBot.edit("`Pesan diteruskan ke grup tujuan, coba cek!`")
 
     for index in args[1:]:
         msg += index + " "
@@ -468,7 +472,7 @@ async def gsend(event):
 
     try:
         await event.client.send_message(chat_id, msg)
-        await event.edit("`Pesan diteruskan ke grup tujuan, coba cek!`")
+        await NotUBot.edit("`Pesan diteruskan ke grup tujuan, coba cek!`")
     except BaseException:
         pass
 

@@ -9,7 +9,10 @@ import asyncio
 import signal
 import sys
 from importlib import import_module
+from platform import python_version
 from time import time
+
+from telethon import version
 
 from notubot import (
     __botversion__,
@@ -19,8 +22,17 @@ from notubot import (
     LOOP,
     start_time,
 )
+from notubot.db import db
+from notubot.functions import time_formatter
 from notubot.plugins import ALL_PLUGINS
-from notubot.utils import time_formatter
+
+db.init()
+
+
+THENOTUBOT = """
+█▄░█ █▀█ ▀█▀ █░█ █▄▄ █▀█ ▀█▀
+█░▀█ █▄█ ░█░ █▄█ █▄█ █▄█ ░█░
+"""
 
 
 async def shutdown_bot(signum: str) -> None:
@@ -55,6 +67,11 @@ async def startup_process() -> None:
 
 if __name__ == "__main__":
     try:
+        LOGS.info("🚀 Launch deployment...")
+        LOGS.info(THENOTUBOT)
+        LOGS.info("Version - v{}".format(__botversion__))
+        LOGS.info("Telethon Version - {}".format(version.__version__))
+        LOGS.info("Python Version - {}".format(python_version()))
         LOGS.info("Took {} to start {}".format(time_formatter((time() - start_time) * 1000), __botname__))
         bot.loop.run_until_complete(startup_process())
     except (ConnectionError, NotImplementedError, KeyboardInterrupt, SystemExit):

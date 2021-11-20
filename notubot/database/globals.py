@@ -19,7 +19,7 @@ class Globals(BASE):
 Globals.__table__.create(checkfirst=True)
 
 
-def gvstatus(variable):
+def getgv(variable):
     try:
         return SESSION.query(Globals).filter(Globals.variable == str(variable)).first().value
     except BaseException:

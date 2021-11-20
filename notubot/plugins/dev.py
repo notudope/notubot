@@ -17,7 +17,7 @@ from carbonnow import Carbon
 from notubot import CMD_HELP
 from notubot import bot as client
 from notubot.events import bot_cmd
-from notubot.utils import run_cmd
+from notubot.functions import run_cmd
 
 all_col = [
     "Black",

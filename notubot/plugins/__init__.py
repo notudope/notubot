@@ -6,7 +6,7 @@
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
 from notubot import LOGS
-from notubot.utils import time_formatter
+from notubot.functions import time_formatter
 
 
 def __list_all_plugins():

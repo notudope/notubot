@@ -46,7 +46,7 @@ from notubot import (
 )
 from notubot.database.mute_sql import is_muted, mute, unmute
 from notubot.events import bot_cmd
-from notubot.utils import get_user_from_event, get_uinfo, get_user_id  # noqa: F401
+from notubot.functions import get_user_from_event, get_uinfo, get_user_id  # noqa: F401
 
 NO_PERM = "`Tidak memiliki izin!`"
 FAILED = "`Gagal melakukan aksi!`"
@@ -152,7 +152,7 @@ async def promote(event):
             f"CHAT: {event.chat.title} [`{event.chat_id}`]",
         )
 
-    await NotUBot.edit("`promoted`")
+    await NotUBot.edit("`promoted as admin`")
 
 
 @bot_cmd(groups_only=True, admins_only=True, can_promote=True, pattern="demote(?: |$)(.*)")
@@ -175,6 +175,7 @@ async def demote(event):
             anonymous=None,
             manage_call=None,
         )
+
         await event.client(EditAdminRequest(event.chat_id, user.id, new_rights, rank))
     except BadRequestError:
         return await NotUBot.edit(NO_PERM)
@@ -187,7 +188,7 @@ async def demote(event):
             f"CHAT: {event.chat.title} [`{event.chat_id}`]",
         )
 
-    await NotUBot.edit("`demoted`")
+    await NotUBot.edit("`demoted from admin`")
 
 
 @bot_cmd(groups_only=True, admins_only=True, can_promote=True, pattern="(fpromote|fullpromote)(?: |$)(.*)")
@@ -225,7 +226,7 @@ async def fpromote(event):
             f"CHAT: {event.chat.title} [`{event.chat_id}`]",
         )
 
-    await NotUBot.edit("`promoted`")
+    await NotUBot.edit("`promoted as cofounder`")
 
 
 @bot_cmd(groups_only=True, admins_only=True, can_ban=True, pattern="kick(?: |$)(.*)")
@@ -234,14 +235,14 @@ async def kick(event):
         return
 
     NotUBot = await event.edit("`Kicking...`")
-    await event.get_chat()
+    chat = await event.get_chat()
     user, reason = await get_uinfo(event)
     if not user:
         return await NotUBot.edit(REQ_ID)
 
     mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(user.id)), user.id)
-    location = "{} [`{}`]".format((await event.get_chat()).title, event.chat_id)
+    location = "{} [`{}`]".format(chat.title, event.chat_id)
 
     if user.id == bot.uid:
         return await NotUBot.edit("🥴 **Mabok?**")
@@ -268,14 +269,14 @@ async def kick(event):
 @bot_cmd(groups_only=True, admins_only=True, can_ban=True, pattern="ban(?: |$)(.*)")
 async def ban(event):
     NotUBot = await event.edit("`Banning...`")
-    await event.get_chat()
+    chat = await event.get_chat()
     user, reason = await get_uinfo(event)
     if not user:
         return await NotUBot.edit(REQ_ID)
 
     mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(user.id)), user.id)
-    location = "{} [`{}`]".format((await event.get_chat()).title, event.chat_id)
+    location = "{} [`{}`]".format(chat.title, event.chat_id)
 
     if user.id == bot.uid:
         return await NotUBot.edit("🥴 **Mabok?**")
@@ -302,14 +303,14 @@ async def ban(event):
 @bot_cmd(groups_only=True, admins_only=True, can_ban=True, pattern="unban(?: |$)(.*)")
 async def unban(event):
     NotUBot = await event.edit("`Unbanning...`")
-    await event.get_chat()
+    chat = await event.get_chat()
     user, reason = await get_uinfo(event)
     if not user:
         return await NotUBot.edit(REQ_ID)
 
     mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(user.id)), user.id)
-    location = "{} [`{}`]".format((await event.get_chat()).title, event.chat_id)
+    location = "{} [`{}`]".format(chat.title, event.chat_id)
 
     try:
         await event.client(EditBannedRequest(event.chat_id, user.id, UNBAN_RIGHTS))
@@ -329,14 +330,14 @@ async def unban(event):
 @bot_cmd(groups_only=True, admins_only=True, pattern="mute(?: |$)(.*)")
 async def muter(event):
     NotUBot = await event.edit("`Muting...`")
-    await event.get_chat()
+    chat = await event.get_chat()
     user, reason = await get_uinfo(event)
     if not user:
         return await NotUBot.edit(REQ_ID)
 
     mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(user.id)), user.id)
-    location = "{} [`{}`]".format((await event.get_chat()).title, event.chat_id)
+    location = "{} [`{}`]".format(chat.title, event.chat_id)
 
     if user.id == bot.uid:
         return await NotUBot.edit("🥴 **Mabok?**")
@@ -367,14 +368,14 @@ async def muter(event):
 @bot_cmd(groups_only=True, admins_only=True, pattern="unmute(?: |$)(.*)")
 async def unmuter(event):
     NotUBot = await event.edit("`Unmuting...`")
-    await event.get_chat()
+    chat = await event.get_chat()
     user, reason = await get_uinfo(event)
     if not user:
         return await NotUBot.edit(REQ_ID)
 
     mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
     userlink = "[➥ {}](tg://user?id={})".format(get_display_name(await event.client.get_entity(user.id)), user.id)
-    location = "{} [`{}`]".format((await event.get_chat()).title, event.chat_id)
+    location = "{} [`{}`]".format(chat.title, event.chat_id)
 
     if not is_muted(user.id, event.chat_id):
         return NotUBot.edit("`User tidak terkena Mute.`")
@@ -425,18 +426,19 @@ async def unlock(event):
 
 @bot_cmd(pattern="pin$")
 async def pin(event):
+    NotUBot = await event.edit("`...`")
     if not event.is_reply:
-        return await event.edit("`Balas pesan tersebut!`")
+        return await NotUBot.edit("`Balas pesan tersebut!`")
 
     reply = await event.get_reply_message()
     try:
         await event.client.pin_message(event.chat_id, reply.id, notify=False)
     except BadRequestError:
-        return await event.edit(NO_PERM)
+        return await NotUBot.edit(NO_PERM)
 
-    await event.edit("`pinned`")
+    await NotUBot.edit("`pinned`")
     await sleep(5)
-    await event.delete()
+    await NotUBot.delete()
 
 
 @bot_cmd(pattern="unpin($| (.*))")
@@ -489,9 +491,10 @@ async def get_all_pinned(event):
 
 @bot_cmd(groups_only=True, admins_only=True, pattern="autodelete(?: |$)(.*)")
 async def autodelte(event):
+    NotUBot = await event.edit("`...`")
     match = event.pattern_match.group(1)
     if not match or match not in ["24h", "7d", "1m", "off"]:
-        return event.edit("`Gunakan sesuai format.`")
+        return NotUBot.edit("`Gunakan sesuai format.`")
 
     if match == "24h":
         tt = 3600 * 24
@@ -505,9 +508,9 @@ async def autodelte(event):
     try:
         await event.client(SetHistoryTTLRequest(event.chat_id, period=tt))
     except ChatNotModifiedError:
-        return event.edit(f"Auto Delete sama dengan `{match}`")
+        return NotUBot.edit(f"Auto Delete sama dengan `{match}`")
 
-    await event.edit(f"Auto Delete `{match}`")
+    await NotUBot.edit(f"Auto Delete `{match}`")
 
 
 @bot_cmd(groups_only=True, admins_only=True, disable_errors=True, pattern="(setgpic|setpic)$")
@@ -536,14 +539,15 @@ async def set_group_photo(event):
 
 @bot_cmd(groups_only=True, admins_only=True, can_ban=True, pattern="(zombies|delusers)(?: |$)(.*)")
 async def zombies(event):
+    NotUBot = await event.edit("`...`")
     match = event.pattern_match.group(1).lower()
     deleted_user = 0
     status = "`Tidak ada akun terhapus.`"
-    await event.get_chat()
+    chat = await event.get_chat()
     if match != "clean":
-        await event.edit("`Mencari akun terhapus...`")
+        await NotUBot.edit("`Mencari akun terhapus...`")
 
-        async for x in event.client.iter_participants(event.chat_id, aggressive=True):
+        async for x in event.client.iter_participants(chat, aggressive=True):
             if x.deleted:
                 deleted_user += 1
                 await sleep(1)
@@ -553,13 +557,13 @@ async def zombies(event):
                 f"Menemukan `{deleted_user}` akun terhapus di grup ini,"
                 "\nBersihkan itu dengan `{HANDLER}zombies clean`"
             )
-        return await event.edit(status)
+        return await NotUBot.edit(status)
 
-    await event.edit("🧹 `Membersihkan akun terhapus...`")
+    await NotUBot.edit("🧹 `Membersihkan akun terhapus...`")
     deleted_user = 0
     deleted_admin = 0
 
-    async for x in event.client.iter_participants(event.chat_id, aggressive=True):
+    async for x in event.client.iter_participants(chat, aggressive=True):
         if x.deleted:
             try:
                 await event.client(EditBannedRequest(event.chat_id, x.id, BANNED_RIGHTS))
@@ -585,15 +589,15 @@ async def zombies(event):
             "#ZOMBIES\n" f"CLEANED: `{deleted_user}`\n" f"CHAT: {event.chat.title} [`{event.chat_id}`]",
         )
 
-    await event.edit(status)
+    await NotUBot.edit(status)
 
 
 @bot_cmd(groups_only=True, admins_only=True, can_ban=True, pattern="(allunban|unbanall)$")
 async def allunban(event):
-    await event.edit("`...`")
+    NotUBot = await event.edit("`...`")
     success = 0
-    title = (await event.get_chat()).title
     chat = await event.get_chat()
+    title = chat.title
     async for x in event.client.iter_participants(
         chat,
         filter=ChannelParticipantsKicked,
@@ -606,17 +610,16 @@ async def allunban(event):
         except BaseException:
             pass
 
-    await event.edit(f"{title}: `{success}` unbanned.")
+    await NotUBot.edit(f"{title}: `{success}` unbanned.")
 
 
 @bot_cmd(groups_only=True, pattern="(staff|adminlist)$")
 async def staff(event):
-    await event.edit("`...`")
-    title = (await event.get_chat()).title
+    NotUBot = await event.edit("`...`")
+    chat = await event.get_chat()
+    title = chat.title
     mentions = f"<b>Admin {title}</b>"
-
     try:
-        chat = await event.get_chat()
         async for x in event.client.iter_participants(chat, filter=Admins):
             if not (x.deleted or x.participant.admin_rights.anonymous):
                 link = f"<a href=tg://user?id={x.id}>{get_display_name(x)}</a>"
@@ -624,17 +627,16 @@ async def staff(event):
     except ChatAdminRequiredError as e:
         mentions += " " + str(e) + "\n"
 
-    await event.edit(mentions, parse_mode="html")
+    await NotUBot.edit(mentions, parse_mode="html")
 
 
 @bot_cmd(groups_only=True, pattern="member$")
 async def member(event):
-    await event.edit("`...`")
-    title = (await event.get_chat()).title
+    NotUBot = await event.edit("`...`")
+    chat = await event.get_chat()
+    title = chat.title
     mentions = f"<b>Member {title}</b>"
-
     try:
-        chat = await event.get_chat()
         async for x in event.client.iter_participants(chat, 100):
             if not (x.deleted or x.bot or (isinstance(x.participant, Admins) and x.participant.admin_rights.anonymous)):
                 link = f"<a href=tg://user?id={x.id}>{get_display_name(x)}</a>"
@@ -642,7 +644,7 @@ async def member(event):
     except ChatAdminRequiredError as e:
         mentions += " " + str(e) + "\n"
 
-    await event.edit(mentions, parse_mode="html")
+    await NotUBot.edit(mentions, parse_mode="html")
 
 
 @bot_cmd(groups_only=True, admins_only=True, pattern="everyone|@everyone$")
@@ -650,7 +652,6 @@ async def everyone(event):
     tag = "\U000e0020everyone"
     mention_text = f"@{tag}"
     mention_slots = 4096 - len(mention_text)
-
     chat = await event.get_chat()
     async for x in event.client.iter_participants(chat, aggressive=True):
         if not (
@@ -673,7 +674,6 @@ async def all(event):
     text = event.pattern_match.group(1)
     users = []
     limit = 0
-
     chat = await event.get_chat()
     async for x in event.client.iter_participants(chat, aggressive=True):
         if not (
@@ -685,9 +685,9 @@ async def all(event):
             if not (isinstance(x.participant, Admins)):
                 users.append(f"<a href=tg://user?id={x.id}>{get_display_name(x)}</a>")
             if isinstance(x.participant, Admin):
-                users.append(f"\n👮 Admin: <a href=tg://user?id={x.id}>{get_display_name(x)}</a>")
+                users.append(f"👮 Admin: <a href=tg://user?id={x.id}>{get_display_name(x)}</a>")
             if isinstance(x.participant, Creator):
-                users.append(f"\n🤴 Owner: <a href=tg://user?id={x.id}>{get_display_name(x)}</a>")
+                users.append(f"🤴 Owner: <a href=tg://user?id={x.id}>{get_display_name(x)}</a>")
 
     for mention in list(user_list(users, 6)):
         mention = "  |  ".join(map(str, mention))
@@ -713,8 +713,8 @@ async def rmusers(event):
     NotUBot = await event.edit("`...`")
     match = event.pattern_match.group(1)
     p, b, c, d, m, n, y, w, o, q, r = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-
-    async for x in event.client.iter_participants(event.chat_id, aggressive=True):
+    chat = await event.get_chat()
+    async for x in event.client.iter_participants(chat, aggressive=True):
         p += 1
         if isinstance(x.status, UserStatusEmpty):
             if "empty" in match:

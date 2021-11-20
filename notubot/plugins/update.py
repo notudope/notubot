@@ -103,7 +103,7 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
             break
 
     if heroku_app is None:
-        await event.edit(f"{txt}\n" "`Variabel Heroku tidak valid untuk deploy UserBot Dyno.`")
+        await event.edit(f"{txt}\n" "`Variabel Heroku tidak valid untuk deploy notubot Dyno.`")
         return repo.__del__()
 
     await event.edit(f"`{__botname__} Dyno sedang memperbarui, perkiraan waktu sampai 5 menit...`")
@@ -197,7 +197,7 @@ async def upstream(event):
             return await event.edit(
                 f"`Direktori {e} "
                 "sepertinya bukan repositori git.\n"
-                "Tapi bisa memperbaiki dengan memperbarui paksa UserBot menggunakan "
+                "Tapi bisa memperbaiki dengan memperbarui paksa notubot menggunakan "
                 "{HANDLER}update now|pull|one.`"
             )
 
@@ -245,7 +245,7 @@ async def upstream(event):
         return
 
     if force_update:
-        await event.edit("`Memaksa sinkronisasi ke kode UserBot stabil terbaru, harap tunggu...`")
+        await event.edit("`Memaksa sinkronisasi ke kode notubot stabil terbaru, harap tunggu...`")
     else:
         await event.edit(f"`{__botname__} Proses Update, Loading....1%`")
         await event.edit(f"`{__botname__} Proses Update, Loading....20%`")
@@ -275,13 +275,13 @@ CMD_HELP.update(
         "update": [
             "Update",
             "`.update`\n"
-            "↳ : Mengecek apakah ada pembaruan pada repo UserBot termasuk menampilkan changelog.\n\n"
+            "↳ : Mengecek apakah ada pembaruan pada repo notubot termasuk menampilkan changelog.\n\n"
             "`.update <now|pull|one>`\n"
-            "↳ : Memperbarui sistem UserBot jika ada pembaruan pada repo UserBot.\n\n"
+            "↳ : Memperbarui sistem notubot jika ada pembaruan pada repo notubot.\n\n"
             "`.update <deploy|push|all>`\n"
-            "↳ : Deploy UserBot (heroku), ini akan memaksa deploy meskipun tidak ada pembaruan pada UserBot.\n\n"
+            "↳ : Deploy notubot (heroku), ini akan memaksa deploy meskipun tidak ada pembaruan pada notubot.\n\n"
             "`.repo`\n"
-            "↳ : Github Repository UserBot.\n\n",
+            "↳ : Github Repository notubot.\n\n",
         ]
     }
 )

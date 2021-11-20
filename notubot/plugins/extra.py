@@ -231,7 +231,7 @@ CMD_HELP.update(
             "↳ : Mengubah pesan terbaru atau balasan pesan.\n\n"
             "`.sd <x> <message>`\n"
             "↳ : Membuat pesan menjadi selfdestructs dalam <x> detik.\n"
-            "Usahakan tetap dibawah 100 detik, untuk mengatasi UserBot tertidur.\n\n"
+            "Usahakan tetap dibawah 100 detik, untuk mengatasi notubot tertidur.\n\n"
             "`.reply`\n"
             "↳ : Balas pesan terakhir ke balasan pesan user.",
         ]

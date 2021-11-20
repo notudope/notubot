@@ -20,10 +20,9 @@ from telethon.errors.rpcerrorlist import (
 from telethon.tl.functions.channels import InviteToChannelRequest, GetFullChannelRequest
 from telethon.tl.functions.messages import GetFullChatRequest
 from telethon.tl.types import InputPeerUser
-from telethon.tl.types import ChannelParticipantCreator as Creator
-from telethon.tl.types import ChannelParticipantAdmin as Admin
+from telethon.tl.types import ChannelParticipantsAdmins as Admins
 
-from notubot import CMD_HELP
+from notubot import CMD_HELP, bot
 from notubot.events import bot_cmd
 
 
@@ -80,7 +79,7 @@ async def inviteall(event):
 
     await NotUBot.edit("`Mengumpulkan member...`")
     async for x in event.client.iter_participants(chatinfo.full_chat.id, aggressive=True):
-        if not (x.deleted or x.bot or isinstance(x.participant, (Admin, Creator))):
+        if not (x.deleted or x.bot or isinstance(x.participant, Admins) or x.id == bot.uid):
             try:
                 if error.startswith("Too"):
                     return await NotUBot.edit(
@@ -122,7 +121,7 @@ async def getmemb(event):
         writer.writerow(["user_id", "hash"])
 
         for x in members:
-            if not (x.deleted or x.bot or isinstance(x.participant, (Admin, Creator))):
+            if not (x.deleted or x.bot or isinstance(x.participant, Admins) or x.id == bot.uid):
                 writer.writerow([x.id, x.access_hash])
 
     await event.edit("`Berhasil mengumpulkan member.`")

@@ -7,24 +7,40 @@
 
 from asyncio.exceptions import TimeoutError
 from io import BytesIO
+from os import rename, remove
 from time import time
 
+from google_trans_new import google_translator
+from telegraph import upload_file as tghup
 from telethon.errors.rpcerrorlist import YouBlockedUserError
 from telethon.events import NewMessage
 from telethon.tl.custom import Dialog
+from telethon.tl.functions.channels import GetAdminedPublicChannelsRequest
 from telethon.tl.functions.contacts import GetBlockedRequest
 from telethon.tl.functions.messages import GetAllStickersRequest
 from telethon.tl.types import Chat, User, Channel
 
-from notubot import CMD_HELP, bot
+from notubot import (
+    CMD_HELP,
+    bot,
+    HANDLER,
+    __botname__,
+)
 from notubot.events import bot_cmd
-from notubot.utils import parse_pre, yaml_format
+from notubot.functions import (
+    parse_pre,
+    yaml_format,
+    mediainfo,
+    telegraph_client,
+)
 
 REQ_ID = "`Kesalahan, dibutuhkan ID atau balas pesan itu.`"
 
+Telegraph = telegraph_client()
+
 
 @bot_cmd(pattern="(sa|sg)(?: |$)(.*)")
-async def sa(event):
+async def _(event):
     NotUBot = await event.edit("`Searching...`")
     chat_id = event.chat_id or event.from_id
     if event.reply_to_msg_id:
@@ -101,9 +117,22 @@ async def sa(event):
 
 
 @bot_cmd(
+    pattern="listreserved$",
+)
+async def _(event):
+    NotUBot = await event.edit("`...`")
+    result = await event.client(GetAdminedPublicChannelsRequest())
+    r = result.chats
+    output = "".join(f"- {obj.title} @{obj.username} \n" for obj in r)
+    if not r:
+        return NotUBot.edit("`no username`")
+    await NotUBot.edit(output)
+
+
+@bot_cmd(
     pattern="stats$",
 )
-async def stats(
+async def _(
     event: NewMessage.Event,
 ) -> None:
     NotUBot = await event.edit("`Stats...`")
@@ -183,10 +212,76 @@ async def stats(
     await NotUBot.edit(res)
 
 
-@bot_cmd(pattern="(json|raw)$")
-async def json(event):
-    chat_id = event.chat_id or event.from_id
+@bot_cmd(pattern="tr")
+async def _(event):
+    if len(event.text) > 3 and event.text[3] != " ":
+        return
+    input = event.text[4:6]
+    txt = event.text[7:]
 
+    NotUBot = await event.edit("`...`")
+    if txt:
+        text = txt
+        lan = input or "id"
+    elif event.is_reply:
+        prev_msg = await event.get_reply_message()
+        text = prev_msg.message
+        lan = input or "id"
+    else:
+        return await NotUBot.edit(f"`{HANDLER}tr LanguageCode` balas pesan.")
+
+    translator = google_translator()
+    try:
+        tt = translator.translate(text, lang_tgt=lan)
+        id = translator.detect(text)
+        output = f"**TRANSLATED** dari {id} ke {lan}\n{tt}"
+        await NotUBot.edit(output)
+    except Exception as e:
+        await NotUBot.edit(str(e))
+
+
+@bot_cmd(
+    pattern="telegraph(?: |$)(.*)",
+)
+async def _(event):
+    NotUBot = await event.edit("`...`")
+    match = event.pattern_match.group(1) or __botname__
+    reply = await event.get_reply_message()
+
+    if not reply:
+        return await NotUBot.edit("`Balas pesan tersebut.`")
+    if not reply.media and reply.message:
+        content = reply.message
+    else:
+        media = await reply.download_media()
+        mediatype = mediainfo(reply.media)
+
+        if mediatype == "sticker":
+            rename(media, media + ".jpg")
+            media = media + ".jpg"
+
+        if "document" not in mediatype:
+            try:
+                link = "https://telegra.ph" + tghup(media)[0]
+                uploaded = f"Upload [Telegraph]({link})"
+            except Exception as e:
+                uploaded = f"Error : {e}"
+            remove(media)
+            return NotUBot.edit(uploaded)
+
+        with open(media) as file:
+            content = file.read()
+        remove(media)
+
+    tghpush = Telegraph.create_page(title=match, content=[content])
+    output = tghpush["url"]
+    await NotUBot.edit(f"Telegraph: [Telegraph]({output})")
+
+
+@bot_cmd(pattern="(json|raw)$")
+async def _(event):
+    NotUBot = await event.edit("`...`")
+    chat_id = event.chat_id or event.from_id
     reply = await event.get_reply_message() if event.reply_to_msg_id else event
     raw = reply.stringify()
 
@@ -203,15 +298,15 @@ async def json(event):
                 )
         except Exception:
             pass
-        await event.delete()
+        await NotUBot.delete()
     else:
-        await event.edit(raw, parse_mode=parse_pre)
+        await NotUBot.edit(raw, parse_mode=parse_pre)
 
 
 @bot_cmd(pattern="(yaml|yml)$")
-async def yaml(event):
+async def _(event):
+    NotUBot = await event.edit("`...`")
     chat_id = event.chat_id or event.from_id
-
     reply = await event.get_reply_message() if event.reply_to_msg_id else event
     raw = yaml_format(reply)
 
@@ -228,9 +323,9 @@ async def yaml(event):
                 )
         except Exception:
             pass
-        await event.delete()
+        await NotUBot.delete()
     else:
-        await event.edit(raw, parse_mode=parse_pre)
+        await NotUBot.edit(raw, parse_mode=parse_pre)
 
 
 CMD_HELP.update(
@@ -239,8 +334,14 @@ CMD_HELP.update(
             "Utility",
             "`.sa|sg`\n"
             "↳ : Riwayat nama oleh sangmata.\n\n"
+            "`.listreserved`\n"
+            "↳ : Daftar semua username (channels/groups) yang dimiliki.\n\n"
             "`.stats`\n"
             "↳ : Stats profile user.\n\n"
+            "`.tr <language> <reply message>`\n"
+            "↳ : Menterjemahkan bahasa pada pesan balasan.\n\n"
+            "`.telegraph <reply media/text>`\n"
+            "↳ : Upload media/text ke telegraph.\n\n"
             "`.json|raw`\n"
             "↳ : Mengambil raw data format json dari sebuah pesan, \n\n"
             "Balas pesan tersebut untuk menampilkannya!\n\n"

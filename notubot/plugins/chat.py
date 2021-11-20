@@ -6,7 +6,7 @@
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
 from telethon.errors import ChatAdminRequiredError
-from telethon.tl.functions.channels import LeaveChannelRequest, GetFullChannelRequest
+from telethon.tl.functions.channels import LeaveChannelRequest, GetFullChannelRequest, InviteToChannelRequest
 from telethon.tl.functions.messages import AddChatUserRequest, GetFullChatRequest, ExportChatInviteRequest
 from telethon.tl.types import Chat, Channel
 from telethon.utils import pack_bot_file_id, get_display_name
@@ -16,27 +16,38 @@ from notubot.events import bot_cmd
 
 
 @bot_cmd(pattern="(getid|id)$")
-async def id(event):
+async def _(event):
+    NotUBot = await event.edit("`...`")
     chat_id = event.chat_id or event.from_id
     if event.reply_to_msg_id:
+        await event.get_input_chat()
         reply = await event.get_reply_message()
         userid = reply.sender_id
         if reply.media:
             bot_api_file_id = pack_bot_file_id(reply.media)
-            await event.edit(f"Group: `{chat_id}`\nUser: `{userid}`\nBot File API: `{bot_api_file_id}`")
+            await NotUBot.edit(
+                "**Chat ID:** `{}`\n**User ID:** `{}`\n**Bot API File ID:** `{}`\n**Message ID:** `{}`".format(
+                    chat_id, userid, bot_api_file_id, reply.id
+                )
+            )
         else:
-            text = f"User: `{userid}`" if event.is_private else f"Group: `{chat_id}`\nUser: `{userid}`"
-            await event.edit(text)
+            text = (
+                f"**User ID:** `{userid}`" if event.is_private else f"**Chat ID:** `{chat_id}`\n**User ID:** `{userid}`"
+            )
+            text = text + f"\n**Message ID:** `{reply.id}`"
+            await NotUBot.edit(text)
     else:
-        text = "User: " if event.is_private else "Group: "
-        await event.edit(f"{text}`{chat_id}`")
+        text = "**User ID:** " if event.is_private else "**Chat ID:** "
+        text = text + f"\n**Message ID:** `{reply.id}`"
+        await NotUBot.edit(f"{text}`{chat_id}`")
 
 
 @bot_cmd(groups_only=True, pattern="(getlink|link)$")
-async def getlink(event):
+async def _(event):
+    NotUBot = await event.edit("`...`")
     chat = await event.get_chat()
     if chat.username:
-        return await event.edit(f"Username: @{chat.username}")
+        return await NotUBot.edit(f"Username: @{chat.username}")
     if isinstance(chat, Chat):
         FC = await event.client(GetFullChatRequest(chat.id))
     elif isinstance(chat, Channel):
@@ -51,42 +62,67 @@ async def getlink(event):
                 ExportChatInviteRequest(event.chat_id),
             )
         except ChatAdminRequiredError:
-            return await event.edit("`Tidak memiliki izin!`")
+            return await NotUBot.edit("`Tidak memiliki izin!`")
         link = r.link
 
-    await event.edit(f"Link:- {link}")
+    await NotUBot.edit(f"Link:- {link}")
+
+
+@bot_cmd(pattern="uname$")
+async def _(event):
+    NotUBot = await event.edit("`...`")
+    reply = await event.get_reply_message()
+    if not reply:
+        return await NotUBot.edit("`Balas pesan dia untuk mendapatkan usernamenya.`")
+
+    username = reply.sender.username or None
+    mention = f"@{username}" if username else f"[{reply.sender_id}](tg://user?id={reply.sender_id})"
+    await NotUBot.edit(mention)
 
 
 @bot_cmd(pattern="kickme$")
-async def kickme(event):
+async def _(event):
+    NotUBot = await event.edit("`...`")
     mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
-    await event.edit(f"{mention} `Leaved!`")
+    await NotUBot.edit(f"{mention} `Leaved!`")
     await event.client(LeaveChannelRequest(event.chat_id))
 
 
 @bot_cmd(groups_only=True, pattern="invite(?: |$)(.*)")
-async def invite(event):
+async def _(event):
     NotUBot = await event.edit("`...`")
-    match = event.pattern_match.group(1)
-
-    for user_id in match.split(" "):
-        try:
-            await event.client(
-                AddChatUserRequest(
-                    chat_id=event.chat_id,
-                    user_id=user_id,
-                    fwd_limit=1000000,
-                ),
-            )
-            await NotUBot.edit(f"Invited `{user_id}`.")
-        except Exception as e:
-            await NotUBot.edit(str(e))
+    to_add_users = event.pattern_match.group(1)
+    if not event.is_channel and event.is_group:
+        for user_id in to_add_users.split(" "):
+            try:
+                await event.client(
+                    AddChatUserRequest(
+                        chat_id=event.chat_id,
+                        user_id=user_id,
+                        fwd_limit=1000000,
+                    ),
+                )
+                await NotUBot.edit(f"Invited `{user_id}` to `{event.chat_id}`")
+            except Exception as e:
+                await NotUBot.edit(str(e))
+    else:
+        for user_id in to_add_users.split(" "):
+            try:
+                await event.client(
+                    InviteToChannelRequest(
+                        channel=event.chat_id,
+                        users=[user_id],
+                    ),
+                )
+                await NotUBot.edit(f"Invited `{user_id}` to `{event.chat_id}`")
+            except Exception as e:
+                await NotUBot.edit(str(e))
 
 
 @bot_cmd(pattern="total(?: |$)(.*)")
-async def total(event):
+async def _(event):
+    NotUBot = await event.edit("`...`")
     match = event.pattern_match.group(1)
-    await event.edit("`...`")
 
     if match:
         user = match
@@ -97,7 +133,7 @@ async def total(event):
 
     a = await event.client.get_messages(event.chat_id, 0, from_user=user)
     user = await event.client.get_entity(user)
-    await event.edit(f"Total pesan dari `{get_display_name(user)}` [`{a.total}`]")
+    await NotUBot.edit(f"Total pesan dari `{get_display_name(user)}` [`{a.total}`]")
 
 
 CMD_HELP.update(
@@ -108,6 +144,8 @@ CMD_HELP.update(
             "↳ : Mengambil ID obrolan saat ini.\n\n"
             "`.getlink|link`\n"
             "↳ : Mengambil link obrolan saat ini.\n\n"
+            "`.uname`\n"
+            "↳ : Mengambil username orang yang dibalas.\n\n"
             "`.kickme`\n"
             "↳ : Keluar dari grup sekarang.\n\n"
             "`.invite`\n"

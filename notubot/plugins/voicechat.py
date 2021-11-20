@@ -9,24 +9,16 @@ from asyncio import sleep
 
 from pytgcalls import GroupCallFactory
 from telethon.tl.functions.channels import GetFullChannelRequest, DeleteMessagesRequest
-from telethon.tl.functions.phone import (
-    CreateGroupCallRequest,
-    DiscardGroupCallRequest,
-    InviteToGroupCallRequest,
-    GetGroupCallRequest,
-)
+from telethon.tl.functions.phone import CreateGroupCallRequest, DiscardGroupCallRequest, InviteToGroupCallRequest
 
 from notubot import CMD_HELP, bot, HANDLER
+from notubot.db import db
 from notubot.events import bot_cmd
-
-group_call_factory = GroupCallFactory(bot, GroupCallFactory.MTPROTO_CLIENT_TYPE.TELETHON)
-group_call = group_call_factory.get_file_group_call(None)
 
 
 async def get_call(event):
-    x = await event.client(GetFullChannelRequest(event.chat_id))
-    xx = await event.client(GetGroupCallRequest(x.full_chat.call))
-    return xx.call
+    call = await event.client(GetFullChannelRequest(event.chat.id))
+    return call.full_chat.call
 
 
 def user_list(ls, n):
@@ -36,6 +28,7 @@ def user_list(ls, n):
 
 @bot_cmd(disable_errors=True, admins_only=True, can_call=True, pattern="startvc(?: |$)(.*)")
 async def _(event):
+    NotUBot = await event.edit("`...`")
     opts = event.pattern_match.group(1)
     args = opts.split(" ")
 
@@ -54,16 +47,17 @@ async def _(event):
     )
 
     if not stfu:
-        await event.edit("`Memulai Obrolan Suara...`")
+        await NotUBot.edit("`Memulai Obrolan Suara...`")
         await sleep(3)
     else:
-        await event.delete()
+        await NotUBot.delete()
         if _group and _group.updates[1].id is not None:
             await event.client(DeleteMessagesRequest(event.chat_id, [_group.updates[1].id]))
 
 
 @bot_cmd(disable_errors=True, admins_only=True, can_call=True, pattern="(stopvc|endvc)(?: |$)(.*)")
 async def _(event):
+    NotUBot = await event.edit("`...`")
     opts = event.pattern_match.group(1)
     silent = ["s", "silent"]
     stfu = True if opts in silent else False
@@ -74,25 +68,25 @@ async def _(event):
         call = None
 
     if not call:
-        await event.edit("`Tidak ada obrolan.`")
+        await NotUBot.edit("`Tidak ada obrolan.`")
         await sleep(3)
-        return await event.delete()
+        return await NotUBot.delete()
 
     _group = await event.client(DiscardGroupCallRequest(call))
 
     if not stfu:
-        await event.edit("`Obrolan Suara dimatikan...`")
+        await NotUBot.edit("`Obrolan Suara dimatikan...`")
         await sleep(3)
-        await event.delete()
+        await NotUBot.delete()
     else:
-        await event.delete()
+        await NotUBot.delete()
         if _group and _group.updates[1].id is not None:
             await event.client(DeleteMessagesRequest(event.chat_id, [_group.updates[1].id]))
 
 
 @bot_cmd(disable_errors=True, groups_only=True, admins_only=True, pattern="joinvc$")
 async def _(event):
-    await event.edit("`...`")
+    NotUBot = await event.edit("`...`")
 
     try:
         call = await get_call(event)
@@ -100,22 +94,27 @@ async def _(event):
         call = None
 
     if not call:
-        await event.edit(f"`Tidak ada obrolan, mulai dengan {HANDLER}startvc`")
+        await NotUBot.edit(f"`Tidak ada obrolan, mulai dengan {HANDLER}startvc`")
         await sleep(15)
-        return await event.delete()
+        return await NotUBot.delete()
+
+    if "call" in db:
+        return await NotUBot.edit("`Sudah ada di obrolan.`")
+
+    group_call = GroupCallFactory(bot, GroupCallFactory.MTPROTO_CLIENT_TYPE.TELETHON).get_file_group_call(None)
+    db["call"] = group_call
 
     if not (group_call and group_call.is_connected):
         await group_call.start(event.chat.id, enable_action=False)
-        group_call.enable_action = False
 
-    await event.edit("`joined`")
+    await NotUBot.edit("`joined`")
     await sleep(3)
-    await event.delete()
+    await NotUBot.delete()
 
 
 @bot_cmd(disable_errors=True, groups_only=True, admins_only=True, pattern="leavevc$")
 async def _(event):
-    await event.edit("`...`")
+    NotUBot = await event.edit("`...`")
 
     try:
         call = await get_call(event)
@@ -123,22 +122,23 @@ async def _(event):
         call = None
 
     if not call:
-        await event.edit(f"`Tidak ada obrolan, mulai dengan {HANDLER}startvc`")
+        await NotUBot.edit(f"`Tidak ada obrolan, mulai dengan {HANDLER}startvc`")
         await sleep(15)
-        return await event.delete()
+        return await NotUBot.delete()
 
-    if group_call and group_call.is_connected:
-        await group_call.stop()
+    if "call" in db:
+        await db["call"].leave_current_group_call()
+        await db["call"].stop()
+        del db["call"]
 
-    await event.edit("`leaved`")
+    await NotUBot.edit("`leaved`")
     await sleep(3)
-    await event.delete()
+    await NotUBot.delete()
 
 
 @bot_cmd(groups_only=True, admins_only=True, pattern="vcinvite$")
 async def _(event):
-    await event.edit("`Mengundang orang ke Obrolan Suara...`")
-    await event.get_chat()
+    NotUBot = await event.edit("`...`")
     users = []
     invited = 0
 
@@ -148,9 +148,11 @@ async def _(event):
         call = None
 
     if not call:
-        return await event.delete()
+        return await NotUBot.delete()
+    await NotUBot.edit("`Mengundang orang ke Obrolan Suara...`")
 
-    async for x in event.client.iter_participants(event.chat_id, aggressive=True):
+    chat = await event.get_chat()
+    async for x in event.client.iter_participants(chat, aggressive=True):
         if not (x.bot or x.deleted or x.id == bot.uid):
             users.append(x.id)
 
@@ -162,9 +164,9 @@ async def _(event):
         except BaseException:
             pass
 
-    await event.edit(f"`Diundang {invited} orang.`")
+    await NotUBot.edit(f"`Diundang {invited} orang.`")
     await sleep(15)
-    await event.delete()
+    await NotUBot.delete()
 
 
 CMD_HELP.update(

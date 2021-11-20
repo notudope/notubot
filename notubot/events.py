@@ -43,7 +43,7 @@ from notubot import (
     I_DEV,
     HANDLER,
 )
-from notubot.utils import time_formatter
+from notubot.functions import time_formatter
 
 FLOOD_WAIT = 0
 
@@ -249,7 +249,7 @@ def bot_cmd(**args):
                         await event.respond(f"`{__botname__} ERROR, Disimpan ke BOTLOG.`")
                     try:
                         with BytesIO(str.encode(ftext)) as file:
-                            file.name = "notubot.log"
+                            file.name = "logs.txt"
                             await event.client.send_file(
                                 send_to,
                                 file,

@@ -11,7 +11,7 @@ from time import sleep
 
 from notubot import BOTLOG, BOTLOG_CHATID, CMD_HELP
 from notubot.events import bot_cmd
-from notubot.utils import time_formatter
+from notubot.functions import time_formatter
 
 
 @bot_cmd(pattern="sleep ([0-9]+)$")

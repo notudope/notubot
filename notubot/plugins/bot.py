@@ -9,9 +9,11 @@ import asyncio
 import os
 import sys
 from platform import python_version
+from random import choice
 from shutil import which
 from time import time
 
+from carbonnow import Carbon
 from git import Repo
 from telethon import version
 from telethon.errors.rpcerrorlist import MediaEmptyError, ChatSendMediaForbiddenError, ChatSendGifsForbiddenError
@@ -26,11 +28,33 @@ from notubot import (
     bot,
     BOTLOG_CHATID,
     ALIVE_TEXT,
-    HEROKU_API_KEY,
     ALIVE_IG,
 )
 from notubot.events import bot_cmd
-from notubot.utils import time_formatter, restart, run_cmd
+from notubot.functions import (
+    time_formatter,
+    restart,
+    shutdown,
+    run_cmd,
+    heroku_logs,
+    def_logs,
+)
+
+ATRA_COL = [
+    "DarkCyan",
+    "DeepSkyBlue",
+    "DarkTurquoise",
+    "Cyan",
+    "LightSkyBlue",
+    "Turquoise",
+    "MediumVioletRed",
+    "Aquamarine",
+    "Lightcyan",
+    "Azure",
+    "Moccasin",
+    "PowderBlue",
+]
+
 
 alive_text = """<code>{}</code>
 
@@ -54,7 +78,7 @@ alive_text = """<code>{}</code>
 
 
 @bot_cmd(disable_errors=True, pattern="(alive|on)$")
-async def aliveon(event):
+async def _(event):
     start = time()
     await event.edit("ㅤ")
     ms = round((time() - start) * 1000)
@@ -107,11 +131,11 @@ async def aliveon(event):
 
 
 @bot_cmd(pattern="restart$")
-async def restartbot(event):
+async def _(event):
     await event.edit("`{} Restarting...`".format(__botname__))
 
     if BOTLOG:
-        await event.client.send_message(BOTLOG_CHATID, "#bot #restart \n" "Restarting UserBot...")
+        await event.client.send_message(BOTLOG_CHATID, "#bot #restart \n" "Restarting notubot...")
 
     try:
         from notubot.database.globals import addgv, delgv
@@ -122,25 +146,47 @@ async def restartbot(event):
         pass
 
     await event.client.disconnect()
-    if HEROKU_API_KEY:
-        return await restart(event)
+    await restart(event)
 
     await run_cmd("git pull && pip3 install -U -r requirements.txt")
     os.execl(sys.executable, sys.executable, "-m", "notubot")
 
 
 @bot_cmd(pattern="shutdown$")
-async def shutdown(event):
+async def _(event):
     await event.edit("`{} Shutting down...`".format(__botname__))
 
     if BOTLOG:
-        await event.client.send_message(BOTLOG_CHATID, "#bot #shutdown \n" "Shutting down UserBot...")
+        await event.client.send_message(BOTLOG_CHATID, "#bot #shutdown \n" "Shutting down notubot...")
 
     await event.client.disconnect()
+    await shutdown(event)
+
+
+@bot_cmd(pattern="logs(?: |$)(.*)")
+async def _(event):
+    opt = event.pattern_match.group(1)
+
+    if opt == "heroku":
+        await heroku_logs(event)
+    elif opt == "carbon" and Carbon:
+        event = await event.edit("`...`")
+        code = open("notubot.log", "r").read()[-2500:]
+        file = await Carbon(
+            base_url="https://carbonara.vercel.app/api/cook",
+            code=code,
+            background=choice(ATRA_COL),
+        ).memorize("notubot-logs")
+
+        await event.reply("**NOTUBOT Logs.**", file=file)
+    else:
+        await def_logs(event)
+
+    await event.delete()
 
 
 @bot_cmd(pattern="botver$")
-async def botver(event):
+async def _(event):
     if which("git") is None:
         return await event.delete()
 
@@ -170,7 +216,7 @@ async def botver(event):
 
 
 @bot_cmd(pattern="sysd$")
-async def sysd(event):
+async def _(event):
     try:
         neofetch = await asyncio.create_subprocess_exec(
             "neofetch",
@@ -187,17 +233,17 @@ async def sysd(event):
 
 
 @bot_cmd(disable_errors=True, pattern="ping$")
-async def ping(event):
+async def _(event):
     if event.out:
         await event.delete()
 
     start = time()
-    x = await event.respond("Pong !")
+    NotUBot = await event.respond("Pong !")
     end = round((time() - start) * 1000)
     uptime = time_formatter((time() - start_time) * 1000)
-    await x.edit("**Pong !!** `{}ms`\n**Uptime** - `{}`".format(end, uptime))
+    await NotUBot.edit("**Pong !!** `{}ms`\n**Uptime** - `{}`".format(end, uptime))
     await asyncio.sleep(15)
-    await x.delete()
+    await NotUBot.delete()
 
 
 CMD_HELP.update(
@@ -205,15 +251,23 @@ CMD_HELP.update(
         "bot": [
             "Bot",
             "`.alive`\n"
-            "↳ : Mengecek UserBot berjalan atau tidak.\n\n"
+            "↳ : Mengecek notubot berjalan atau tidak.\n\n"
             "`.restart`\n"
-            "↳ : Muat ulang UserBot.\n\n"
+            "↳ : Muat ulang notubot.\n\n"
             "`.shutdown`\n"
-            "↳ : Mematikan UserBot.\n\n"
+            "↳ : Mematikan notubot.\n\n"
+            "`.logs (sys)`\n"
+            "↳ : Mengambil full terminal logs.\n\n"
+            "`.logs carbon`\n"
+            "↳ : Mengambil carbonized sys logs.\n\n"
+            "`.logs heroku`\n"
+            "↳ : Mengambil 100 baris terbaru dari heroku logs.\n\n"
             "`.botver`\n"
-            "↳ : Menampilkan versi UserBot dari git.\n\n"
+            "↳ : Menampilkan versi notubot dari git.\n\n"
             "`.sysd`\n"
-            "↳ : Menampilkan informasi sistem menggunakan neofetch.",
+            "↳ : Menampilkan informasi sistem menggunakan neofetch.\n\n"
+            "`.ping`\n"
+            "↳ : Cek waktu respon notubot.",
         ]
     }
 )

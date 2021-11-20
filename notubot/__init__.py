@@ -42,12 +42,19 @@ start_time = time()
 __botversion__ = "0.1"
 __botname__ = "ツNOTUBOT UserBot "
 
+if path.exists("notubot.log"):
+    remove("notubot.log")
+
 logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="%H:%M:%S", level=logging.INFO
+    format="%(asctime)s || %(name)s [%(levelname)s] : %(message)s",
+    level=logging.INFO,
+    datefmt="%m/%d/%Y, %H:%M:%S",
+    handlers=[logging.FileHandler("notubot.log"), logging.StreamHandler()],
 )
 logging.getLogger("asyncio").setLevel(logging.ERROR)
-logging.getLogger("telethon.network.mtprotosender").setLevel(logging.WARNING)
-LOGS = logging.getLogger(__name__)
+logging.getLogger("Telethon").setLevel(logging.WARNING)
+LOGS = logging.getLogger("NOTUBOT")
+
 
 if not sys.platform.startswith("linux"):
     LOGS.error("HARUS menggunakan Platform linux, saat ini {}".format(sys.platform))
@@ -88,7 +95,7 @@ API_HASH = getenv("API_HASH", default=None)
 # Telegram Session String
 STRING_SESSION = getenv("STRING_SESSION", default=None)
 
-# UserBot logging feature switch
+# notubot logging feature switch
 BOTLOG = strtobool(getenv("BOTLOG", default="True"))
 
 # Logging channel/group ID configuration
@@ -121,19 +128,20 @@ UPSTREAM_REPO_BRANCH = getenv("UPSTREAM_REPO_BRANCH", "main")
 # SQL Database URI
 DB_URI = getenv("DATABASE_URL", default="")
 
-# Developer the UserBot
+# Developer the notubot
 DEVLIST = [2006788653, 2003361410]
 
 # Special group blacklist, include some federations
 NOSPAM_SUPERGROUP = [
-    -1001327032795,  # UltroidSupport
     -1001387666944,  # PyrogramChat
     -1001109500936,  # TelethonChat
+    -1001471736013,  # TelegrafJSChat
     -1001050982793,  # Python
     -1001256902287,  # DurovsChat
     -1001235155926,  # RoseSupportChat
     -1001341570295,  # tgbetachat
     -1001336679475,  # tgandroidtests
+    -1001120290128,  # plusmsgrchat
     -1001311056733,  # BotTalk
     -1001312712379,  # SpamWatchSupport
     -1001360494801,  # OFIOpenChat
@@ -143,6 +151,10 @@ NOSPAM_SUPERGROUP = [
     -1001625295806,  # NOTUBOTS
     -1001596433756,  # MFIChat
     -1001307868573,  # CariTemanOK
+    -1001598265414,  # govolt
+    -1001304351429,  # 404
+    -1001327032795,  # UltroidSupport
+    -1001481357570,  # usergeot
 ]
 
 # Blacklist group manually
@@ -256,9 +268,9 @@ async def startup_check() -> None:
 
     await bot.send_message(BOTLOG_CHATID, "```{} v{} Launched 🚀```".format(__botname__, __botversion__))
 
-    from notubot.database.globals import delgv, gvstatus
+    from notubot.database.globals import delgv, getgv
 
-    chatid, mid = gvstatus("restartstatus").split("\n")
+    chatid, mid = getgv("restartstatus").split("\n")
     text = (
         f"`{__botname__}`\n"
         f"[Repo](https://github.com/notudope/notubot)  •  [Channel](https://t.me/notudope)  •  [Support](https://t.me/NOTUBOTS)  •  [Mutualan](https://t.me/CariTemanOK)\n\n"
@@ -291,17 +303,17 @@ with bot:
 
 async def ipchange():
     try:
-        from notubot.database.globals import addgv, delgv, gvstatus
+        from notubot.database.globals import addgv, delgv, getgv
     except AttributeError:
         return None
 
     newip = (get("https://httpbin.org/ip").json())["origin"]
 
-    if not gvstatus("ipaddress"):
+    if not getgv("ipaddress"):
         addgv("ipaddress", newip)
         return None
 
-    oldip = gvstatus("ipaddress")
+    oldip = getgv("ipaddress")
     if oldip != newip:
         delgv("ipaddress")
         LOGS.info("🔄 IP change detected!")

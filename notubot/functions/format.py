@@ -1,10 +1,18 @@
+# NOTUBOT - UserBot
+# Copyright (C) 2021 notudope
+#
+# This file is a part of < https://github.com/notudope/notubot/ >
+# PLease read the GNU General Public License v3.0 in
+# <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
+
+
 from datetime import datetime
 
 from telethon.tl.tlobject import TLObject
 from telethon.tl.types import MessageEntityPre
 from telethon.utils import add_surrogate
 
-from notubot.utils.tools import utc_to_local
+from notubot.functions.tools import utc_to_local
 
 
 def parse_pre(text):
