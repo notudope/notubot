@@ -70,8 +70,8 @@ if __name__ == "__main__":
         LOGS.info("🚀 Launch deployment...")
         LOGS.info(THENOTUBOT)
         LOGS.info("Version - v{}".format(__botversion__))
-        LOGS.info("Telethon Version - {}".format(version.__version__))
         LOGS.info("Python Version - {}".format(python_version()))
+        LOGS.info("Telethon Version - {}".format(version.__version__))
         LOGS.info("Took {} to start {}".format(time_formatter((time() - start_time) * 1000), __botname__))
         bot.loop.run_until_complete(startup_process())
     except (ConnectionError, NotImplementedError, KeyboardInterrupt, SystemExit):

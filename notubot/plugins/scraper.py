@@ -87,7 +87,7 @@ async def inviteall(event):
 **Kesalahan:**
 `{error}`
 
-• Diculik `{success}` orang.
+• Diundang `{success}` orang.
 • Gagal mengundang `{failed}` orang."""
                     )
 
@@ -95,7 +95,7 @@ async def inviteall(event):
                 success = success + 1
                 await NotUBot.edit(
                     f"""**Sedang Mengundang...**
-• Diculik `{success}` orang.
+• Diundang `{success}` orang.
 • Gagal mengundang `{failed}` orang.
 
 **Kesalahan:** `{error}`"""

@@ -115,6 +115,7 @@ ALIVE_TEXT = getenv("ALIVE_TEXT", default="Hey, I am alive.")
 
 # Default .alive Instagram
 ALIVE_IG = getenv("ALIVE_IG", default="notudope")
+ALIVE_IG = ALIVE_IG.replace("@", "") if ALIVE_IG.startswith("@") else ALIVE_IG
 
 # Heroku Credentials for updater
 HEROKU_APP_NAME = getenv("HEROKU_APP_NAME", default=None)
@@ -160,7 +161,7 @@ NOSPAM_SUPERGROUP = [
 # Blacklist group manually
 NOSPAM_GROUP = list(map(int, getenv("NOSPAM_GROUP", default="").split()))
 
-# Bleep Blop, this is a bot
+# Auto BAN user if not approved
 PM_AUTO_BAN = strtobool(getenv("PM_AUTO_BAN", default="False"))
 
 # OpenWeatherMap API Key
