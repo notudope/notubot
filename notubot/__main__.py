@@ -22,9 +22,10 @@ from notubot import (
     LOOP,
     start_time,
 )
-from notubot.db import db
 from notubot.functions import time_formatter
 from notubot.plugins import ALL_PLUGINS
+
+from . import db
 
 db.init()
 
