@@ -12,20 +12,20 @@ from notubot.events import bot_cmd
 @bot_cmd(pattern="ig|([iI][gG]|[iI]nstagram)$")
 async def _(e):
     text = f"𝐈𝐍𝐒𝐓𝐀𝐆𝐑𝐀𝐌 [@{ALIVE_IG}](https://www.instagram.com/{ALIVE_IG})"
-    await e.client.send_message(e.chat_id, text, reply_to=e.reply_to_msg_id if e.reply_to_msg_id else False)
     await e.delete()
+    await e.client.send_message(e.chat_id, text, reply_to=e.reply_to_msg_id if e.reply_to_msg_id else False)
 
 
 @bot_cmd(pattern="p|([pP])$")
 async def _(e):
-    text = "`👏 𝐇𝐄𝐘 𝐘𝐎𝐎 𝐀𝐒𝐒𝐀𝐋𝐀𝐌𝐔𝐀𝐋𝐀𝐈𝐊𝐔𝐌`"
+    text = "`𝐇𝐄𝐘 𝐘𝐎𝐎 𝐀𝐒𝐒𝐀𝐋𝐀𝐌𝐔𝐀𝐋𝐀𝐈𝐊𝐔𝐌`"
     await e.client.send_message(e.chat_id, text, reply_to=e.reply_to_msg_id if e.reply_to_msg_id else False)
     await e.delete()
 
 
 @bot_cmd(pattern="l|([lL])$")
 async def _(e):
-    text = "`👏 𝐖𝐀𝐒𝐀𝐏𝐏 𝐖𝐀𝐀𝐋𝐀𝐈𝐊𝐔𝐌𝐒𝐀𝐋𝐀𝐌`"
+    text = "`𝐖𝐀𝐒𝐀𝐏𝐏 𝐖𝐀𝐀𝐋𝐀𝐈𝐊𝐔𝐌𝐒𝐀𝐋𝐀𝐌`"
     await e.client.send_message(e.chat_id, text, reply_to=e.reply_to_msg_id if e.reply_to_msg_id else False)
     await e.delete()
 
