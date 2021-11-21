@@ -694,10 +694,9 @@ async def all(event):
         mention = "  |  ".join(map(str, mention))
         mention = f"{text}\n{mention}" if text else mention
 
-        if event.reply_to_msg_id:
-            await event.client.send_message(chat, mention, reply_to=event.reply_to_msg_id, parse_mode="html")
-        else:
-            await event.client.send_message(chat, mention, parse_mode="html")
+        await event.client.send_message(
+            chat, mention, reply_to=event.reply_to_msg_id if event.reply_to_msg_id else False, parse_mode="html"
+        )
 
         limit += 6
         await sleep(5)
