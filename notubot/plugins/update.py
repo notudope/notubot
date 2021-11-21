@@ -263,9 +263,7 @@ async def upstream(event):
 async def repo(event):
     await event.edit(
         f"""**{__botname__}**
- •  [📦 Repo](https://github.com/notudope/notubot)
- •  [🚀 Deploy](https://dashboard.heroku.com/new?button-url=https%3A%2F%2Fgithub.com%2Fnotudope%2Fnotubot&template=https%3A%2F%2Fgithub.com%2Fnotudope%2Fnotubot)
-""",
+[📦 Repo](https://github.com/notudope/notubot) • [🚀 Deploy](https://dashboard.heroku.com/new?button-url=https%3A%2F%2Fgithub.com%2Fnotudope%2Fnotubot&template=https%3A%2F%2Fgithub.com%2Fnotudope%2Fnotubot)""",
         link_preview=False,
     )
 
