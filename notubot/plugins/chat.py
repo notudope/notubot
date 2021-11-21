@@ -38,8 +38,8 @@ async def _(event):
             await NotUBot.edit(text)
     else:
         text = "**User ID:** " if event.is_private else "**Chat ID:** "
-        text = text + f"\n**Message ID:** `{event.id}`"
-        await NotUBot.edit(f"{text}`{chat_id}`")
+        text = f"{text}`{chat_id}`" + f"\n**Message ID:** `{event.id}`"
+        await NotUBot.edit(text)
 
 
 @bot_cmd(groups_only=True, pattern="(getlink|link)$")
