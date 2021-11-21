@@ -15,7 +15,7 @@ from notubot.events import bot_cmd
     disable_errors=True,
     pattern="f(typing|audio|contact|document|game|location|photo|round|video)(?: |$)(.*)",
 )
-async def _(event):
+async def fakeaction(event):
     action = event.pattern_match.group(1)
     if action in ["audio", "round", "video"]:
         action = "record-" + action

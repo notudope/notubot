@@ -64,7 +64,7 @@ alive_text = """<code>{}</code>
 
 
 @bot_cmd(disable_errors=True, pattern="(alive|on)$")
-async def _(event):
+async def aliveon(event):
     start = time()
     await event.edit("ㅤ")
     ms = round((time() - start) * 1000)
@@ -116,7 +116,7 @@ async def _(event):
 
 
 @bot_cmd(pattern="restart$")
-async def _(event):
+async def restarting(event):
     await event.edit("`{} Restarting...`".format(__botname__))
 
     if BOTLOG:
@@ -138,7 +138,7 @@ async def _(event):
 
 
 @bot_cmd(pattern="shutdown$")
-async def _(event):
+async def shuttingdown(event):
     await event.edit("`{} Shutting down...`".format(__botname__))
 
     if BOTLOG:
@@ -149,7 +149,7 @@ async def _(event):
 
 
 @bot_cmd(pattern="logs(?: |$)(.*)")
-async def _(event):
+async def logsys(event):
     opt = event.pattern_match.group(1)
 
     if opt == "heroku":
@@ -163,7 +163,7 @@ async def _(event):
             background=choice(ATRA_COL),
         ).memorize("notubot-logs")
 
-        await event.reply("**NOTUBOT Logs.**", file=file)
+        await event.reply("**NOTUBOT Logs**", file=file)
     else:
         await def_logs(event)
 
@@ -171,7 +171,7 @@ async def _(event):
 
 
 @bot_cmd(pattern="botver$")
-async def _(event):
+async def botver(event):
     if which("git") is None:
         return await event.delete()
 
@@ -201,7 +201,7 @@ async def _(event):
 
 
 @bot_cmd(pattern="sysd$")
-async def _(event):
+async def sysd(event):
     try:
         neofetch = await asyncio.create_subprocess_exec(
             "neofetch",
@@ -241,7 +241,7 @@ CMD_HELP.update(
             "↳ : Muat ulang notubot.\n\n"
             "`.shutdown`\n"
             "↳ : Mematikan notubot.\n\n"
-            "`.logs (sys)`\n"
+            "`.logs`\n"
             "↳ : Mengambil full terminal logs.\n\n"
             "`.logs carbon`\n"
             "↳ : Mengambil carbonized sys logs.\n\n"

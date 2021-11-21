@@ -174,7 +174,7 @@ all_col = [
 @bot_cmd(
     pattern="(rc|c)arbon",
 )
-async def _(event):
+async def crbn1(event):
     NotUBot = await event.edit("`Processing...`")
     te = event.text
     col = choice(all_col) if te[1] == "r" else None
@@ -207,7 +207,7 @@ async def _(event):
 @bot_cmd(
     pattern="ccarbon(?: |$)(.*)",
 )
-async def crbn(event):
+async def crbn2(event):
     NotUBot = await event.edit("`Processing...`")
     match = event.pattern_match.group(1)
     if not match:
@@ -245,7 +245,7 @@ async def crbn(event):
 
 
 @bot_cmd(pattern="sysinfo$")
-async def _(event):
+async def sysinfo(event):
     NotUBot = await event.edit("`Processing...`")
     x, y = await run_cmd("neofetch|sed 's/\x1B\\[[0-9;\\?]*[a-zA-Z]//g' >> neo.txt")
 
@@ -260,7 +260,7 @@ async def _(event):
 
 
 @bot_cmd(pattern="bash", only_devs=True)
-async def _(event):
+async def bashit(event):
     NotUBot = await event.edit("`Processing...`")
     try:
         cmd = event.text.split(" ", maxsplit=1)[1]
@@ -309,7 +309,7 @@ bot = client
 
 
 @bot_cmd(pattern="eval", only_devs=True)
-async def _(event):
+async def evalit(event):
     if len(event.text) > 5 and event.text[5] != " ":
         return
 

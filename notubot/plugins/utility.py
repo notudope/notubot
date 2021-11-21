@@ -40,7 +40,7 @@ Telegraph = telegraph_client()
 
 
 @bot_cmd(pattern="(sa|sg)(?: |$)(.*)")
-async def _(event):
+async def sasg(event):
     NotUBot = await event.edit("`Searching...`")
     chat_id = event.chat_id or event.from_id
     if event.reply_to_msg_id:
@@ -119,7 +119,7 @@ async def _(event):
 @bot_cmd(
     pattern="listreserved$",
 )
-async def _(event):
+async def listreserved(event):
     NotUBot = await event.edit("`...`")
     result = await event.client(GetAdminedPublicChannelsRequest())
     r = result.chats
@@ -213,7 +213,7 @@ async def _(
 
 
 @bot_cmd(pattern="tr")
-async def _(event):
+async def tr(event):
     if len(event.text) > 3 and event.text[3] != " ":
         return
     input = event.text[4:6]
@@ -243,7 +243,7 @@ async def _(event):
 @bot_cmd(
     pattern="telegraph(?: |$)(.*)",
 )
-async def _(event):
+async def tgh(event):
     NotUBot = await event.edit("`...`")
     match = event.pattern_match.group(1) or __botname__
     reply = await event.get_reply_message()
@@ -279,7 +279,7 @@ async def _(event):
 
 
 @bot_cmd(pattern="(json|raw)$")
-async def _(event):
+async def jsn(event):
     NotUBot = await event.edit("`...`")
     chat_id = event.chat_id or event.from_id
     reply = await event.get_reply_message() if event.reply_to_msg_id else event
@@ -304,7 +304,7 @@ async def _(event):
 
 
 @bot_cmd(pattern="(yaml|yml)$")
-async def _(event):
+async def yml(event):
     NotUBot = await event.edit("`...`")
     chat_id = event.chat_id or event.from_id
     reply = await event.get_reply_message() if event.reply_to_msg_id else event

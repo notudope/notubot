@@ -18,7 +18,7 @@ from notubot.events import bot_cmd
 
 
 @bot_cmd(pattern="help(?: |$)(.*)")
-async def _(event):
+async def help(event):
     args = event.pattern_match.group(1).lower()
 
     if args:

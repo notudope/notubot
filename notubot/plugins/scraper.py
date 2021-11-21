@@ -65,7 +65,7 @@ async def get_chatinfo(event):
 
 
 @bot_cmd(groups_only=True, pattern="inviteall(?: |$)(.*)")
-async def _(event):
+async def inviteall(event):
     NotUBot = await event.edit("`...`")
     chatinfo = await get_chatinfo(event)
     chat = await event.get_chat()
@@ -112,8 +112,8 @@ async def _(event):
 
 
 @bot_cmd(groups_only=True, pattern="getmemb$")
-async def _(event):
-    await event.edit("`...`")
+async def getmemb(event):
+    NotUBot = await event.edit("`...`")
     members = await event.client.get_participants(event.chat_id, aggressive=True)
 
     with open("members.csv", "w", encoding="UTF-8") as f:
@@ -124,13 +124,13 @@ async def _(event):
             if not (x.deleted or x.bot or isinstance(x.participant, Admins) or x.id == bot.uid):
                 writer.writerow([x.id, x.access_hash])
 
-    await event.edit("`Berhasil mengumpulkan member.`")
-    await event.delete()
+    await NotUBot.edit("`Berhasil mengumpulkan member.`")
+    await NotUBot.delete()
 
 
 @bot_cmd(groups_only=True, pattern="addmemb$")
-async def _(event):
-    await event.edit("`Proses menambahkan 0 member...`")
+async def addmemb(event):
+    NotUBot = await event.edit("`...`")
     chat = await event.get_chat()
     users = []
 
@@ -145,13 +145,13 @@ async def _(event):
     for user in users:
         success += 1
         if success % 30 == 0:
-            await event.edit(f"`Mencapai 30 member, tunggu selama {900/60} menit.`")
+            await NotUBot.edit(f"`Mencapai 30 member, tunggu selama {900/60} menit.`")
             await asyncio.sleep(900)
         try:
             userin = InputPeerUser(user["id"], user["hash"])
             await event.client(InviteToChannelRequest(chat, [userin]))
             await asyncio.sleep(random.randrange(5, 7))
-            await event.edit(f"`Prosess menambahkan {success} member...`")
+            await NotUBot.edit(f"`Prosess menambahkan {success} member...`")
         except TypeError:
             success -= 1
             continue
@@ -167,8 +167,8 @@ async def _(event):
 
 
 @bot_cmd(disable_errors=True, pattern="limit$")
-async def _(event):
-    await event.edit("`...`")
+async def limit(event):
+    NotUBot = await event.edit("`...`")
     async with event.client.conversation("@SpamBot") as conv:
         try:
             res = conv.wait_event(events.NewMessage(incoming=True, from_users=178220800))
@@ -176,9 +176,9 @@ async def _(event):
             res = await res
             await event.client.send_read_acknowledge(conv.chat_id)
         except YouBlockedUserError:
-            await event.edit("`Unblock @SpamBot`")
+            await NotUBot.edit("`Unblock @SpamBot`")
             return
-        await event.edit(f"~ {res.message.message}")
+        await NotUBot.edit(f"~ {res.message.message}")
 
 
 CMD_HELP.update(

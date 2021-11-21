@@ -16,7 +16,7 @@ from notubot.events import bot_cmd
 
 
 @bot_cmd(pattern="(getid|id)$")
-async def _(event):
+async def getid(event):
     NotUBot = await event.edit("`...`")
     chat_id = event.chat_id or event.from_id
     if event.reply_to_msg_id:
@@ -43,7 +43,7 @@ async def _(event):
 
 
 @bot_cmd(groups_only=True, pattern="(getlink|link)$")
-async def _(event):
+async def getlink(event):
     NotUBot = await event.edit("`...`")
     chat = await event.get_chat()
     if chat.username:
@@ -69,7 +69,7 @@ async def _(event):
 
 
 @bot_cmd(pattern="uname$")
-async def _(event):
+async def uname(event):
     NotUBot = await event.edit("`...`")
     reply = await event.get_reply_message()
     if not reply:
@@ -81,7 +81,7 @@ async def _(event):
 
 
 @bot_cmd(pattern="kickme$")
-async def _(event):
+async def kickme(event):
     NotUBot = await event.edit("`...`")
     mention = "[{}](tg://user?id={})".format(bot.name, bot.uid)
     await NotUBot.edit(f"{mention} `Leaved!`")
@@ -89,7 +89,7 @@ async def _(event):
 
 
 @bot_cmd(groups_only=True, pattern="invite(?: |$)(.*)")
-async def _(event):
+async def inviteuser(event):
     NotUBot = await event.edit("`...`")
     to_add_users = event.pattern_match.group(1)
     if not event.is_channel and event.is_group:
@@ -120,7 +120,7 @@ async def _(event):
 
 
 @bot_cmd(pattern="total(?: |$)(.*)")
-async def _(event):
+async def total(event):
     NotUBot = await event.edit("`...`")
     match = event.pattern_match.group(1)
 

@@ -33,7 +33,7 @@ async def newmsg(event):
 
 
 @bot_cmd(disable_errors=True, pattern="del|(d|D|del|Del)$")
-async def _(event):
+async def ddel(event):
     reply = await event.get_reply_message()
     if reply:
         try:
@@ -44,7 +44,7 @@ async def _(event):
 
 
 @bot_cmd(disable_errors=True, pattern="purge(?: |$)(.*)")
-async def _(event):
+async def purge(event):
     match = event.pattern_match.group(1)
     try:
         text = event.text[6]
@@ -88,7 +88,7 @@ async def _(event):
 
 
 @bot_cmd(disable_errors=True, pattern="purgeme(?: |$)(.*)")
-async def _(event):
+async def purgeme(event):
     opts = event.pattern_match.group(1)
     if opts and not event.is_reply:
         try:
@@ -139,7 +139,7 @@ async def _(event):
 
 
 @bot_cmd(disable_errors=True, groups_only=True, pattern="purgeall$")
-async def _(event):
+async def purgeall(event):
     if not event.is_reply:
         await event.edit("`Balas pesan seseorang untuk menghapusnya.`")
         return
@@ -156,7 +156,7 @@ async def _(event):
 
 
 @bot_cmd(disable_errors=True, pattern="copy$")
-async def _(event):
+async def copyit(event):
     reply = await event.get_reply_message()
     if reply:
         try:
@@ -167,7 +167,7 @@ async def _(event):
 
 
 @bot_cmd(disable_errors=True, pattern="edit")
-async def _(event):
+async def editit(event):
     chat = await event.get_input_chat()
     me = await event.client.get_peer_id("me")
     new_message = str(event.text[6:])
@@ -189,7 +189,7 @@ async def _(event):
 
 
 @bot_cmd(disable_errors=True, pattern="sd")
-async def _(event):
+async def sdit(event):
     counter = int(event.text[4:6])
     text = str(event.text[6:])
     await event.delete()
@@ -199,7 +199,7 @@ async def _(event):
 
 
 @bot_cmd(disable_errors=True, pattern="reply$")
-async def _(event):
+async def replyit(event):
     if event.reply_to_msg_id and event.chat_id in _new_msgs:
         msg = _new_msgs[event.chat_id]
         chat = await event.get_input_chat()

@@ -27,7 +27,7 @@ def user_list(ls, n):
 
 
 @bot_cmd(disable_errors=True, admins_only=True, can_call=True, pattern="startvc(?: |$)(.*)")
-async def _(event):
+async def startvc(event):
     NotUBot = await event.edit("`...`")
     opts = event.pattern_match.group(1)
     args = opts.split(" ")
@@ -56,7 +56,7 @@ async def _(event):
 
 
 @bot_cmd(disable_errors=True, admins_only=True, can_call=True, pattern="(stopvc|endvc)(?: |$)(.*)")
-async def _(event):
+async def endvc(event):
     NotUBot = await event.edit("`...`")
     opts = event.pattern_match.group(1)
     silent = ["s", "silent"]
@@ -85,7 +85,7 @@ async def _(event):
 
 
 @bot_cmd(disable_errors=True, groups_only=True, admins_only=True, pattern="joinvc$")
-async def _(event):
+async def joinvc(event):
     NotUBot = await event.edit("`...`")
 
     try:
@@ -113,7 +113,7 @@ async def _(event):
 
 
 @bot_cmd(disable_errors=True, groups_only=True, admins_only=True, pattern="leavevc$")
-async def _(event):
+async def leavevc(event):
     NotUBot = await event.edit("`...`")
 
     try:
@@ -137,7 +137,7 @@ async def _(event):
 
 
 @bot_cmd(groups_only=True, admins_only=True, pattern="vcinvite$")
-async def _(event):
+async def vcinvite(event):
     NotUBot = await event.edit("`...`")
     users = []
     invited = 0

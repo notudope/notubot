@@ -250,7 +250,7 @@ async def heroku_logs(event):
     await event.client.send_file(
         event.chat_id,
         file="notubot-heroku.log",
-        caption="**NOTUBOT Heroku Logs.**",
+        caption="**NOTUBOT Heroku Logs**",
     )
 
     os.remove("notubot-heroku.log")
@@ -261,5 +261,5 @@ async def def_logs(event):
     await event.client.send_file(
         event.chat_id,
         file="notubot.log",
-        caption="**NOTUBOT Logs.**",
+        caption="**NOTUBOT Logs**",
     )

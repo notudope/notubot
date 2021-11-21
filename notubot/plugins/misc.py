@@ -15,7 +15,7 @@ from notubot.functions import time_formatter
 
 
 @bot_cmd(pattern="sleep ([0-9]+)$")
-async def _(event):
+async def sleeping(event):
     counter = int(event.pattern_match.group(1))
     await event.edit("`😴 Tidur...`")
 
@@ -30,7 +30,7 @@ async def _(event):
 
 
 @bot_cmd(pattern="random")
-async def _(event):
+async def randomly(event):
     itemo = (event.text[8:]).split()
 
     if len(itemo) < 2:
@@ -41,7 +41,7 @@ async def _(event):
 
 
 @bot_cmd(pattern="repeat(?: |$)(.*)")
-async def _(event):
+async def repeatly(event):
     count, text = event.pattern_match.group(1).split(" ", 1)
     replyCount = int(count)
     replyText = text + "\n"
@@ -51,7 +51,7 @@ async def _(event):
 
 
 @bot_cmd(pattern="type(?: |$)(.*)")
-async def _(event):
+async def typely(event):
     match = event.pattern_match.group(1)
     if not match:
         return await event.edit("`Ketikan sebuah pesan.`")
