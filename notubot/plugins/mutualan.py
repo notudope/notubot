@@ -30,6 +30,20 @@ async def _(e):
     await e.client.send_message(e.chat_id, text, reply_to=e.reply_to_msg_id if e.reply_to_msg_id else False)
 
 
+@bot_cmd(pattern="wl|([kK]am)$")
+async def _(e):
+    text = "𝐖𝐄𝐋𝐂𝐎𝐌𝐄 𝐆𝐄𝐒𝐒𝐒𝐒"
+    await e.delete()
+    await e.client.send_message(e.chat_id, text, reply_to=e.reply_to_msg_id if e.reply_to_msg_id else False)
+
+
+@bot_cmd(pattern="be|([bB]wan)$")
+async def _(e):
+    text = "𝐁𝐄𝐖𝐀𝐍 𝐊𝐈𝐓𝐀 𝐏𝐀𝐍𝐓𝐄𝐄𝐄𝐄"
+    await e.delete()
+    await e.client.send_message(e.chat_id, text, reply_to=e.reply_to_msg_id if e.reply_to_msg_id else False)
+
+
 @bot_cmd(pattern="gk|([gG]blk)$")
 async def _(e):
     text = "𝐆𝐎𝐁𝐋𝐎𝐊𝐊𝐊𝐊"
@@ -102,7 +116,7 @@ async def _(e):
 
 @bot_cmd(pattern="jl|([jJ]lk)$")
 async def _(e):
-    text = "𝐌𝐔𝐊𝐀 𝐏𝐈𝐍𝐓𝐄𝐑𝐄𝐒𝐓 𝐁𝐀𝐍𝐘𝐀𝐊 𝐆𝐀𝐘𝐀 𝐓𝐎𝐋𝐎𝐋𝐋𝐋𝐋"
+    text = "𝐏𝐏 𝐏𝐈𝐍𝐓𝐄𝐑𝐄𝐒𝐓 𝐀𝐉𝐀 𝐁𝐄𝐋𝐀𝐆𝐔 𝐍𝐆𝐄𝐍𝐓𝐎𝐓 𝐆𝐔𝐀 𝐓𝐀𝐔 𝐌𝐔𝐊𝐀 𝐋𝐎 𝐉𝐄𝐋𝐄𝐊 𝐉𝐀𝐍𝐆𝐀𝐍 𝐁𝐀𝐍𝐘𝐀𝐊 𝐆𝐀𝐘𝐀 𝐀𝐍𝐉𝐈𝐍𝐆"
     await e.delete()
     await e.client.send_message(e.chat_id, text, reply_to=e.reply_to_msg_id if e.reply_to_msg_id else False)
 
@@ -131,6 +145,20 @@ async def _(e):
 @bot_cmd(pattern="wr|([wW]ar|WAR)$")
 async def _(e):
     text = "𝐖𝐀𝐑 𝐖𝐀𝐑 𝐓𝐀𝐈 𝐀𝐍𝐉𝐈𝐍𝐆, 𝐊𝐄𝐓𝐑𝐈𝐆𝐆𝐄𝐑 𝐌𝐈𝐍𝐓𝐀 𝐒𝐇𝐀𝐑𝐄𝐋𝐎𝐊, 𝐔𝐃𝐀𝐇 𝐒𝐇𝐀𝐑𝐄𝐋𝐎𝐊 𝐆𝐀 𝐍𝐘𝐀𝐌𝐏𝐄𝐑𝐈𝐍 𝐒𝐀𝐌𝐏𝐀𝐇𝐇𝐇𝐇"
+    await e.delete()
+    await e.client.send_message(e.chat_id, text, reply_to=e.reply_to_msg_id if e.reply_to_msg_id else False)
+
+
+@bot_cmd(pattern="lm|([lL]imit)$")
+async def _(e):
+    text = "𝐋𝐈𝐌𝐈𝐓 𝐋𝐈𝐌𝐈𝐓 𝐓𝐀𝐈 𝐀𝐍𝐉𝐈𝐍𝐆 𝐊𝐄𝐁𝐀𝐍𝐘𝐀𝐊𝐀𝐍 𝐀𝐋𝐈𝐁𝐈 𝐋𝐎 𝐒𝐄𝐆𝐀𝐏𝐔𝐍𝐆"
+    await e.delete()
+    await e.client.send_message(e.chat_id, text, reply_to=e.reply_to_msg_id if e.reply_to_msg_id else False)
+
+
+@bot_cmd(pattern="pc|([Pp][cC])$")
+async def _(e):
+    text = "𝐏𝐂 𝐏𝐂 𝐌𝐀𝐓𝐀𝐌𝐔, 𝐆𝐔𝐀 𝐓𝐀𝐔 𝐋𝐎 𝐋𝐀𝐆𝐈 𝐒𝐀𝐍𝐆𝐄 𝐌𝐀𝐊𝐀𝐍𝐍𝐘𝐀 𝐌𝐈𝐍𝐓𝐀 𝐏𝐂 𝐊𝐀𝐍 𝐀𝐍𝐀𝐊 𝐀𝐍𝐉𝐈𝐍𝐆"
     await e.delete()
     await e.client.send_message(e.chat_id, text, reply_to=e.reply_to_msg_id if e.reply_to_msg_id else False)
 
