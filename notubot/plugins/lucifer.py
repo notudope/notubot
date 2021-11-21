@@ -29,7 +29,7 @@ BANNED_RIGHTS = ChatBannedRights(
 
 
 @bot_cmd(groups_only=True, admins_only=True, pattern="rocker(?: |$)(.*)")
-async def rocker(event):
+async def _(event):
     opts = event.pattern_match.group(1)
     damnit = ["s", "silent"]
     rockers = True if opts in damnit else False
@@ -54,7 +54,7 @@ async def rocker(event):
 
 
 @bot_cmd(groups_only=True, admins_only=True, pattern="gohell(?: |$)(.*)")
-async def gohell(event):
+async def _(event):
     opts = event.pattern_match.group(1)
     damnit = ["s", "silent"]
     lucifer = True if opts in damnit else False

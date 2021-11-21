@@ -24,8 +24,7 @@ from dotenv import dotenv_values, load_dotenv
 from heroku3 import from_key
 from pySmartDL import SmartDL
 from requests import get
-from telethon import TelegramClient as Client
-from telethon import version
+from telethon import TelegramClient, version
 from telethon.errors.rpcerrorlist import (
     ApiIdInvalidError,
     AuthKeyDuplicatedError,
@@ -197,13 +196,13 @@ except Exception:
 LOOP = asyncio.get_event_loop()
 
 
-def client_connection() -> Client:
+def client_connection() -> TelegramClient:
     client = None
     try:
         if STRING_SESSION:
-            client = Client(StringSession(STRING_SESSION), api_id=API_ID, api_hash=API_HASH, loop=LOOP)
+            client = TelegramClient(StringSession(STRING_SESSION), api_id=API_ID, api_hash=API_HASH, loop=LOOP)
         else:
-            client = Client("notubot", api_id=API_ID, api_hash=API_HASH, loop=LOOP)
+            client = TelegramClient("notubot", api_id=API_ID, api_hash=API_HASH, loop=LOOP)
 
         client.parse_mode = "markdown"
     except (AuthKeyDuplicatedError, PhoneNumberInvalidError, EOFError):

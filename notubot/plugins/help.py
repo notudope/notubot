@@ -5,7 +5,7 @@
 # PLease read the GNU General Public License v3.0 in
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
-import asyncio
+from asyncio import sleep
 
 from notubot import (
     CMD_HELP,
@@ -18,7 +18,7 @@ from notubot.events import bot_cmd
 
 
 @bot_cmd(pattern="help(?: |$)(.*)")
-async def help(event):
+async def _(event):
     args = event.pattern_match.group(1).lower()
 
     if args:
@@ -52,7 +52,7 @@ Daftar semua plugin beserta perintah tersedia dibawah ini:
 📌 <b>Gunakan perintah dengan bijak dan seperlunya, resiko ditanggung pengguna!</b>"""
 
         await event.edit("⚡")
-        await asyncio.sleep(2)
+        await sleep(2)
         await event.delete()
         helper = await event.client.send_message(event.chat_id, text, link_preview=False, parse_mode="html")
         await helper.reply(f"**Contoh :** Ketik `{HANDLER}help admin` Untuk informasi pengunaan.")

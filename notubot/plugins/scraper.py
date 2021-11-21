@@ -65,7 +65,7 @@ async def get_chatinfo(event):
 
 
 @bot_cmd(groups_only=True, pattern="inviteall(?: |$)(.*)")
-async def inviteall(event):
+async def _(event):
     NotUBot = await event.edit("`...`")
     chatinfo = await get_chatinfo(event)
     chat = await event.get_chat()
@@ -112,7 +112,7 @@ async def inviteall(event):
 
 
 @bot_cmd(groups_only=True, pattern="getmemb$")
-async def getmemb(event):
+async def _(event):
     await event.edit("`...`")
     members = await event.client.get_participants(event.chat_id, aggressive=True)
 
@@ -129,7 +129,7 @@ async def getmemb(event):
 
 
 @bot_cmd(groups_only=True, pattern="addmemb$")
-async def addmemb(event):
+async def _(event):
     await event.edit("`Proses menambahkan 0 member...`")
     chat = await event.get_chat()
     users = []
@@ -167,7 +167,7 @@ async def addmemb(event):
 
 
 @bot_cmd(disable_errors=True, pattern="limit$")
-async def limit(event):
+async def _(event):
     await event.edit("`...`")
     async with event.client.conversation("@SpamBot") as conv:
         try:

@@ -208,11 +208,11 @@ async def _(event):
     pattern="ccarbon(?: |$)(.*)",
 )
 async def crbn(event):
+    NotUBot = await event.edit("`Processing...`")
     match = event.pattern_match.group(1)
     if not match:
-        return await event.edit("`Berikan Custom Color untuk membuat Carbon...`")
+        return await NotUBot.edit("`Berikan Custom Color untuk membuat Carbon...`")
 
-    NotUBot = await event.edit("`Processing...`")
     if event.reply_to_msg_id:
         temp = await event.get_reply_message()
         if temp.media:
