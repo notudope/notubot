@@ -38,7 +38,7 @@ async def _(event):
             await NotUBot.edit(text)
     else:
         text = "**User ID:** " if event.is_private else "**Chat ID:** "
-        text = text + f"\n**Message ID:** `{reply.id}`"
+        text = text + f"\n**Message ID:** `{event.id}`"
         await NotUBot.edit(f"{text}`{chat_id}`")
 
 
