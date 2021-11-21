@@ -266,6 +266,7 @@ with bot:
         MessageDeleteForbiddenError,
         ChatWriteForbiddenError,
         AttributeError,
+        ValueError,
     ):
         pass
     except Exception as e:
