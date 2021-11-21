@@ -39,7 +39,7 @@ async def wl(event):
     await event.edit(text)
 
 
-@bot_cmd(pattern="be|([bB]wan)$")
+@bot_cmd(pattern="be|([bB]ewan)$")
 async def be(event):
     text = "𝐁𝐄𝐖𝐀𝐍 𝐊𝐈𝐓𝐀 𝐏𝐀𝐍𝐓𝐄𝐄𝐄𝐄"
     await event.edit(text)
@@ -152,11 +152,10 @@ CMD_HELP.update(
         "mutualan": [
             "Mutualan",
             "`.ig|[iI][gG]|[iI]nstagram`\n"
-            "↳ : Menampilkan akun Instagram.\n\n"
             "`.p|[pP]|[sS]alam`\n"
             "`.l|[lL]|[wW]askum`\n"
             "`.wl|[kK]am`\n"
-            "`.be|[bB]wan`\n"
+            "`.be|[bB]ewan`\n"
             "`.gk|[gG]blk|[bB]lok`\n"
             "`.bc|[bB]ct`\n"
             "`.an|[aA]jg|[aA]nj|[aA]su`\n"
