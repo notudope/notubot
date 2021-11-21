@@ -217,7 +217,7 @@ async def sysd(event):
         await event.edit("`neofetch tidak terinstall!`")
 
 
-@bot_cmd(disable_errors=True, pattern="ping$")
+@bot_cmd(disable_errors=True, pattern="ping|([pP]ing)$")
 async def ping(event):
     if event.out:
         await event.delete()
@@ -251,7 +251,7 @@ CMD_HELP.update(
             "↳ : Menampilkan versi notubot dari git.\n\n"
             "`.sysd`\n"
             "↳ : Menampilkan informasi sistem menggunakan neofetch.\n\n"
-            "`.ping`\n"
+            "`.ping|[pP]ing`\n"
             "↳ : Cek waktu respon notubot.",
         ]
     }

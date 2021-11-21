@@ -21,13 +21,13 @@ async def ig(event):
     """
 
 
-@bot_cmd(pattern="p|([pP])$")
+@bot_cmd(pattern="p|([pP]|[sS]alam)$")
 async def pp(event):
     text = "𝐇𝐄𝐘 𝐘𝐎𝐎 𝐀𝐒𝐒𝐀𝐋𝐀𝐌𝐔𝐀𝐋𝐀𝐈𝐊𝐔𝐌"
     await event.edit(text)
 
 
-@bot_cmd(pattern="l|([lL])$")
+@bot_cmd(pattern="l|([lL]|[wW]askum)$")
 async def was(event):
     text = "𝐖𝐀𝐒𝐀𝐏𝐏 𝐖𝐀𝐀𝐋𝐀𝐈𝐊𝐔𝐌𝐒𝐀𝐋𝐀𝐌"
     await event.edit(text)
@@ -57,7 +57,7 @@ async def bc(event):
     await event.edit(text)
 
 
-@bot_cmd(pattern="an|([aA]jg|[aA]nj)$")
+@bot_cmd(pattern="an|([aA]jg|[aA]nj|[aA]su)$")
 async def an(event):
     text = "𝐀𝐍𝐉𝐈𝐍𝐆 𝐋𝐎𝐎𝐎𝐎"
     await event.edit(text)
@@ -153,10 +153,27 @@ CMD_HELP.update(
             "Mutualan",
             "`.ig|[iI][gG]|[iI]nstagram`\n"
             "↳ : Menampilkan akun Instagram.\n\n"
-            "`.p|[pP]`\n"
-            "↳ : Mengucapkan salam.\n\n"
-            "`.l|[lL]`\n"
-            "↳ : Menjawab salam.\n\n",
+            "`.p|[pP]|[sS]alam`\n"
+            "`.l|[lL]|[wW]askum`\n"
+            "`.wl|[kK]am`\n"
+            "`.be|[bB]wan`\n"
+            "`.gk|[gG]blk|[bB]lok`\n"
+            "`.bc|[bB]ct`\n"
+            "`.an|[aA]jg|[aA]nj|[aA]su`\n"
+            "`.kn|[kK]ntl`\n"
+            "`.mk|[mM]mk`\n"
+            "`.nj|[nN]ajis`\n"
+            "`.sk|[sS]okap`\n"
+            "`.bg|[bB]gst`\n"
+            "`.al|[aA]liansi`\n"
+            "`.ba|[bB]abu`\n"
+            "`.jl|[jJ]lk`\n"
+            "`.ln|[lL]onte|[pP]erek`\n"
+            "`.sl|[sS]enggol`\n"
+            "`.gas|[gG][cC] ampas`\n"
+            "`.wr|[wW]ar|WAR`\n"
+            "`.lm|[lL]imit`\n"
+            "`.pc|[Pp][cC]`\n",
         ]
     }
 )

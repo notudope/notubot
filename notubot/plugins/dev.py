@@ -392,26 +392,30 @@ CMD_HELP.update(
     {
         "dev": [
             "Dev Tools",
-            "`.carbon <text/reply to msg/reply to document>`\n"
-            "↳ : Carbonise teks dengan pengaturan default.\n\n"
-            "`.rcarbon <text/reply to msg/reply to document>`\n"
-            "↳ : Carbonise teks, dengan acak warna background.\n\n"
-            "`.ccarbon <color> <text/reply to msg/reply to document>`\n"
-            "↳ : Carbonise teks, dengan kustom warna background.\n\n"
-            "`.sysinfo`\n"
-            "↳ : Menampilkan informasi sistem.\n\n"
-            "`.bash <cmds>`\n"
-            "↳ : Menjalankan perintah linux di Telegram.\n\n"
-            "`.eval <code>`\n"
-            "↳ : Eksekusi perintah python di Telegram, \n\n"
-            """Pintasan:
-        client = bot = event.client
-        e = event
-        p = print
-        reply = await event.get_reply_message()
-        chat = event.chat_id\n\n"""
-            "`.yaml|yml`\n"
-            "↳ : Mengambil raw data format yaml dari sebuah pesan",
+            """`.carbon <text/reply to msg/reply to document>`
+↳ : Carbonise teks dengan pengaturan default.
+
+`.rcarbon <text/reply to msg/reply to document>`
+↳ : Carbonise teks, dengan acak warna background.
+
+`.ccarbon <color> <text/reply to msg/reply to document>`
+↳ : Carbonise teks, dengan kustom warna background.
+
+`.sysinfo`
+↳ : Menampilkan informasi sistem.
+
+`.bash <cmds>`
+↳ : Menjalankan perintah linux di Telegram.
+
+`.eval <code>`
+↳ : Eksekusi perintah python di Telegram,
+Pintasan:
+  client = bot = event.client
+  e = event
+  p = print
+  reply = await event.get_reply_message()
+  chat = event.chat_id
+""",
         ]
     }
 )
