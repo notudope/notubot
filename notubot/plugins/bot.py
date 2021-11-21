@@ -218,7 +218,7 @@ async def _(event):
 
 
 @bot_cmd(disable_errors=True, pattern="ping$")
-async def _(event):
+async def ping(event):
     if event.out:
         await event.delete()
 
