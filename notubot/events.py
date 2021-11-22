@@ -60,6 +60,10 @@ def compile_pattern(data, handler):
 
 def bot_cmd(**args):
     args["func"] = lambda e: not e.fwd_from and not e.via_bot_id
+    stack = inspect.stack()
+    previous_stack_frame = stack[1]
+    file_test = Path(previous_stack_frame.filename)
+    file_test = file_test.stem.replace(".py", "")
     pattern: str = args.get("pattern", None)
     disable_edited: bool = args.get("disable_edited", False)
     admins_only: bool = args.get("admins_only", False)
@@ -73,11 +77,6 @@ def bot_cmd(**args):
     can_ban: bool = args.get("can_ban", False)
     can_call: bool = args.get("can_call", False)
     # allow_sudo: bool = args.get("allow_sudo", False)
-
-    stack = inspect.stack()
-    previous_stack_frame = stack[1]
-    file_test = Path(previous_stack_frame.filename)
-    file_test = file_test.stem.replace(".py", "")
 
     if pattern:
         args["pattern"] = compile_pattern(pattern, "\\" + HANDLER)
