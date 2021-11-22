@@ -18,3 +18,4 @@ from .helper import (
 )
 from .info import get_user_from_event, get_uinfo, get_user_id
 from .tools import telegraph_client
+from .wrappers import answer
