@@ -266,7 +266,7 @@ def bot_cmd(**args):
         if not disable_edited:
             bot.add_event_handler(wrapper, events.MessageEdited(**args))
         bot.add_event_handler(wrapper, events.NewMessage(**args))
-        del args["outgoing"]
+        # del args["outgoing"]
         return wrapper
 
     return decorator

@@ -252,6 +252,7 @@ async def startup_check() -> None:
         f"**Telethon:** `{version.__version__}`"
     )
 
+    LOGS.info(f"Chat ID: {chatid} Message ID: {mid}")
     await bot.edit_message(int(chatid), int(mid), text, link_preview=False)
     # await bot(DeleteMessagesRequest(int(chatid), [int(mid)]))
     delgv("restartstatus")

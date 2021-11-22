@@ -10,8 +10,6 @@ from notubot.events import bot_cmd
 
 
 async def answer(e, text):
-    if e.out:
-        await e.delete()
     reply = e.reply_to_msg_id if e.reply_to_msg_id else False
     await e.delete()
     await e.client.send_message(e.chat_id, text, reply_to=reply)
