@@ -15,7 +15,7 @@ async def answer(e, text):
     await e.client.send_message(e.chat_id, text, reply_to=reply)
 
 
-@bot_cmd(func=lambda x: [(lambda y: y.upper()) in ["ig", "instagram"]] in x.raw_text)
+@bot_cmd(func=lambda x: x.text.upper() in ["ig", "instagram"])
 async def ig(e):
     text = f"𝐈𝐍𝐒𝐓𝐀𝐆𝐑𝐀𝐌 [@{ALIVE_IG}](https://www.instagram.com/{ALIVE_IG})"
     await answer(e, text)
