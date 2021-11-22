@@ -15,13 +15,13 @@ async def answer(e, text):
     await e.client.send_message(e.chat_id, text, reply_to=reply)
 
 
-@bot_cmd(disable_edited=True, pattern="ig|([iI][gG]|[iI]nstagram)$")
+@bot_cmd(func=lambda x, y: [y.upper() in ["ig", "instagram"]] in x.raw_text)
 async def ig(e):
     text = f"𝐈𝐍𝐒𝐓𝐀𝐆𝐑𝐀𝐌 [@{ALIVE_IG}](https://www.instagram.com/{ALIVE_IG})"
     await answer(e, text)
 
 
-@bot_cmd(disable_edited=True, pattern="p|([pP]|[sS]alam)$")
+@bot_cmd(disable_edited=True, pattern="(?: |$)([pP]|[sS]alam|[lL]|[wW]askum)?")
 async def pp(e):
     text = "𝐇𝐄𝐘 𝐘𝐎𝐎 𝐀𝐒𝐒𝐀𝐋𝐀𝐌𝐔𝐀𝐋𝐀𝐈𝐊𝐔𝐌"
     await answer(e, text)
