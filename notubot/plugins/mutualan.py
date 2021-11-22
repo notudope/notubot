@@ -15,7 +15,14 @@ async def answer(e, text):
     await e.client.send_message(e.chat_id, text, reply_to=reply)
 
 
-@bot_cmd(func=lambda x: x.text.upper() in ["ig", "instagram"])
+async def ig_filter(e):
+    for x in ["ig", "instagram"]:
+        if x.upper() in e.raw_text:
+            return True
+    return False
+
+
+@bot_cmd(func=ig_filter)
 async def ig(e):
     text = f"𝐈𝐍𝐒𝐓𝐀𝐆𝐑𝐀𝐌 [@{ALIVE_IG}](https://www.instagram.com/{ALIVE_IG})"
     await answer(e, text)
