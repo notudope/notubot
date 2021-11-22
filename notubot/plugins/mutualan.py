@@ -15,17 +15,12 @@ async def answer(e, text):
     await e.client.send_message(e.chat_id, text, reply_to=reply)
 
 
-async def ig_filter(e):
-    for x in ["ig", "instagram"]:
-        if x.upper() in e.raw_text:
-            return True
-    return False
-
-
-@bot_cmd(func=ig_filter)
+@bot_cmd(func=lambda e: e.is_private and e.is_group)
 async def ig(e):
-    text = f"𝐈𝐍𝐒𝐓𝐀𝐆𝐑𝐀𝐌 [@{ALIVE_IG}](https://www.instagram.com/{ALIVE_IG})"
-    await answer(e, text)
+    xx = e.text.lower()
+    if xx in ["ig", "instagram"]:
+        text = f"𝐈𝐍𝐒𝐓𝐀𝐆𝐑𝐀𝐌 [@{ALIVE_IG}](https://www.instagram.com/{ALIVE_IG})"
+        return await answer(e, text)
 
 
 @bot_cmd(disable_edited=True, pattern="(?: |$)([pP]|[sS]alam|[lL]|[wW]askum)?")
