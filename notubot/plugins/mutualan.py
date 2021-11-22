@@ -15,7 +15,7 @@ async def answer(e, text):
     await e.client.send_message(e.chat_id, text, reply_to=reply)
 
 
-@bot_cmd(func=lambda e: e.is_private or e.is_group)
+@bot_cmd(func=lambda x: x.is_private or x.is_group)
 async def ig(e):
     xx = e.text.lower()
     if xx in ["ig", "instagram"]:
