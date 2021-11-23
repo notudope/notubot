@@ -88,7 +88,7 @@ async def endvc(event):
             await event.client(DeleteMessagesRequest(event.chat_id, [_group.updates[1].id]))
 
 
-@bot_cmd(disable_errors=True, groups_only=True, admins_only=True, pattern="joinvc$")
+@bot_cmd(disable_errors=True, groups_only=True, pattern="joinvc$")
 async def joinvc(event):
     NotUBot = await event.edit("`...`")
 
@@ -120,7 +120,7 @@ async def joinvc(event):
     await NotUBot.delete()
 
 
-@bot_cmd(disable_errors=True, groups_only=True, admins_only=True, pattern="leavevc$")
+@bot_cmd(disable_errors=True, groups_only=True, pattern="leavevc$")
 async def leavevc(event):
     NotUBot = await event.edit("`...`")
 

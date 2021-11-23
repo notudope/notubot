@@ -123,8 +123,6 @@ def bot_cmd(**args):
 
     def decorator(func):
         async def wrapper(event):
-            if event.edit_date and event.is_channel and not event.is_group:
-                return
             send_to = BOTLOG_CHATID if BOTLOG else event.chat_id or event.from_id
 
             if not trigger_on_fwd and event.fwd_from:
