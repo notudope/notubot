@@ -6,11 +6,10 @@
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
 from asyncio.exceptions import TimeoutError
-from datetime import datetime
 from io import BytesIO
-from os import rename, remove
+from os import rename, remove, path
 from time import time
-
+from datetime import datetime
 from google_trans_new import google_translator
 from telegraph import upload_file as tghup
 from telethon.errors.rpcerrorlist import YouBlockedUserError
@@ -26,6 +25,7 @@ from notubot import (
     bot,
     HANDLER,
     __botname__,
+    LOGS,
 )
 from notubot.events import bot_cmd
 from notubot.functions import (
@@ -254,15 +254,17 @@ async def tgh(event):
     if not reply.media and reply.message:
         content = reply.message
     else:
+        LOGS.info(reply.media)
         if hasattr(reply.media, "document"):
             file = reply.media.document
             name = reply.file.name
         else:
             file = reply.media
+            file.size = path.getsize("")
             name = ""
         if not name:
             name = "telegraph" + datetime.now().isoformat("_", "seconds")
-
+            
         tt = time()
         media = await downloader(name, file, NotUBot, tt, "Downloading " + name + "...")
         medianame = media.name
