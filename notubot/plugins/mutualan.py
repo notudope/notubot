@@ -38,6 +38,8 @@ async def matchings_words(e):
         text = "NAJIS CUIHHHHHHHH"
     elif xx in ["sokap"]:
         text = "GAUSAH SOKAP ANJING"
+    elif xx in ["caper"]:
+        text = "[CAPER CAPER MULU BEGO, MUKA LO AJA KEK BIJI PLER DAKIAN GITU](tg://settings)"
     elif xx in ["bgst", "bangsat"]:
         text = "BANGSATTTTTTTTTTT"
     elif xx in ["aliansi", "aliangsi"]:
@@ -45,11 +47,11 @@ async def matchings_words(e):
     elif xx in ["babu"]:
         text = "NYADAR DIRI LO ITU CUMA JADI BABU"
     elif xx in ["jlk", "pinterest"]:
-        text = "PP PINTEREST AJA BELAGU NGENTOT, GUA TAU MUKA LO JELEK JANGAN BANYAK GAYA ANJING"
+        text = "[PP PINTEREST AJA BELAGU NGENTOT, GUA TAU MUKA LO JELEK JANGAN BANYAK GAYA ANJING](tg://settings)"
     elif xx in ["lonte", "perek"]:
         text = "LONTE MURAHANNNNNNNN"
     elif xx in ["senggol"]:
-        text = "SENGGOL DONG, MUKA LO KEK ANJING"
+        text = "[SENGGOL DONG, MUKA LO KEK ANJING](tg://settings)"
     elif xx in ["gc ampas"]:
         text = "GC AMPAS BUBARIN AJA SAMPAHHHHHHHH"
     elif xx in ["war"]:
