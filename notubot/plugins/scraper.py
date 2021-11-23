@@ -17,7 +17,8 @@ from telethon.errors.rpcerrorlist import (
     UserNotMutualContactError,
     YouBlockedUserError,
 )
-from telethon.tl.functions.channels import InviteToChannelRequest, GetFullChannelRequest, UnblockRequest
+from telethon.tl.functions.channels import InviteToChannelRequest, GetFullChannelRequest
+from telethon.tl.functions.contacts import UnblockRequest
 from telethon.tl.functions.messages import GetFullChatRequest
 from telethon.tl.types import InputPeerUser
 from telethon.tl.types import ChannelParticipantsAdmins as Admins
