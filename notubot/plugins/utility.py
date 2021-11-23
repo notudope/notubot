@@ -31,12 +31,12 @@ from notubot.functions import (
     parse_pre,
     yaml_format,
     mediainfo,
-    telegraph_client,
+    downloader,
 )
 
-REQ_ID = "`Kesalahan, dibutuhkan ID atau balas pesan itu.`"
+from . import Telegraph
 
-Telegraph = telegraph_client()
+REQ_ID = "`Kesalahan, dibutuhkan ID atau balas pesan itu.`"
 
 
 @bot_cmd(pattern="(sa|sg)(?: |$)(.*)")
@@ -244,37 +244,39 @@ async def tr(event):
     pattern="telegraph(?: |$)(.*)",
 )
 async def tgh(event):
+    NotUBot = await event.edit("`...`")
     match = event.pattern_match.group(1) or __botname__
     reply = await event.get_reply_message()
 
     if not reply:
-        return await event.edit("`Balas pesan tersebut.`")
+        return await NotUBot.edit("`Balas pesan tersebut.`")
     if not reply.media and reply.message:
         content = reply.message
     else:
-        media = await reply.download_media()
+        tt = time()
+        media = await downloader(reply.file.name, reply.media.document, NotUBot, tt, "Downloading...")
         mediatype = mediainfo(reply.media)
 
         if mediatype == "sticker":
-            rename(media, media + ".jpg")
-            media = media + ".jpg"
+            rename(media.name, media.name + ".jpg")
+            media = media.name + ".jpg"
 
         if "document" not in mediatype:
             try:
-                link = "https://telegra.ph" + tghup(media)[0]
+                link = "https://telegra.ph" + tghup(media.name)[0]
                 uploaded = f"Upload [Telegraph]({link})"
             except Exception as e:
                 uploaded = f"Error : {e}"
-            remove(media)
-            return event.edit(uploaded)
+            remove(media.name)
+            return NotUBot.edit(uploaded)
 
-        with open(media) as file:
+        with open(media.name) as file:
             content = file.read()
-        remove(media)
+        remove(media.name)
 
     tghpush = Telegraph.create_page(title=match, content=[content])
     output = tghpush["url"]
-    await event.edit(f"Telegraph: [Telegraph]({output})")
+    await NotUBot.edit(f"Telegraph: [Telegraph]({output})")
 
 
 @bot_cmd(pattern="(json|raw)$")

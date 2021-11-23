@@ -5,6 +5,10 @@
 # PLease read the GNU General Public License v3.0 in
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
+from notubot.functions import telegraph_client
+
+Telegraph = telegraph_client()
+
 # Developer the notubot
 DEVLIST = [2006788653, 2003361410]
 

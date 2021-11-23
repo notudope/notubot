@@ -16,7 +16,7 @@ from datetime import datetime
 
 from html_telegraph_poster import TelegraphPoster
 
-from notubot import HEROKU_APP, LOGS
+from notubot import HEROKU_APP, LOGS, LOOP
 
 from .FastTelethon import download_file as downloadable
 from .FastTelethon import upload_file as uploadable
@@ -28,7 +28,7 @@ async def uploader(file, name, taime, event, msg):
             client=event.client,
             file=f,
             filename=name,
-            progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
+            progress_callback=lambda d, t: LOOP.create_task(
                 progress(
                     d,
                     t,
@@ -47,7 +47,7 @@ async def downloader(filename, file, event, taime, msg):
             client=event.client,
             location=file,
             out=fk,
-            progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
+            progress_callback=lambda d, t: LOOP.create_task(
                 progress(
                     d,
                     t,
