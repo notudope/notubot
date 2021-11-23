@@ -55,8 +55,8 @@ async def gen_chlog(repo, diff):
 
 
 async def print_changelogs(event, ac_br, changelog):
-    changelog_str = f"`{__botname__}` **Pembaruan Tersedia Untuk [{ac_br}]:\n\nCHANGELOG:**\n`{changelog}`"
     chat_id = event.chat_id or event.from_id
+    changelog_str = f"`{__botname__}` **Pembaruan Tersedia Untuk [{ac_br}]:\n\nCHANGELOG:**\n`{changelog}`"
 
     if len(changelog_str) > 4096:
         await event.edit("`Data CHANGELOG terlalu besar, buka file untuk melihatnya.`")
@@ -82,6 +82,7 @@ async def print_changelogs(event, ac_br, changelog):
 
 
 async def deploy(event, repo, ups_rem, ac_br, txt):
+    chat_id = event.chat_id or event.from_id
     if not HEROKU_API_KEY:
         await event.edit("Harap **tentukan variabel** `HEROKU_API_KEY`.")
         return
@@ -112,7 +113,6 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
         from notubot.database.globals import addgv, delgv
 
         delgv("restartstatus")
-        chat_id = event.chat_id or event.from_id
         addgv("restartstatus", f"{chat_id}\n{event.id}")
     except AttributeError:
         pass
@@ -147,6 +147,7 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
 
 
 async def update(event, repo, ups_rem, ac_br):
+    chat_id = event.chat_id or event.from_id
     try:
         ups_rem.pull(ac_br)
     except GitCommandError:
@@ -157,16 +158,15 @@ async def update(event, repo, ups_rem, ac_br):
     await asyncio.sleep(1)
     await event.edit(f"**{__botname__}** `Dimuat Ulang...`")
     await asyncio.sleep(1)
-    await event.edit(f"**{__botname__}** `Tunggu Beberapa Detik...`")
+    await event.edit(f"**{__botname__}** `Updated !!`")
 
     if BOTLOG:
-        await event.client.send_message(BOTLOG_CHATID, "#bot #pull \n" f"**{__botname__} Telah Diperbarui ツ**")
+        await event.client.send_message(BOTLOG_CHATID, "#bot #pull \n" f"**{__botname__} Telah Diperbarui**")
 
     try:
         from notubot.database.globals import addgv, delgv
 
         delgv("restartstatus")
-        chat_id = event.chat_id or event.from_id
         addgv("restartstatus", f"{chat_id}\n{event.id}")
     except AttributeError:
         pass
