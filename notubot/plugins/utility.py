@@ -244,12 +244,11 @@ async def tr(event):
     pattern="telegraph(?: |$)(.*)",
 )
 async def tgh(event):
-    NotUBot = await event.edit("`...`")
     match = event.pattern_match.group(1) or __botname__
     reply = await event.get_reply_message()
 
     if not reply:
-        return await NotUBot.edit("`Balas pesan tersebut.`")
+        return await event.edit("`Balas pesan tersebut.`")
     if not reply.media and reply.message:
         content = reply.message
     else:
@@ -267,7 +266,7 @@ async def tgh(event):
             except Exception as e:
                 uploaded = f"Error : {e}"
             remove(media)
-            return NotUBot.edit(uploaded)
+            return event.edit(uploaded)
 
         with open(media) as file:
             content = file.read()
@@ -275,7 +274,7 @@ async def tgh(event):
 
     tghpush = Telegraph.create_page(title=match, content=[content])
     output = tghpush["url"]
-    await NotUBot.edit(f"Telegraph: [Telegraph]({output})")
+    await event.edit(f"Telegraph: [Telegraph]({output})")
 
 
 @bot_cmd(pattern="(json|raw)$")
