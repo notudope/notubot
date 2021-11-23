@@ -6,6 +6,7 @@
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
 from asyncio.exceptions import TimeoutError
+from datetime import datetime
 from io import BytesIO
 from os import rename, remove
 from time import time
@@ -253,26 +254,36 @@ async def tgh(event):
     if not reply.media and reply.message:
         content = reply.message
     else:
+        if hasattr(reply.media, "document"):
+            file = reply.media.document
+            name = reply.file.name
+        else:
+            file = reply.media
+            name = ""
+        if not name:
+            name = "telegraph" + datetime.now().isoformat("_", "seconds")
+
         tt = time()
-        media = await downloader(reply.file.name, reply.media.document, NotUBot, tt, "Downloading...")
+        media = await downloader(name, file, NotUBot, tt, "Downloading " + name + "...")
+        medianame = media.name
         mediatype = mediainfo(reply.media)
 
         if mediatype == "sticker":
-            rename(media.name, media.name + ".jpg")
-            media = media.name + ".jpg"
+            rename(medianame, medianame + ".jpg")
+            medianame = medianame + ".jpg"
 
         if "document" not in mediatype:
             try:
-                link = "https://telegra.ph" + tghup(media.name)[0]
+                link = "https://telegra.ph" + tghup(medianame)[0]
                 uploaded = f"Upload [Telegraph]({link})"
             except Exception as e:
                 uploaded = f"Error : {e}"
-            remove(media.name)
+            remove(medianame)
             return NotUBot.edit(uploaded)
 
-        with open(media.name) as file:
+        with open(medianame) as file:
             content = file.read()
-        remove(media.name)
+        remove(medianame)
 
     tghpush = Telegraph.create_page(title=match, content=[content])
     output = tghpush["url"]
