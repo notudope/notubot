@@ -283,7 +283,7 @@ async def tgh(event):
             end = datetime.now()
             ms = (end - start).seconds
             remove(downloaded_file_name)
-            return NotUBot.edit(uploaded + f"in `{ms}` seconds.")
+            return await NotUBot.edit(uploaded + f"in `{ms}` seconds.")
 
         with open(downloaded_file_name) as file:
             content = file.read()
