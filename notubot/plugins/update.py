@@ -82,7 +82,7 @@ async def print_changelogs(event, ac_br, changelog):
 
 
 async def deploy(event, repo, ups_rem, ac_br, txt):
-    if HEROKU_API_KEY is None:
+    if not HEROKU_API_KEY:
         await event.edit("Harap **tentukan variabel** `HEROKU_API_KEY`.")
         return
 
@@ -90,7 +90,7 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
     heroku_app = None
     heroku_applications = heroku.apps()
 
-    if HEROKU_APP_NAME is None:
+    if not HEROKU_APP_NAME:
         await event.edit(
             f"Harap **tentukan variabel** `HEROKU_APP_NAME` untuk Deploy perubahan terbaru dari `{__botname__}`."
         )
@@ -102,7 +102,7 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
             heroku_app = app
             break
 
-    if heroku_app is None:
+    if not heroku_app:
         await event.edit(f"{txt}\n" "`Variabel Heroku tidak valid untuk deploy notubot Dyno.`")
         return repo.__del__()
 
@@ -178,7 +178,6 @@ async def update(event, repo, ups_rem, ac_br):
 @bot_cmd(pattern="update(?: |$)(now|deploy|pull|push|one|all)?")
 async def upstream(event):
     opts = event.pattern_match.group(1)
-    off_repo = UPSTREAM_REPO_URL
     force_update = False
 
     await event.edit("`...`")
@@ -193,7 +192,7 @@ async def upstream(event):
         await event.edit(f"{txt}\n`Kesalahan diawal! {e}`")
         return repo.__del__()
     except InvalidGitRepositoryError as e:
-        if opts is None:
+        if not opts:
             return await event.edit(
                 f"`Direktori {e} "
                 "sepertinya bukan repositori git.\n"
@@ -202,7 +201,7 @@ async def upstream(event):
             )
 
         repo = Repo.init()
-        origin = repo.create_remote("upstream", off_repo)
+        origin = repo.create_remote("upstream", UPSTREAM_REPO_URL)
         origin.fetch()
         force_update = True
         repo.create_head("main", origin.refs.main)
@@ -220,24 +219,24 @@ async def upstream(event):
         )
         return repo.__del__()
     try:
-        repo.create_remote("upstream", off_repo)
+        repo.create_remote("upstream", UPSTREAM_REPO_URL)
     except BaseException:
         pass
 
     ups_rem = repo.remote("upstream")
     ups_rem.fetch(ac_br)
-
     changelog = await gen_chlog(repo, f"HEAD..upstream/{ac_br}")
 
     if opts in ["deploy", "push", "all"]:
         await event.edit(f"`{__botname__} Proses Deploy, Harap Tunggu...`")
         await deploy(event, repo, ups_rem, ac_br, txt)
+        return
 
-    if changelog == "" and force_update is False:
+    if changelog == "" and not force_update:
         await event.edit(f"\n`{__botname__}`  **up-to-date** branch " f"`{UPSTREAM_REPO_BRANCH}`\n")
         return repo.__del__()
 
-    if opts is None and force_update is False:
+    if not opts and not force_update:
         await print_changelogs(event, ac_br, changelog)
         await event.delete()
         await event.respond(f"Jalankan `{HANDLER}update now|pull|one` untuk __memperbarui sementara__.")
@@ -257,6 +256,7 @@ async def upstream(event):
     if opts in ["now", "pull", "one"]:
         await event.edit(f"`{__botname__} Memperbarui, Harap Tunggu...`")
         await update(event, repo, ups_rem, ac_br)
+    return
 
 
 @bot_cmd(pattern="repo$")

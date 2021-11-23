@@ -32,7 +32,7 @@ MUTE_RIGHTS = ChatBannedRights(until_date=None, send_messages=True)
 
 @bot.on(ChatAction)
 async def ChatActionsHandler(event):
-    if event.user_joined or event.user_added or event.added_by:
+    if not event.is_private and (event.user_joined or event.user_added or event.added_by):
         user = await event.get_user()
         chat = await event.get_chat()
         mention = "[➥ {}](tg://user?id={})".format(get_display_name(user), user.id)
