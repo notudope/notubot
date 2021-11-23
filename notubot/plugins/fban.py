@@ -9,6 +9,7 @@ from asyncio import sleep
 
 from sqlalchemy.exc import IntegrityError
 from telethon.errors.rpcerrorlist import YouBlockedUserError
+from telethon.tl.functions.contacts import UnblockRequest
 from telethon.utils import get_display_name
 
 from notubot import (
@@ -258,6 +259,7 @@ async def fstat(event):
             await NotUBot.edit(res.text)
         except YouBlockedUserError:
             await NotUBot.edit(f"`Unblock {fbot}`")
+            await event.client(UnblockRequest(fbot))
 
 
 @bot_cmd(pattern="fedinfo(?: |$)(.*)")
@@ -274,6 +276,7 @@ async def fedinfo(event):
             await NotUBot.edit(res.text)
         except YouBlockedUserError:
             await NotUBot.edit(f"`Unblock {fbot}`")
+            await event.client(UnblockRequest(fbot))
 
 
 CMD_HELP.update(

@@ -257,7 +257,12 @@ def bot_cmd(**args):
                                 allow_cache=False,
                             )
                     except Exception:
-                        pass
+                        if not BOTLOG:
+                            await event.respond(
+                                f"`{__botname__} ERROR, nilai BOTLOG bukan True pada variabel config. Catatan kesalahan hanya bisa dilihat pada terminal atau views logs (heroku).`"
+                            )
+                        else:
+                            pass
             else:
                 pass
 

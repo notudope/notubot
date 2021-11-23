@@ -35,7 +35,7 @@ from telethon.errors.rpcerrorlist import (
     ChatWriteForbiddenError,
 )
 from telethon.sessions import StringSession
-from telethon.tl.functions.channels import DeleteMessagesRequest  # noqa: F401
+from telethon.tl.functions.channels import DeleteMessagesRequest, JoinChannelRequest  # noqa: F401
 from telethon.utils import get_display_name
 
 start_time = time()
@@ -221,10 +221,10 @@ def client_connection() -> TelegramClient:
 bot = client_connection()
 
 
-async def startup_check() -> None:
+async def prepare_botlog() -> None:
     if not BOTLOG_CHATID and BOTLOG:
         LOGS.warning(
-            "Wajib mengatur variabel BOTLOG_CHATID di config.env atau environment variabel, supaya fitur logging berfungsi."
+            "Jika nilai BOTLOG = True maka wajib mengatur variabel BOTLOG_CHATID di config.env atau environment variabel!"
         )
         sys.exit(1)
 
@@ -235,15 +235,41 @@ async def startup_check() -> None:
         )
         sys.exit(1)
 
+
+with bot:
+    try:
+        bot.loop.run_until_complete(prepare_botlog())
+    except Exception as e:
+        LOGS.exception(f"[PREPARE_BOTLOG] - {e}")
+        sys.exit(1)
+
+
+async def launched() -> None:
     bot.me = await bot.get_me()
     bot.uid = bot.me.id
     bot.name = get_display_name(bot.me)
 
-    await bot.send_message(BOTLOG_CHATID, "```{} v{} Launched 🚀```".format(__botname__, __botversion__))
+    await bot.send_message(
+        BOTLOG_CHATID,
+        "<code>{} v{} Launched 🚀 as {} [{}]</code>".format(__botname__, __botversion__, bot.name, bot.uid),
+        parse_mode="html",
+    )
 
-    from notubot.database.globals import delgv, getgv
+    await bot(JoinChannelRequest("@NOTUBOTS"))
+    await bot(JoinChannelRequest("@notudope"))
 
-    chatid, mid = getgv("restartstatus").split("\n")
+
+with bot:
+    try:
+        bot.loop.run_until_complete(launched())
+    except ChatWriteForbiddenError:
+        pass
+    except Exception as e:
+        LOGS.exception(f"[LAUNCHED] - {e}")
+        sys.exit(1)
+
+
+async def updated_message(chatid, mid) -> None:
     text = (
         f"`{__botname__}`\n"
         f"[Repo](https://github.com/notudope/notubot)  •  [Channel](https://t.me/notudope)  •  [Support](https://t.me/NOTUBOTS)  •  [Mutualan](https://t.me/CariTemanOK)\n\n"
@@ -251,52 +277,34 @@ async def startup_check() -> None:
         f"**Python:** `{python_version()}`\n"
         f"**Telethon:** `{version.__version__}`"
     )
-
-    LOGS.info(f"Chat ID: {chatid} Message ID: {mid}")
-    await bot.edit_message(int(chatid), int(mid), text, link_preview=False)
+    await bot.edit_message(chatid, mid, text, link_preview=False)
     # await bot(DeleteMessagesRequest(int(chatid), [int(mid)]))
-    delgv("restartstatus")
+    return True
 
 
-with bot:
+try:
+    from notubot.database.globals import delgv, getgv
+
+    chatid, mid = getgv("restartstatus").split("\n")
+
     try:
-        bot.loop.run_until_complete(startup_check())
+        with bot:
+            bot.loop.run_until_complete(updated_message(int(chatid), int(mid)))
     except (
         MessageIdInvalidError,
         MessageNotModifiedError,
         MessageDeleteForbiddenError,
         ChatWriteForbiddenError,
-        AttributeError,
         ValueError,
     ):
         pass
     except Exception as e:
-        LOGS.warning("Terjadi kesalahan saat proses pertama kali menjalankan.")
-        LOGS.exception(e)
-        sys.exit(1)
+        LOGS.exception(f"[UPDATED_MESSAGE] - {e}")
+        pass
 
-
-async def ipchange():
-    try:
-        from notubot.database.globals import addgv, delgv, getgv
-    except AttributeError:
-        return None
-
-    newip = (get("https://httpbin.org/ip").json())["origin"]
-
-    if not getgv("ipaddress"):
-        addgv("ipaddress", newip)
-        return None
-
-    oldip = getgv("ipaddress")
-    if oldip != newip:
-        delgv("ipaddress")
-        LOGS.info("🔄 IP change detected!")
-        try:
-            await bot.disconnect()
-        except (ConnectionError, asyncio.exceptions.CancelledError):
-            pass
-        return "ip change"
+    delgv("restartstatus")
+except AttributeError:
+    pass
 
 
 # Global Variables

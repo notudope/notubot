@@ -17,7 +17,7 @@ from telethon.errors.rpcerrorlist import (
     UserNotMutualContactError,
     YouBlockedUserError,
 )
-from telethon.tl.functions.channels import InviteToChannelRequest, GetFullChannelRequest
+from telethon.tl.functions.channels import InviteToChannelRequest, GetFullChannelRequest, UnblockRequest
 from telethon.tl.functions.messages import GetFullChatRequest
 from telethon.tl.types import InputPeerUser
 from telethon.tl.types import ChannelParticipantsAdmins as Admins
@@ -177,6 +177,7 @@ async def limit(event):
             await event.client.send_read_acknowledge(conv.chat_id)
         except YouBlockedUserError:
             await NotUBot.edit("`Unblock @SpamBot`")
+            await event.client(UnblockRequest("@SpamBot"))
             return
         await NotUBot.edit(f"~ {res.message.message}")
 
