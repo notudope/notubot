@@ -17,7 +17,8 @@
   "stack": "container",
   "env": {
     "ALIVE_LOGO": {
-      "description": "Show Image/Logo in .alive message. Fill value of image your link image, use telegra.ph or any direct link image",
+      "description": "Show Image/Logo in .alive message. Input your link image, use telegra.ph or any direct link image",
+      "value": "https://telegra.ph/file/5a8942f865674222b8f1b.jpg",
       "required": false
     },
     "ALIVE_TEXT": {
@@ -26,7 +27,7 @@
       "required": false
     },
     "ALIVE_IG": {
-      "description": "Show your Instagram account in .alive message (put username without @)",
+      "description": "Show your Instagram account in .alive message and IG word (put username without @)",
       "value": "notudope",
       "required": false
     },
@@ -39,7 +40,7 @@
       "required": true
     },
     "STRING_SESSION": {
-      "description": "Get this value by running [python3 session.py] in Termux or local system",
+      "description": "Get this value by running [python3 session.py] in Termux or local system or simply use replit.com/@notudope/strgen#main.py",
       "required": true
     },
     "HANDLER": {
@@ -63,7 +64,7 @@
       "required": false
     },
     "BOTLOG": {
-      "description": "Incase you want to turn off logging ex (Error, GBAN, FBAN), put this to False",
+      "description": "This can be help to analytics userbot logs, example (Error, GBAN, FBAN)",
       "value": "True",
       "required": true
     },
@@ -80,6 +81,11 @@
     "NOSPAM_GROUP": {
       "description": "Blacklist your group from gcast feature, get your group ID from '@MissRose_bot' send /id then put the ID into here example: -1001596433756 -1001307868573 (multiple without commas)",
       "value": "-1001596433756 -1001307868573",
+      "required": false
+    },
+    "TMP_DIR": {
+      "description": "A location to save temporary downloaded files",
+      "value": "./downloads/",
       "required": false
     }
   },

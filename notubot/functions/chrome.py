@@ -11,15 +11,15 @@ import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-from notubot import CHROME_DRIVER, GOOGLE_CHROME_BIN, TEMP_DOWNLOAD_DIRECTORY
+from notubot import CHROME_DRIVER, GOOGLE_CHROME_BIN, TMP_DIR
 
 
 async def chrome(chrome_options=None):
     if chrome_options is None:
         chrome_options = await options()
-    if not os.path.isdir(TEMP_DOWNLOAD_DIRECTORY):
-        os.mkdir(TEMP_DOWNLOAD_DIRECTORY)
-    prefs = {"download.default_directory": TEMP_DOWNLOAD_DIRECTORY}
+    if not os.path.isdir(TMP_DIR):
+        os.mkdir(TMP_DIR)
+    prefs = {"download.default_directory": TMP_DIR}
     chrome_options.add_experimental_option("prefs", prefs)
     driver = webdriver.Chrome(executable_path=CHROME_DRIVER, options=chrome_options)
     return driver

@@ -28,7 +28,9 @@
 */
 ```
 
-## Deploy
+## STRING_SESSION
+Generate `STRING_SESSION` using [repl.it](https://replit.com/@notudope/strgen#main.py) or running `python3 session.py` locally.
+
 
 ### Heroku
 Click this button below to Deploy to Heroku.
@@ -38,6 +40,8 @@ Click this button below to Deploy to Heroku.
   <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy to Heroku">
 </a>
 </p>
+
+### Heroku
 
 ## Credits
 * [RaphielGang](https://github.com/RaphielGang) - Telegram-Paperplane

@@ -109,7 +109,7 @@ HANDLER = getenv("HANDLER", default=".")
 I_DEV = strtobool(getenv("I_DEV", default="False"))
 
 # Default .alive logo
-ALIVE_LOGO = getenv("ALIVE_LOGO", default=None)
+ALIVE_LOGO = getenv("ALIVE_LOGO", default="https://telegra.ph/file/5a8942f865674222b8f1b.jpg")
 
 # Default .alive text
 ALIVE_TEXT = getenv("ALIVE_TEXT", default="Hey, I am alive.")
@@ -168,7 +168,7 @@ G_DRIVE_CLIENT_SECRET = getenv("G_DRIVE_CLIENT_SECRET", default="")
 G_DRIVE_AUTH_TOKEN_DATA = getenv("G_DRIVE_AUTH_TOKEN_DATA", default="")
 G_DRIVE_FOLDER_ID = getenv("G_DRIVE_FOLDER_ID", default="")
 G_DRIVE_INDEX_URL = getenv("G_DRIVE_INDEX_URL", default="")
-TEMP_DOWNLOAD_DIRECTORY = getenv("TMP_DOWNLOAD_DIRECTORY", default="./downloads/")
+TMP_DIR = getenv("TMP_DIR", default="./downloads/")
 
 # Genius Lyrics API
 GENIUS = getenv("GENIUS_ACCESS_TOKEN", default="")

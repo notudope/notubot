@@ -26,7 +26,7 @@ from notubot import (
     bot,
     HANDLER,
     __botname__,
-    TEMP_DOWNLOAD_DIRECTORY,
+    TMP_DIR,
 )
 from notubot.events import bot_cmd
 from notubot.functions import (
@@ -257,7 +257,7 @@ async def tgh(event):
     else:
         start = datetime.now()
         name = datetime.now().isoformat("_", "seconds")
-        downloaded_file_name = await event.client.download_media(reply, TEMP_DOWNLOAD_DIRECTORY)
+        downloaded_file_name = await event.client.download_media(reply, TMP_DIR)
         mediatype = mediainfo(reply.media)
 
         if mediatype == "sticker animated" and downloaded_file_name.endswith(".tgs"):
