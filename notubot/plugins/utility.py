@@ -29,7 +29,12 @@ from notubot import (
     TEMP_DOWNLOAD_DIRECTORY,
 )
 from notubot.events import bot_cmd
-from notubot.functions import parse_pre, yaml_format, mediainfo
+from notubot.functions import (
+    parse_pre,
+    yaml_format,
+    mediainfo,
+    resize_image,
+)
 
 from . import Telegraph
 
@@ -251,28 +256,38 @@ async def tgh(event):
         content = reply.message
     else:
         start = datetime.now()
-        media = await event.client.download_media(reply, TEMP_DOWNLOAD_DIRECTORY)
-        await NotUBot.edit(f"`Downloaded {media}`")
+        name = datetime.now().isoformat("_", "seconds")
+        downloaded_file_name = await event.client.download_media(reply, TEMP_DOWNLOAD_DIRECTORY)
         mediatype = mediainfo(reply.media)
 
-        if mediatype == "sticker":
-            rename(media, media + ".jpg")
-            media = media + ".jpg"
+        if mediatype == "sticker animated" and downloaded_file_name.endswith(".tgs"):
+            return await NotUBot.edit("`Animasi stiker tidak didukung, coba stiker biasa!`")
+
+        if mediatype == "sticker" and downloaded_file_name.endswith(".webp"):
+            resize_image(downloaded_file_name)
+            name = "sticker_" + name + ".png"
+            rename(downloaded_file_name, name)
+            downloaded_file_name = name
+
+        if mediatype == "pic" and downloaded_file_name.endswith(".jpg"):
+            name = "photo_" + name + ".jpg"
+            rename(downloaded_file_name, name)
+            downloaded_file_name = name
 
         if "document" not in mediatype:
             try:
-                link = "https://telegra.ph" + tghup(media)[0]
+                link = "https://telegra.ph" + tghup(downloaded_file_name)[0]
                 uploaded = f"Uploaded [Telegraph]({link})"
             except Exception as e:
                 uploaded = f"Error : {e}"
             end = datetime.now()
             ms = (end - start).seconds
-            remove(media)
+            remove(downloaded_file_name)
             return NotUBot.edit(uploaded + f"in `{ms}` seconds.")
 
-        with open(media) as file:
+        with open(downloaded_file_name) as file:
             content = file.read()
-        remove(media)
+        remove(downloaded_file_name)
 
     tghpush = Telegraph.create_page(title=match, content=[content])
     output = tghpush["url"]

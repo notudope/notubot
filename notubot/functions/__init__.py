@@ -17,5 +17,5 @@ from .helper import (
     def_logs,
 )
 from .info import get_user_from_event, get_uinfo, get_user_id
-from .tools import telegraph_client
+from .tools import telegraph_client, resize_image
 from .wrappers import answer

@@ -1,3 +1,4 @@
+from PIL import Image
 from telegraph import Telegraph
 
 from notubot import LOGS, bot
@@ -32,3 +33,8 @@ def telegraph_client():
     addgv("_TELEGRAPH_TOKEN", TelegraphClient.get_access_token())
     TELEGRAPH.append(TelegraphClient)
     return TelegraphClient
+
+
+def resize_image(image):
+    im = Image.open(image)
+    im.save(image, "PNG")
