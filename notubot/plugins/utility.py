@@ -6,10 +6,11 @@
 # <https://www.github.com/notudope/notubot/blob/main/LICENSE/>.
 
 from asyncio.exceptions import TimeoutError
-from io import BytesIO
-from os import rename, remove, path
-from time import time
 from datetime import datetime
+from io import BytesIO
+from os import rename, remove
+from time import time
+
 from google_trans_new import google_translator
 from telegraph import upload_file as tghup
 from telethon.errors.rpcerrorlist import YouBlockedUserError
@@ -25,15 +26,10 @@ from notubot import (
     bot,
     HANDLER,
     __botname__,
-    LOGS,
+    TEMP_DOWNLOAD_DIRECTORY,
 )
 from notubot.events import bot_cmd
-from notubot.functions import (
-    parse_pre,
-    yaml_format,
-    mediainfo,
-    downloader,
-)
+from notubot.functions import parse_pre, yaml_format, mediainfo
 
 from . import Telegraph
 
@@ -254,38 +250,29 @@ async def tgh(event):
     if not reply.media and reply.message:
         content = reply.message
     else:
-        LOGS.info(reply.media)
-        if hasattr(reply.media, "document"):
-            file = reply.media.document
-            name = reply.file.name
-        else:
-            file = reply.media
-            file.size = path.getsize("")
-            name = ""
-        if not name:
-            name = "telegraph" + datetime.now().isoformat("_", "seconds")
-            
-        tt = time()
-        media = await downloader(name, file, NotUBot, tt, "Downloading " + name + "...")
-        medianame = media.name
+        start = datetime.now()
+        media = await event.client.download_media(reply, TEMP_DOWNLOAD_DIRECTORY)
+        await NotUBot.edit(f"`Downloaded {media}`")
         mediatype = mediainfo(reply.media)
 
         if mediatype == "sticker":
-            rename(medianame, medianame + ".jpg")
-            medianame = medianame + ".jpg"
+            rename(media, media + ".jpg")
+            media = media + ".jpg"
 
         if "document" not in mediatype:
             try:
-                link = "https://telegra.ph" + tghup(medianame)[0]
-                uploaded = f"Upload [Telegraph]({link})"
+                link = "https://telegra.ph" + tghup(media)[0]
+                uploaded = f"Uploaded [Telegraph]({link})"
             except Exception as e:
                 uploaded = f"Error : {e}"
-            remove(medianame)
-            return NotUBot.edit(uploaded)
+            end = datetime.now()
+            ms = (end - start).seconds
+            remove(media)
+            return NotUBot.edit(uploaded + f"in `{ms}` seconds.")
 
-        with open(medianame) as file:
+        with open(media) as file:
             content = file.read()
-        remove(medianame)
+        remove(media)
 
     tghpush = Telegraph.create_page(title=match, content=[content])
     output = tghpush["url"]
