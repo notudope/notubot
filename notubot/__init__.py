@@ -315,3 +315,4 @@ COUNT_PM = {}
 LASTMSG = {}
 ISAFK = False
 AFKREASON = None
+GROUP_CALLS = {}

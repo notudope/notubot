@@ -11,8 +11,12 @@ from pytgcalls import GroupCallFactory
 from telethon.tl.functions.channels import GetFullChannelRequest, DeleteMessagesRequest
 from telethon.tl.functions.phone import CreateGroupCallRequest, DiscardGroupCallRequest, InviteToGroupCallRequest
 
-from notubot import CMD_HELP, bot, HANDLER
-from notubot.db import db
+from notubot import (
+    CMD_HELP,
+    bot,
+    HANDLER,
+    GROUP_CALLS,
+)
 from notubot.events import bot_cmd
 
 
@@ -98,11 +102,15 @@ async def joinvc(event):
         await sleep(15)
         return await NotUBot.delete()
 
-    if "call" in db:
-        return await NotUBot.edit("`Sudah ada di obrolan.`")
-
-    group_call = GroupCallFactory(bot, GroupCallFactory.MTPROTO_CLIENT_TYPE.TELETHON).get_file_group_call(None)
-    db["call"] = group_call
+    group_call = GROUP_CALLS.get(event.chat.id)
+    if group_call is None:
+        group_call = GroupCallFactory(
+            event.client,
+            GroupCallFactory.MTPROTO_CLIENT_TYPE.TELETHON,
+            enable_logs_to_console=False,
+            path_to_log_file=None,
+        ).get_file_group_call(None)
+        GROUP_CALLS[event.chat.id] = group_call
 
     if not (group_call and group_call.is_connected):
         await group_call.start(event.chat.id, enable_action=False)
@@ -126,10 +134,10 @@ async def leavevc(event):
         await sleep(15)
         return await NotUBot.delete()
 
-    if "call" in db:
-        await db["call"].leave_current_group_call()
-        await db["call"].stop()
-        del db["call"]
+    group_call = GROUP_CALLS.get(event.chat.id)
+    if group_call and group_call.is_connected:
+        await group_call.leave_current_group_call()
+        await group_call.stop()
 
     await NotUBot.edit("`leaved`")
     await sleep(3)

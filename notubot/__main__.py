@@ -26,10 +26,6 @@ from notubot import (
 )
 from notubot.functions import time_formatter
 
-from . import db
-
-db.init()
-
 
 def __list_all_plugins():
     start = time()
