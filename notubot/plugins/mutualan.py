@@ -17,9 +17,9 @@ async def matchings_words(e):
     if xx in ["ig", "instagram"]:
         text = f"INSTAGRAM [@{ALIVE_IG}](https://www.instagram.com/{ALIVE_IG})"
     elif xx in ["p", "salam"]:
-        text = "HEY YOO, ASSALAMUALAIKUM"
+        text = "ASSALAMUALAIKUM"
     elif xx in ["l", "waskum"]:
-        text = "WASAPP WAALAIKUMSALAM"
+        text = "WAALAIKUMSALAM"
     elif xx in ["kam", "welkam"]:
         text = "WELKAAM GESSSS"
     elif xx in ["bewan", "gelut"]:
@@ -81,6 +81,7 @@ CMD_HELP.update(
             "`mmk|memek`\n"
             "`njs|najis`\n"
             "`sokap`\n"
+            "`caper`\n"
             "`bgst|bangsat`\n"
             "`aliansi|aliangsi`\n"
             "`babu`\n"
